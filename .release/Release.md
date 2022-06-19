@@ -1,9 +1,11 @@
-_Changes for v 1.0_: 
-- The first release:
-    - path builder;
-    - walls / gates generator;
-    - space filler;
-    - visible geometry extractor;
-    - map elements writer: walls, gates, lights, sounds, SFX, enemies, items, decals, sprites, triggers;
-    - map compiler.
-- Publication on GitHub
+_Changes for v 1.1_:
+- Algorithm of generation of the entry point and the end point has been rewritten (it will not cause remarkable effect, but it allows rectangle-shaped mazes);
+- App now able to skip the game start (`-go` key) and cleanup save and maps directories (`-c` key);
+- Source code has been refactored;
+- Adjusted the appearance of the entrance portal;
+- Maps can now be played continuously, one from another;
+- Maps generator will now be called automatically by the engine at the start of the map; it will work in background mode during your walkthrough;
+- File paths are now fully correct;
+- App will now get the next map number directly from the maps directory;
+- App can now get the *size coefficient* for the maze and the *difficulty coefficient* from the `Randomaze.cfg` file;
+- App will skip generation, if the next map already exists
