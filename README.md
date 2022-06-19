@@ -11,12 +11,12 @@ This tool will be started by the engine automatically, every time it will need a
 It may be started directly: after building of the map it will start the game.
 
 Requires next compilation tools, directories and files:
-- .\hlcsg.exe;
-- .\hlbsp.exe;
-- .\hlvis.exe;
-- .\rlrad.exe;
-- .\maps (directory);
-- ..\valve\eshq.wad.
+- `.\hlcsg.exe`;
+- `.\hlbsp.exe`;
+- `.\hlvis.exe`;
+- `.\rlrad.exe`;
+- `.\maps` (directory);
+- `..\valve\eshq.wad`.
 
 &nbsp;
 
@@ -31,7 +31,7 @@ Requires next compilation tools, directories and files:
 - `-m <map_name>`: compares specified map (currently saved map expected) with the last created.
   Skips building of the new map if the next map is already available.
 
-### From **Randomaze.cfg** file
+### From `Randomaze.cfg` file
 
 - *Maze size coefficient*. Range: 1 – 8.
 - *Difficulty coefficient*. Range: 1 – 8. Affects quantities of enemies and items / weapons on the map.
@@ -42,12 +42,12 @@ Requires next compilation tools, directories and files:
 
 
 
-## Requirements / Требования
+## Requirements
 
-- Windows XP or newer / или новее;
+- Windows XP or newer;
 - [Microsoft .NET Framework 4.0](https://microsoft.com/en-us/download/details.aspx?id=17718).
 
-Interface languages / языки интерфейса: en_us.
+Interface languages: en_us.
 
 &nbsp;
 
