@@ -1,11 +1,5 @@
-_Changes for v 1.1_:
-- Algorithm of generation of the entry point and the end point has been rewritten (it will not cause remarkable effect, but it allows rectangle-shaped mazes);
-- App now able to skip the game start (`-go` key) and cleanup save and maps directories (`-c` key);
-- Source code has been refactored;
-- Adjusted the appearance of the entrance portal;
-- Maps can now be played continuously, one from another;
-- Maps generator will now be called automatically by the engine at the start of the map; it will work in background mode during your walkthrough;
-- File paths are now fully correct;
-- App will now get the next map number directly from the maps directory;
-- App can now get the *size coefficient* for the maze and the *difficulty coefficient* from the `Randomaze.cfg` file;
-- App will skip generation, if the next map already exists
+_Changes for v 1.2_:
+- Implemented the *walls density coefficient* (from 1 to 12). The larger the value, the fewer “branches” the maze will have. `12` means almost a snake-shaped corridor, `1` is for a hangar with a few walls;
+- Diversity of weapons and enemies will now increase right from the first map;
+- Light “bulbs” will now be added as part of world geometry (will not be counted as entities);
+- Number overflow protection added (999 is the limit for the maps chain)

@@ -2,7 +2,8 @@ Randomaze changes log
 
 ToDo:
 - Add 'allow' strings for enemies and items;
-- Add extra geometry
+- Add extra geometry;
+- Remove redundant code
 
 Version 1.2:
 • Implemented the walls density coefficient (from 1 to 12). The larger the value, the fewer
