@@ -1,5 +1,8 @@
 Randomaze changes log
 
+ToDo:
+- Requirements check
+
 Version 1.3:
 • Complete code refactoring has been performed; the speed of map generation has been increased
   (thanks to the removal of extraneous conversion calls);
