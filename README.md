@@ -1,4 +1,4 @@
-# Randomaze v 1.2
+# Randomaze v 1.3
 
 ES: Randomaze – The maps generator
 
@@ -34,10 +34,12 @@ Requires next compilation tools, directories and files:
 
 ### From `Randomaze.cfg` file
 
-- *Maze size coefficient*. Range: 1 – 8.
-- *Difficulty coefficient*. Range: 1 – 8. Affects quantities of enemies and items / weapons on the map.
-- *Walls density coefficient*. Range: 1 – 12. The larger the value, the fewer “branches” the maze will have.
+- ***Maze size coefficient***. Range: 1 – 8.
+- ***Difficulty coefficient***. Range: 1 – 8. Affects quantities of enemies and items / weapons on the map.
+- ***Walls density coefficient***. Range: 1 – 12. The larger the value, the fewer “branches” the maze will have.
   *12* means almost a snake-shaped corridor, *1* is for a hangar with a few walls.
+- ***Enemies permissions line***. Consists of key letters of enemies (`a`ssassins, `b`ullchickens, `g`runts, `h`eadcrabs,
+  alien g`r`unts, alien `s`laves, `t`urrets, `z`ombies). Missing letter means forbidden enemy.
 
 &nbsp;
 

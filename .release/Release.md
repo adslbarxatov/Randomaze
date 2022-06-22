@@ -1,5 +1,6 @@
-_Changes for v 1.2_:
-- Implemented the *walls density coefficient* (from 1 to 12). The larger the value, the fewer “branches” the maze will have. `12` means almost a snake-shaped corridor, `1` is for a hangar with a few walls;
-- Diversity of weapons and enemies will now increase right from the first map;
-- Light “bulbs” will now be added as part of world geometry (will not be counted as entities);
-- Number overflow protection added (999 is the limit for the maps chain)
+_Changes for v 1.3_:
+- Complete code refactoring has been performed; the speed of map generation has been increased (thanks to the removal of extraneous conversion calls);
+- Added glass windows on edges of map sections;
+- Some file operations have been improved;
+- Cleanup key will now work properly;
+- Implemented the permissions line for enemies. It consists of key letters. If the enemy’s key letter is presented, he / it will be available on the map

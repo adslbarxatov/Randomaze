@@ -41,14 +41,23 @@ namespace RD_AAOW
 		/// <param name="RelativePosition">Относительная позиция точки выхода</param>
 		public static void WriteMapEndPoint_Finish (StreamWriter SW, Point RelativePosition)
 			{
+			// Расчёт параметров
 			int x = RelativePosition.X * WallLength / 2;
 			int y = RelativePosition.Y * WallLength / 2;
 
+			string x1 = (x - 8).ToString ();
+			string y1 = (y - 8).ToString ();
+			string x2 = (x + 8).ToString ();
+			string y2 = (y + 8).ToString ();
+			string z1 = "16";
+			string z2 = (WallHeightInt - 16).ToString ();
+			string z3 = (WallHeightInt - 8).ToString ();
+
+			// Запись
 			SW.Write ("{\n");
 			SW.Write ("\"classname\" \"game_end\"\n");
 			SW.Write ("\"targetname\" \"DevEnd02\"\n");
-			SW.Write ("\"origin\" \"" + (x - 8).ToString () + " " + (y - 8).ToString () + " " +
-				(WallHeightInt - 8).ToString () + "\"\n");
+			SW.Write ("\"origin\" \"" + x1 + " " + y1 + " " + z3 + "\"\n");
 
 			SW.Write ("}\n{\n");
 			SW.Write ("\"classname\" \"player_loadsaved\"\n");
@@ -60,47 +69,50 @@ namespace RD_AAOW
 			SW.Write ("\"loadtime\" \"6\"\n");
 			SW.Write ("\"rendercolor\" \"0 0 0\"\n");
 			SW.Write ("\"renderamt\" \"255\"\n");
-			SW.Write ("\"origin\" \"" + (x - 8).ToString () + " " + (y + 8).ToString () + " " +
-				(WallHeightInt - 8).ToString () + "\"\n");
+			SW.Write ("\"origin\" \"" + x1 + " " + y2 + " " + z3 + "\"\n");
 
 			SW.Write ("}\n{\n");
 			SW.Write ("\"classname\" \"multi_manager\"\n");
 			SW.Write ("\"targetname\" \"DevM\"\n");
 			SW.Write ("\"DevEnd01\" \"0\"\n");
 			SW.Write ("\"DevEnd02\" \"5.5\"\n");
-			SW.Write ("\"origin\" \"" + (x + 8).ToString () + " " + (y - 8).ToString () + " " +
-				(WallHeightInt - 8).ToString () + "\"\n");
+			SW.Write ("\"origin\" \"" + x2 + " " + y1 + " " + z3 + "\"\n");
 
 			SW.Write ("}\n{\n");
 			SW.Write ("\"classname\" \"trigger_once\"\n");
 			SW.Write ("\"target\" \"DevM\"\n");
-			SW.Write ("{\n");
 
-			SW.Write ("( " + (x + 8).ToString () + " " + (y - 8).ToString () + " " + (WallHeightInt - 16).ToString () + " ) " +
-				"( " + (x - 8).ToString () + " " + (y - 8).ToString () + " " + (WallHeightInt - 16).ToString () + " ) " +
-				"( " + (x - 8).ToString () + " " + (y + 8).ToString () + " " + (WallHeightInt - 16).ToString () + " ) " +
+			WriteBlock (SW, x1, y1, z1, x2, y2, z2,
+				new string[] { TriggerTexture, TriggerTexture, TriggerTexture, TriggerTexture,
+					TriggerTexture, TriggerTexture,});
+
+			/*SW.Write ("{\n");
+
+			SW.Write ("( " + x2 + " " + y1 + " " + z2 + " ) " +
+				"( " + x1 + " " + y1 + " " + z2 + " ) " +
+				"( " + x1 + " " + y2 + " " + z2 + " ) " +
 				"AAATRIGGER [ 1 0 0 0 ] [ 0 -1 0 0 ] 0 1 1 \n");
-			SW.Write ("( " + (x + 8).ToString () + " " + (y + 8).ToString () + " 16 ) " +
-				"( " + (x + 8).ToString () + " " + (y + 8).ToString () + " " + (WallHeightInt - 16).ToString () + " ) " +
-				"( " + (x - 8).ToString () + " " + (y + 8).ToString () + " " + (WallHeightInt - 16).ToString () + " ) " +
+			SW.Write ("( " + x2 + " " + y2 + " " + z1 + " ) " +
+				"( " + x2 + " " + y2 + " " + z2 + " ) " +
+				"( " + x1 + " " + y2 + " " + z2 + " ) " +
 				"AAATRIGGER [ 1 0 0 0 ] [ 0 0 -1 0 ] 0 1 1 \n");
-			SW.Write ("( " + (x - 8).ToString () + " " + (y - 8).ToString () + " 16 ) " +
-				"( " + (x - 8).ToString () + " " + (y - 8).ToString () + " " + (WallHeightInt - 16).ToString () + " ) " +
-				"( " + (x + 8).ToString () + " " + (y - 8).ToString () + " " + (WallHeightInt - 16).ToString () + " ) " +
+			SW.Write ("( " + x1 + " " + y1 + " " + z1 + " ) " +
+				"( " + x1 + " " + y1 + " " + z2 + " ) " +
+				"( " + x2 + " " + y1 + " " + z2 + " ) " +
 				"AAATRIGGER [ 1 0 0 0 ] [ 0 0 -1 0 ] 0 1 1 \n");
-			SW.Write ("( " + (x - 8).ToString () + " " + (y + 8).ToString () + " 16 ) " +
-				"( " + (x - 8).ToString () + " " + (y + 8).ToString () + " " + (WallHeightInt - 16).ToString () + " ) " +
-				"( " + (x - 8).ToString () + " " + (y - 8).ToString () + " " + (WallHeightInt - 16).ToString () + " ) " +
+			SW.Write ("( " + x1 + " " + y2 + " " + z1 + " ) " +
+				"( " + x1 + " " + y2 + " " + z2 + " ) " +
+				"( " + x1 + " " + y1 + " " + z2 + " ) " +
 				"AAATRIGGER [ 0 1 0 0 ] [ 0 0 -1 0 ] 0 1 1 \n");
-			SW.Write ("( " + (x + 8).ToString () + " " + (y - 8).ToString () + " 16 ) " +
-				"( " + (x + 8).ToString () + " " + (y - 8).ToString () + " " + (WallHeightInt - 16).ToString () + " ) " +
-				"( " + (x + 8).ToString () + " " + (y + 8).ToString () + " " + (WallHeightInt - 16).ToString () + " ) " +
+			SW.Write ("( " + x2 + " " + y1 + " " + z1 + " ) " +
+				"( " + x2 + " " + y1 + " " + z2 + " ) " +
+				"( " + x2 + " " + y2 + " " + z2 + " ) " +
 				"AAATRIGGER [ 0 1 0 0 ] [ 0 0 -1 0 ] 0 1 1 \n");
-			SW.Write ("( " + (x + 8).ToString () + " " + (y + 8).ToString () + " 16 ) " +
-				"( " + (x - 8).ToString () + " " + (y + 8).ToString () + " 16 ) " +
-				"( " + (x - 8).ToString () + " " + (y - 8).ToString () + " 16 ) " +
-				"AAATRIGGER [ 1 0 0 0 ] [ 0 -1 0 0 ] 0 1 1 \n");
-			SW.Write ("}\n}\n");
+			SW.Write ("( " + x2 + " " + y2 + " " + z1 + " ) " +
+				"( " + x1 + " " + y2 + " " + z1 + " ) " +
+				"( " + x1 + " " + y1 + " " + z1 + " ) " +
+				"AAATRIGGER [ 1 0 0 0 ] [ 0 -1 0 0 ] 0 1 1 \n");*/
+			SW.Write ("}\n");
 
 			WriteMapPortal (SW, RelativePosition, true);
 			}
@@ -113,9 +125,6 @@ namespace RD_AAOW
 		/// <param name="MapNumber">Номер текущей карты</param>
 		public static void WriteMapEndPoint (StreamWriter SW, Point RelativePosition, uint MapNumber)
 			{
-			int x = RelativePosition.X * WallLength / 2;
-			int y = RelativePosition.Y * WallLength / 2;
-
 			// Защита
 			if (MapNumber >= MapsLimit)
 				{
@@ -123,43 +132,60 @@ namespace RD_AAOW
 				return;
 				}
 
-			// Добавление
+			// Расчёт параметров
+			int x = RelativePosition.X * WallLength / 2;
+			int y = RelativePosition.Y * WallLength / 2;
+
+			string x1 = (x - 8).ToString ();
+			string y1 = (y - 8).ToString ();
+			string x2 = (x + 8).ToString ();
+			string y2 = (y + 8).ToString ();
+			string z1 = "16";
+			string z2 = (WallHeightInt - 16).ToString ();
+			string mapName = Program.MainAlias + (MapNumber + 1).ToString (MapsNumbersFormat);
+
+			// Запись
 			SW.Write ("{\n");
 			SW.Write ("\"classname\" \"info_landmark\"\n");
-			SW.Write ("\"targetname\" \"" + Program.MainAlias + (MapNumber + 1).ToString (MapsNumbersFormat) + "m\"\n");
-			SW.Write ("\"origin\" \"" + (x - 8).ToString () + " " + (y - 8).ToString () + " 40\"\n");
+			SW.Write ("\"targetname\" \"" + mapName + "m\"\n");
+			SW.Write ("\"origin\" \"" + x.ToString () + " " + y.ToString () + " 40\"\n");
 
 			SW.Write ("}\n{\n");
 			SW.Write ("\"classname\" \"trigger_changelevel\"\n");
-			SW.Write ("\"map\" \"" + Program.MainAlias + (MapNumber + 1).ToString (MapsNumbersFormat) + "\"\n");
-			SW.Write ("\"landmark\" \"" + Program.MainAlias + (MapNumber + 1).ToString (MapsNumbersFormat) + "m\"\n");
-			SW.Write ("{\n");
+			SW.Write ("\"map\" \"" + mapName + "\"\n");
+			SW.Write ("\"landmark\" \"" + mapName + "m\"\n");
 
-			SW.Write ("( " + (x + 8).ToString () + " " + (y - 8).ToString () + " " + (WallHeightInt - 16).ToString () + " ) " +
-				"( " + (x - 8).ToString () + " " + (y - 8).ToString () + " " + (WallHeightInt - 16).ToString () + " ) " +
-				"( " + (x - 8).ToString () + " " + (y + 8).ToString () + " " + (WallHeightInt - 16).ToString () + " ) " +
+			WriteBlock (SW, x1, y1, z1, x2, y2, z2,
+				new string[] { TriggerTexture, TriggerTexture, TriggerTexture, TriggerTexture,
+					TriggerTexture, TriggerTexture,});
+
+			/*SW.Write ("{\n");
+
+			SW.Write ("( " + x2 + " " + y1 + " " + z2 + " ) " +
+				"( " + x1 + " " + y1 + " " + z2 + " ) " +
+				"( " + x1 + " " + y2 + " " + z2 + " ) " +
 				"AAATRIGGER [ 1 0 0 0 ] [ 0 -1 0 0 ] 0 1 1 \n");
-			SW.Write ("( " + (x + 8).ToString () + " " + (y + 8).ToString () + " 16 ) " +
-				"( " + (x + 8).ToString () + " " + (y + 8).ToString () + " " + (WallHeightInt - 16).ToString () + " ) " +
-				"( " + (x - 8).ToString () + " " + (y + 8).ToString () + " " + (WallHeightInt - 16).ToString () + " ) " +
+			SW.Write ("( " + x2 + " " + y2 + " " + z1 + " ) " +
+				"( " + x2 + " " + y2 + " " + z2 + " ) " +
+				"( " + x1 + " " + y2 + " " + z2 + " ) " +
 				"AAATRIGGER [ 1 0 0 0 ] [ 0 0 -1 0 ] 0 1 1 \n");
-			SW.Write ("( " + (x - 8).ToString () + " " + (y - 8).ToString () + " 16 ) " +
-				"( " + (x - 8).ToString () + " " + (y - 8).ToString () + " " + (WallHeightInt - 16).ToString () + " ) " +
-				"( " + (x + 8).ToString () + " " + (y - 8).ToString () + " " + (WallHeightInt - 16).ToString () + " ) " +
+			SW.Write ("( " + x1 + " " + y1 + " " + z1 + " ) " +
+				"( " + x1 + " " + y1 + " " + z2 + " ) " +
+				"( " + x2 + " " + y1 + " " + z2 + " ) " +
 				"AAATRIGGER [ 1 0 0 0 ] [ 0 0 -1 0 ] 0 1 1 \n");
-			SW.Write ("( " + (x - 8).ToString () + " " + (y + 8).ToString () + " 16 ) " +
-				"( " + (x - 8).ToString () + " " + (y + 8).ToString () + " " + (WallHeightInt - 16).ToString () + " ) " +
-				"( " + (x - 8).ToString () + " " + (y - 8).ToString () + " " + (WallHeightInt - 16).ToString () + " ) " +
+			SW.Write ("( " + x1 + " " + y2 + " " + z1 + " ) " +
+				"( " + x1 + " " + y2 + " " + z2 + " ) " +
+				"( " + x1 + " " + y1 + " " + z2 + " ) " +
 				"AAATRIGGER [ 0 1 0 0 ] [ 0 0 -1 0 ] 0 1 1 \n");
-			SW.Write ("( " + (x + 8).ToString () + " " + (y - 8).ToString () + " 16 ) " +
-				"( " + (x + 8).ToString () + " " + (y - 8).ToString () + " " + (WallHeightInt - 16).ToString () + " ) " +
-				"( " + (x + 8).ToString () + " " + (y + 8).ToString () + " " + (WallHeightInt - 16).ToString () + " ) " +
+			SW.Write ("( " + x2 + " " + y1 + " " + z1 + " ) " +
+				"( " + x2 + " " + y1 + " " + z2 + " ) " +
+				"( " + x2 + " " + y2 + " " + z2 + " ) " +
 				"AAATRIGGER [ 0 1 0 0 ] [ 0 0 -1 0 ] 0 1 1 \n");
-			SW.Write ("( " + (x + 8).ToString () + " " + (y + 8).ToString () + " 16 ) " +
-				"( " + (x - 8).ToString () + " " + (y + 8).ToString () + " 16 ) " +
-				"( " + (x - 8).ToString () + " " + (y - 8).ToString () + " 16 ) " +
-				"AAATRIGGER [ 1 0 0 0 ] [ 0 -1 0 0 ] 0 1 1 \n");
-			SW.Write ("}\n}\n");
+			SW.Write ("( " + x2 + " " + y2 + " " + z1 + " ) " +
+				"( " + x1 + " " + y2 + " " + z1 + " ) " +
+				"( " + x1 + " " + y1 + " " + z1 + " ) " +
+				"AAATRIGGER [ 1 0 0 0 ] [ 0 -1 0 0 ] 0 1 1 \n");*/
+			SW.Write ("}\n");
 
 			WriteMapPortal (SW, RelativePosition, true);
 			}
@@ -167,9 +193,11 @@ namespace RD_AAOW
 		// Метод создаёт портал на карте
 		private static void WriteMapPortal (StreamWriter SW, Point RelativePosition, bool Exit)
 			{
+			// Расчёт параметров
 			string x = (RelativePosition.X * WallLength / 2).ToString ();
 			string y = (RelativePosition.Y * WallLength / 2).ToString ();
 
+			// Запись
 			SW.Write ("{\n");
 			SW.Write ("\"classname\" \"env_sprite\"\n");
 			SW.Write ("\"spawnflags\" \"1\"\n");
@@ -192,10 +220,18 @@ namespace RD_AAOW
 		/// <param name="MapNumber">Номер текущей карты</param>
 		public static void WriteMapEntryPoint (StreamWriter SW, Point RelativePosition, uint MapNumber)
 			{
+			// Расчёт параметров
 			int x = RelativePosition.X * WallLength / 2;
 			int y = RelativePosition.Y * WallLength / 2;
+
 			string xs = x.ToString ();
 			string ys = y.ToString ();
+			string x1 = (x - 8).ToString ();
+			string y1 = (y - 8).ToString ();
+			string x2 = (x + 8).ToString ();
+			string y2 = (y + 8).ToString ();
+			string z1 = (WallHeightInt - 1).ToString ();
+			string z2 = WallHeightInt.ToString ();
 
 			// Первая карта
 			if (MapNumber == 1)
@@ -250,100 +286,56 @@ namespace RD_AAOW
 				SW.Write ("{\n");
 				SW.Write ("\"classname\" \"info_landmark\"\n");
 				SW.Write ("\"targetname\" \"" + Program.MainAlias + MapNumber.ToString (MapsNumbersFormat) + "m\"\n");
-				SW.Write ("\"origin\" \"" + (x - 8).ToString () + " " + (y - 8).ToString () + " 40\"\n");
+				SW.Write ("\"origin\" \"" + xs + " " + ys + " 40\"\n");
 
 				SW.Write ("}\n{\n");
 				SW.Write ("\"classname\" \"trigger_changelevel\"\n");
 				SW.Write ("\"map\" \"" + Program.MainAlias + (MapNumber - 1).ToString (MapsNumbersFormat) + "\"\n");
 				SW.Write ("\"landmark\" \"" + Program.MainAlias + MapNumber.ToString (MapsNumbersFormat) + "m\"\n");
-				SW.Write ("{\n");
 
-				SW.Write ("( " + (x + 8).ToString () + " " + (y - 8).ToString () + " " + WallHeightString + " ) " +
-					"( " + (x - 8).ToString () + " " + (y - 8).ToString () + " " + WallHeightString + " ) " +
-					"( " + (x - 8).ToString () + " " + (y + 8).ToString () + " " + WallHeightString + " ) " +
-					"AAATRIGGER [ 1 0 0 0 ] [ 0 -1 0 0 ] 0 1 1 \n");
-				SW.Write ("( " + (x + 8).ToString () + " " + (y + 8).ToString () + " " + (WallHeightInt - 1).ToString () + " ) " +
-					"( " + (x + 8).ToString () + " " + (y + 8).ToString () + " " + WallHeightString + " ) " +
-					"( " + (x - 8).ToString () + " " + (y + 8).ToString () + " " + WallHeightString + " ) " +
-					"AAATRIGGER [ 1 0 0 0 ] [ 0 0 -1 0 ] 0 1 1 \n");
-				SW.Write ("( " + (x - 8).ToString () + " " + (y - 8).ToString () + " " + (WallHeightInt - 1).ToString () + " ) " +
-					"( " + (x - 8).ToString () + " " + (y - 8).ToString () + " " + WallHeightString + " ) " +
-					"( " + (x + 8).ToString () + " " + (y - 8).ToString () + " " + WallHeightString + " ) " +
-					"AAATRIGGER [ 1 0 0 0 ] [ 0 0 -1 0 ] 0 1 1 \n");
-				SW.Write ("( " + (x - 8).ToString () + " " + (y + 8).ToString () + " " + (WallHeightInt - 1).ToString () + " ) " +
-					"( " + (x - 8).ToString () + " " + (y + 8).ToString () + " " + WallHeightString + " ) " +
-					"( " + (x - 8).ToString () + " " + (y - 8).ToString () + " " + WallHeightString + " ) " +
-					"AAATRIGGER [ 0 1 0 0 ] [ 0 0 -1 0 ] 0 1 1 \n");
-				SW.Write ("( " + (x + 8).ToString () + " " + (y - 8).ToString () + " " + (WallHeightInt - 1).ToString () + " ) " +
-					"( " + (x + 8).ToString () + " " + (y - 8).ToString () + " " + WallHeightString + " ) " +
-					"( " + (x + 8).ToString () + " " + (y + 8).ToString () + " " + WallHeightString + " ) " +
-					"AAATRIGGER [ 0 1 0 0 ] [ 0 0 -1 0 ] 0 1 1 \n");
-				SW.Write ("( " + (x + 8).ToString () + " " + (y + 8).ToString () + " " + (WallHeightInt - 1).ToString () + " ) " +
-					"( " + (x - 8).ToString () + " " + (y + 8).ToString () + " " + (WallHeightInt - 1).ToString () + " ) " +
-					"( " + (x - 8).ToString () + " " + (y - 8).ToString () + " " + (WallHeightInt - 1).ToString () + " ) " +
-					"AAATRIGGER [ 1 0 0 0 ] [ 0 -1 0 0 ] 0 1 1 \n");
-				SW.Write ("}\n}\n");
+				WriteBlock (SW, x1, y1, z1, x2, y2, z2,
+					new string[] { TriggerTexture, TriggerTexture, TriggerTexture, TriggerTexture,
+						TriggerTexture, TriggerTexture,});
+
+				SW.Write ("}\n");
 				}
 
 			WriteMapPortal (SW, RelativePosition, false);
 			WriteMapSound (SW, RelativePosition, "Teleport1", AmbientTypes.None);
 			}
 
-		/*/// <summary>
-		/// Метод записывает точку входа на карту
-		/// </summary>
-		/// <param name="SW">Дескриптор файла карты</param>
-		/// <param name="RelativePosition">Относительная позиция точки входа</param>
-		public static void WriteMapEntryPoint_Old (StreamWriter SW, Point RelativePosition)
+		// Метод записывает кубик по указанным коориданатм
+		private static void WriteBlock (StreamWriter SW, string X1, string Y1, string Z1,
+			string X2, string Y2, string Z2, string[] Textures)
 			{
-			string x = (RelativePosition.X * WallLength / 2).ToString ();
-			string y = (RelativePosition.Y * WallLength / 2).ToString ();
-
 			SW.Write ("{\n");
-			SW.Write ("\"classname\" \"info_player_start\"\n");
-			SW.Write ("\"angles\" \"0 0 0\"\n");
-			SW.Write ("\"origin\" \"" + x + " " + y + " 40\"\n");
-			SW.Write ("}\n{\n");
-
-			SW.Write ("\"classname\" \"item_suit\"\n");
-			SW.Write ("\"spawnflags\" \"1\"\n");
-			SW.Write ("\"angles\" \"0 0 0\"\n");
-			SW.Write ("\"target\" \"Preset\"\n");
-			SW.Write ("\"origin\" \"" + x + " " + y + " 32\"\n");
-			SW.Write ("}\n{\n");
-
-			SW.Write ("\"classname\" \"weapon_9mmAR\"\n");
-			SW.Write ("\"origin\" \"" + x + " " + y + " 36\"\n");
-			SW.Write ("}\n{\n");
-
-			SW.Write ("\"classname\" \"weapon_shotgun\"\n");
-			SW.Write ("\"origin\" \"" + x + " " + y + " 40\"\n");
-			SW.Write ("}\n{\n");
-
-			SW.Write ("\"classname\" \"weapon_handgrenade\"\n");
-			SW.Write ("\"origin\" \"" + x + " " + y + " 44\"\n");
-			SW.Write ("}\n{\n");
-
-			SW.Write ("\"classname\" \"weapon_handgrenade\"\n");
-			SW.Write ("\"origin\" \"" + x + " " + y + " 48\"\n");
-			SW.Write ("}\n{\n");
-
-			SW.Write ("\"classname\" \"ammo_9mmbox\"\n");
-			SW.Write ("\"origin\" \"" + x + " " + y + " 52\"\n");
-			SW.Write ("}\n{\n");
-
-			SW.Write ("\"classname\" \"ammo_buckshot\"\n");
-			SW.Write ("\"origin\" \"" + x + " " + y + " 56\"\n");
-			SW.Write ("}\n{\n");
-
-			SW.Write ("\"classname\" \"game_player_set_health\"\n");
-			SW.Write ("\"targetname\" \"Preset\"\n");
-			SW.Write ("\"dmg\" \"200\"\n");
-			SW.Write ("\"origin\" \"" + x + " " + y + " 64\"\n");
+			SW.Write ("( " + X2 + " " + Y1 + " " + Z2 + " ) " +
+				"( " + X1 + " " + Y1 + " " + Z2 + " ) " +
+				"( " + X1 + " " + Y2 + " " + Z2 + " ) " +
+				Textures[0] + " [ 1 0 0 0 ] [ 0 -1 0 0 ] 0 1 1 \n");
+			SW.Write ("( " + X2 + " " + Y2 + " " + Z1 + " ) " +
+				"( " + X2 + " " + Y2 + " " + Z2 + " ) " +
+				"( " + X1 + " " + Y2 + " " + Z2 + " ) " +
+				Textures[1] + " [ 1 0 0 0 ] [ 0 0 -1 0 ] 0 1 1 \n");
+			SW.Write ("( " + X1 + " " + Y1 + " " + Z1 + " ) " +
+				"( " + X1 + " " + Y1 + " " + Z2 + " ) " +
+				"( " + X2 + " " + Y1 + " " + Z2 + " ) " +
+				Textures[2] + " [ 1 0 0 0 ] [ 0 0 -1 0 ] 0 1 1 \n");
+			SW.Write ("( " + X1 + " " + Y2 + " " + Z1 + " ) " +
+				"( " + X1 + " " + Y2 + " " + Z2 + " ) " +
+				"( " + X1 + " " + Y1 + " " + Z2 + " ) " +
+				Textures[3] + " [ 0 1 0 0 ] [ 0 0 -1 0 ] 0 1 1 \n");
+			SW.Write ("( " + X2 + " " + Y1 + " " + Z1 + " ) " +
+				"( " + X2 + " " + Y1 + " " + Z2 + " ) " +
+				"( " + X2 + " " + Y2 + " " + Z2 + " ) " +
+				Textures[4] + " [ 0 1 0 0 ] [ 0 0 -1 0 ] 0 1 1 \n");
+			SW.Write ("( " + X2 + " " + Y2 + " " + Z1 + " ) " +
+				"( " + X1 + " " + Y2 + " " + Z1 + " ) " +
+				"( " + X1 + " " + Y1 + " " + Z1 + " ) " +
+				Textures[5] + " [ 1 0 0 0 ] [ 0 -1 0 0 ] 0 1 1 \n");
 			SW.Write ("}\n");
-
-			WriteMapPortal (SW, RelativePosition, false);
-			}*/
+			}
+		private const string TriggerTexture = "AAATRIGGER";
 
 		/// <summary>
 		/// Метод добавляет собираемые объекты на карту
@@ -476,7 +468,9 @@ namespace RD_AAOW
 		/// <param name="RelativePosition">Относительная позиция точки создания</param>
 		/// <param name="Rnd">ГПСЧ</param>
 		/// <param name="MapNumber">Номер карты, позволяющий выполнять наполнение с прогрессом</param>
-		public static void WriteMapEnemy (StreamWriter SW, Point RelativePosition, Random Rnd, uint MapNumber)
+		/// <param name="Permissions">Строка флагов разрешённых врагов</param>
+		public static void WriteMapEnemy (StreamWriter SW, Point RelativePosition, Random Rnd, uint MapNumber,
+			string Permissions)
 			{
 			string x = (RelativePosition.X * WallLength / 2).ToString ();
 			string y = (RelativePosition.Y * WallLength / 2).ToString ();
@@ -531,60 +525,103 @@ namespace RD_AAOW
 				}
 
 			// Добавление
+			const string rat = "\"classname\" \"monster_human_grunt\"\n";
 			switch (Rnd.Next (prngRange))
 				{
 				// Солдаты
 				default:
-					SW.Write ("\"classname\" \"monster_human_grunt\"\n");
-					SW.Write ("\"weapons\" \"" + gruntWeapons[Rnd.Next (gruntWeapons.Length)] + "\"\n");
+					if (Permissions.Contains ("g"))
+						{
+						SW.Write ("\"classname\" \"monster_human_grunt\"\n");
+						SW.Write ("\"weapons\" \"" + gruntWeapons[Rnd.Next (gruntWeapons.Length)] + "\"\n");
+						}
+					else
+						{
+						SW.Write (rat);
+						}
 					break;
 
 				// Зомби
 				case 0:
 				case 17:
-					SW.Write ("\"classname\" \"monster_zombie\"\n");
-					SW.Write ("\"skin\" \"" + Rnd.Next (2).ToString () + "\"\n");
+					if (Permissions.Contains ("z"))
+						{
+						SW.Write ("\"classname\" \"monster_zombie\"\n");
+						SW.Write ("\"skin\" \"" + Rnd.Next (2).ToString () + "\"\n");
+						}
+					else
+						{
+						SW.Write (rat);
+						}
 					break;
 
 				// Крабы
 				case 1:
 				case 18:
-					SW.Write ("\"classname\" \"monster_headcrab\"\n");
+					if (Permissions.Contains ("h"))
+						SW.Write ("\"classname\" \"monster_headcrab\"\n");
+					else
+						SW.Write (rat);
 					break;
 
 				// Алиены
 				case 10:
-					SW.Write ("\"classname\" \"monster_alien_slave\"\n");
+					if (Permissions.Contains ("s"))
+						SW.Write ("\"classname\" \"monster_alien_slave\"\n");
+					else
+						SW.Write (rat);
 					break;
 
 				// Куры
 				case 11:
-					SW.Write ("\"classname\" \"monster_bullchicken\"\n");
+					if (Permissions.Contains ("b"))
+						SW.Write ("\"classname\" \"monster_bullchicken\"\n");
+					else
+						SW.Write (rat);
 					break;
 
 				// Ассассины
 				case 12:
 				case 13:
-					SW.Write ("\"classname\" \"monster_human_assassin\"\n");
+					if (Permissions.Contains ("a"))
+						SW.Write ("\"classname\" \"monster_human_assassin\"\n");
+					else
+						SW.Write (rat);
 					break;
 
 				// Турели
 				case 14:
-					SW.Write ("\"classname\" \"monster_miniturret\"\n");
-					SW.Write ("\"spawnflags\" \"32\"\n");
-					SW.Write ("\"orientation\" \"0\"\n");
+					if (Permissions.Contains ("t"))
+						{
+						SW.Write ("\"classname\" \"monster_miniturret\"\n");
+						SW.Write ("\"spawnflags\" \"32\"\n");
+						SW.Write ("\"orientation\" \"0\"\n");
+						}
+					else
+						{
+						SW.Write (rat);
+						}
 					break;
 
-				// Турели
 				case 15:
-					SW.Write ("\"classname\" \"monster_turret\"\n");
-					SW.Write ("\"spawnflags\" \"32\"\n");
-					SW.Write ("\"orientation\" \"0\"\n");
+					if (Permissions.Contains ("t"))
+						{
+						SW.Write ("\"classname\" \"monster_turret\"\n");
+						SW.Write ("\"spawnflags\" \"32\"\n");
+						SW.Write ("\"orientation\" \"0\"\n");
+						}
+					else
+						{
+						SW.Write (rat);
+						}
 					break;
 
 				// Солдаты алиенов
 				case 16:
-					SW.Write ("\"classname\" \"monster_alien_grunt\"\n");
+					if (Permissions.Contains ("r"))
+						SW.Write ("\"classname\" \"monster_alien_grunt\"\n");
+					else
+						SW.Write (rat);
 					break;
 				}
 
@@ -610,7 +647,8 @@ namespace RD_AAOW
 			SW.Write ("\"wait\" \"-1\"\n");
 			SW.Write ("\"lip\" \"4\"\n");
 
-			WriteMapWall (SW, RelativePosition, "MetalGate06", false);
+			WriteMapBarrier (SW, RelativePosition, BarrierTypes.Gate, null);
+
 			SW.Write ("}\n");
 			}
 
@@ -620,97 +658,236 @@ namespace RD_AAOW
 		/// <param name="SW">Дескриптор файла карты</param>
 		/// <param name="RelativePosition">Относительная позиция точки создания</param>
 		/// <param name="Texture">Текстура стены</param>
-		/// <param name="ToSky">Флаг, указывающий на необходимость довести стену до неба</param>
-		public static void WriteMapWall (StreamWriter SW, Point RelativePosition, string Texture, bool ToSky)
+		public static void WriteMapWall (StreamWriter SW, Point RelativePosition, string Texture)
 			{
-			bool vertical = (RelativePosition.X % 2 == 0);
-			int x1, y1, x2, y2;
-			int h = WallHeightInt;
-			if (ToSky)
-				h += 16;
+			WriteMapBarrier (SW, RelativePosition, BarrierTypes.DefaultWall, Texture);
+			}
 
+		/*/// <summary>
+		/// Метод записывает препятствие на карту
+		/// </summary>
+		/// <param name="SW">Дескриптор файла карты</param>
+		/// <param name="RelativePosition">Относительная позиция точки создания</param>
+		/// <param name="Type">Тип препятствия</param>
+		private static void WriteMapBarrier (StreamWriter SW, Point RelativePosition, BarrierTypes Type)
+			{
+			WriteMapBarrier (SW, RelativePosition, Type, null);
+			}*/
+
+		// Общий метод для стен и препятствий
+		private static void WriteMapBarrier (StreamWriter SW, Point RelativePosition, BarrierTypes Type, string Texture)
+			{
+			// Расчёт параметров
+			bool vertical = (RelativePosition.X % 2 == 0);
+			int x1, y1, x2, y2, d;
+			string xa, xb, xc, xd, ya, yb, yc, yd, z1, z2;
+			string[] textures;
+
+			d = 8;
+			switch (Type)
+				{
+				case BarrierTypes.DefaultWall:
+				default:
+					z1 = "0";
+					z2 = (WallHeightInt + 16).ToString ();
+					textures = new string[] { Texture, Texture, Texture, Texture,
+						Texture, Texture, Texture, Texture };
+					break;
+
+				case BarrierTypes.Gate:
+					z1 = "0";
+					z2 = WallHeightInt.ToString ();
+					textures = new string[] { "Metal08", "MetalGate06", "MetalGate06", "MetalGate06",
+						"MetalGate06", "MetalGate06", "MetalGate06", "MetalGate06" };
+					break;
+
+				case BarrierTypes.Window:
+					z1 = "8";
+					z2 = (WallHeightInt - 8).ToString ();
+					textures = new string[] { "Glass01", "Glass01", "Glass01", "Glass01",
+						"Glass01", "Glass01", "Glass01", "Glass01" };
+					d = 4;
+					break;
+
+				case BarrierTypes.WindowFrameTop:
+					z1 = (WallHeightInt - 8).ToString ();
+					z2 = (WallHeightInt + 16).ToString ();
+					textures = new string[] { Texture, "Metal08", Texture, Texture,
+						Texture, Texture, Texture, Texture };
+					break;
+
+				case BarrierTypes.WindowFrameBottom:
+					z1 = "0";
+					z2 = "8";
+					textures = new string[] { "Metal08", Texture, Texture, Texture,
+						Texture, Texture, Texture, Texture };
+					break;
+				}
+
+			// Запись
 			SW.Write ("{\n");
 
+			// Вертикальная
 			if (vertical)
 				{
 				x1 = RelativePosition.X * WallLength / 2;
 				y1 = (RelativePosition.Y - 1) * WallLength / 2;
 				y2 = (RelativePosition.Y + 1) * WallLength / 2;
 
-				SW.Write ("( " + (x1 + 8).ToString () + " " + (y2 - 8).ToString () + " " + h.ToString () + " ) " +
-					"( " + (x1 + 8).ToString () + " " + (y1 + 8).ToString () + " " + h.ToString () + " ) " +
-					"( " + x1.ToString () + " " + y1.ToString () + " " + h.ToString () + " ) " +
-					Texture + " [ 1 0 0 0 ] [ 0 -1 0 0 ] 0 1 1 \n");
-				SW.Write ("( " + (x1 - 8).ToString () + " " + (y2 - 8).ToString () + " 0 ) " +
-					"( " + (x1 - 8).ToString () + " " + (y1 + 8).ToString () + " 0 ) " +
-					"( " + x1.ToString () + " " + y1.ToString () + " 0 ) " +
-					Texture + " [ 1 0 0 0 ] [ 0 -1 0 0 ] 0 1 1 \n");
-				SW.Write ("( " + (x1 - 8).ToString () + " " + (y1 + 8).ToString () + " 0 ) " +
-					"( " + (x1 - 8).ToString () + " " + (y2 - 8).ToString () + " 0 ) " +
-					"( " + (x1 - 8).ToString () + " " + (y2 - 8).ToString () + " " + h.ToString () + " ) " +
-					Texture + " [ 0 1 0 0 ] [ 0 0 -1 0 ] 0 1 1 \n");
-				SW.Write ("( " + (x1 + 8).ToString () + " " + (y2 - 8).ToString () + " 0 ) " +
-					"( " + (x1 + 8).ToString () + " " + (y1 + 8).ToString () + " 0 ) " +
-					"( " + (x1 + 8).ToString () + " " + (y1 + 8).ToString () + " " + h.ToString () + " ) " +
-					Texture + " [ 0 1 0 0 ] [ 0 0 -1 0 ] 0 1 1 \n");
-				SW.Write ("( " + x1.ToString () + " " + y1.ToString () + " 0 ) " +
-					"( " + (x1 - 8).ToString () + " " + (y1 + 8).ToString () + " 0 ) " +
-					"( " + (x1 - 8).ToString () + " " + (y1 + 8).ToString () + " " + h.ToString () + " ) " +
-					Texture + " [ 0 1 0 0 ] [ 0 0 -1 0 ] 0 1 1 \n");
-				SW.Write ("( " + (x1 + 8).ToString () + " " + (y1 + 8).ToString () + " 0 ) " +
-					"( " + x1.ToString () + " " + y1.ToString () + " 0 ) " +
-					"( " + x1.ToString () + " " + y1.ToString () + " " + h.ToString () + " ) " +
-					Texture + " [ 0 1 0 0 ] [ 0 0 -1 0 ] 0 1 1 \n");
-				SW.Write ("( " + x1.ToString () + " " + y2.ToString () + " 0 ) " +
-					"( " + (x1 + 8).ToString () + " " + (y2 - 8).ToString () + " 0 ) " +
-					"( " + (x1 + 8).ToString () + " " + (y2 - 8).ToString () + " " + h.ToString () + " ) " +
-					Texture + " [ 0 1 0 0 ] [ 0 0 -1 0 ] 0 1 1 \n");
-				SW.Write ("( " + (x1 - 8).ToString () + " " + (y2 - 8).ToString () + " 0 ) " +
-					"( " + x1.ToString () + " " + y2.ToString () + " 0 ) " +
-					"( " + x1.ToString () + " " + y2.ToString () + " " + h.ToString () + " ) " +
-					Texture + " [ 0 1 0 0 ] [ 0 0 -1 0 ] 0 1 1 \n");
+				xa = (x1 - d).ToString ();
+				xb = x1.ToString ();
+				xc = (x1 + d).ToString ();
+				ya = y1.ToString ();
+				yb = (y1 + d).ToString ();
+				yc = (y2 - d).ToString ();
+				yd = y2.ToString ();
+
+				SW.Write ("( " + xc + " " + yc + " " + z2 + " ) " +
+					"( " + xc + " " + yb + " " + z2 + " ) " +
+					"( " + xb + " " + ya + " " + z2 + " ) " +
+					textures[0] + " [ 1 0 0 0 ] [ 0 -1 0 0 ] 0 1 1 \n");
+				SW.Write ("( " + xa + " " + yc + " " + z1 + " ) " +
+					"( " + xa + " " + yb + " " + z1 + " ) " +
+					"( " + xb + " " + ya + " " + z1 + " ) " +
+					textures[1] + " [ 1 0 0 0 ] [ 0 -1 0 0 ] 0 1 1 \n");
+				SW.Write ("( " + xa + " " + yb + " " + z1 + " ) " +
+					"( " + xa + " " + yc + " " + z1 + " ) " +
+					"( " + xa + " " + yc + " " + z2 + " ) " +
+					textures[2] + " [ 0 1 0 0 ] [ 0 0 -1 0 ] 0 1 1 \n");
+				SW.Write ("( " + xc + " " + yc + " " + z1 + " ) " +
+					"( " + xc + " " + yb + " " + z1 + " ) " +
+					"( " + xc + " " + yb + " " + z2 + " ) " +
+					textures[3] + " [ 0 1 0 0 ] [ 0 0 -1 0 ] 0 1 1 \n");
+				SW.Write ("( " + xb + " " + ya + " " + z1 + " ) " +
+					"( " + xa + " " + yb + " " + z1 + " ) " +
+					"( " + xa + " " + yb + " " + z2 + " ) " +
+					textures[4] + " [ 0 1 0 0 ] [ 0 0 -1 0 ] 0 1 1 \n");
+				SW.Write ("( " + xc + " " + yb + " " + z1 + " ) " +
+					"( " + xb + " " + ya + " " + z1 + " ) " +
+					"( " + xb + " " + ya + " " + z2 + " ) " +
+					textures[5] + " [ 0 1 0 0 ] [ 0 0 -1 0 ] 0 1 1 \n");
+				SW.Write ("( " + xb + " " + yd + " " + z1 + " ) " +
+					"( " + xc + " " + yc + " " + z1 + " ) " +
+					"( " + xc + " " + yc + " " + z2 + " ) " +
+					textures[6] + " [ 0 1 0 0 ] [ 0 0 -1 0 ] 0 1 1 \n");
+				SW.Write ("( " + xa + " " + yc + " " + z1 + " ) " +
+					"( " + xb + " " + yd + " " + z1 + " ) " +
+					"( " + xb + " " + yd + " " + z2 + " ) " +
+					textures[7] + " [ 0 1 0 0 ] [ 0 0 -1 0 ] 0 1 1 \n");
 				}
+
+			// Горизонтальная
 			else
 				{
 				y1 = RelativePosition.Y * WallLength / 2;
 				x1 = (RelativePosition.X - 1) * WallLength / 2;
 				x2 = (RelativePosition.X + 1) * WallLength / 2;
 
-				SW.Write ("( " + (x2 - 8).ToString () + " " + (y1 - 8).ToString () + " " + h.ToString () + " ) " +
-					"( " + (x1 + 8).ToString () + " " + (y1 - 8).ToString () + " " + h.ToString () + " ) " +
-					"( " + x1.ToString () + " " + y1.ToString () + " " + h.ToString () + " ) " +
-					Texture + " [ 1 0 0 0 ] [ 0 -1 0 0 ] 0 1 1 \n");
-				SW.Write ("( " + (x2 - 8).ToString () + " " + (y1 + 8).ToString () + " 0 ) " +
-					"( " + (x1 + 8).ToString () + " " + (y1 + 8).ToString () + " 0 ) " +
-					"( " + x1.ToString () + " " + y1.ToString () + " 0 ) " +
-					Texture + " [ 1 0 0 0 ] [ 0 -1 0 0 ] 0 1 1 \n");
-				SW.Write ("( " + (x1 + 8).ToString () + " " + (y1 + 8).ToString () + " 0 ) " +
-					"( " + (x2 - 8).ToString () + " " + (y1 + 8).ToString () + " 0 ) " +
-					"( " + (x2 - 8).ToString () + " " + (y1 + 8).ToString () + " " + h.ToString () + " ) " +
-					Texture + " [ 1 0 0 0 ] [ 0 0 -1 0 ] 0 1 1 \n");
-				SW.Write ("( " + (x2 - 8).ToString () + " " + (y1 - 8).ToString () + " 0 ) " +
-					"( " + (x1 + 8).ToString () + " " + (y1 - 8).ToString () + " 0 ) " +
-					"( " + (x1 + 8).ToString () + " " + (y1 - 8).ToString () + " " + h.ToString () + " ) " +
-					Texture + " [ 1 0 0 0 ] [ 0 0 -1 0 ] 0 1 1 \n");
-				SW.Write ("( " + x1.ToString () + " " + y1.ToString () + " 0 ) " +
-					"( " + (x1 + 8).ToString () + " " + (y1 + 8).ToString () + " 0 ) " +
-					"( " + (x1 + 8).ToString () + " " + (y1 + 8).ToString () + " " + h.ToString () + " ) " +
-					Texture + " [ 0 1 0 0 ] [ 0 0 -1 0 ] 0 1 1 \n");
-				SW.Write ("( " + (x1 + 8).ToString () + " " + (y1 - 8).ToString () + " 0 ) " +
-					"( " + x1.ToString () + " " + y1.ToString () + " 0 ) " +
-					"( " + x1.ToString () + " " + y1.ToString () + " " + h.ToString () + " ) " +
-					Texture + " [ 0 1 0 0 ] [ 0 0 -1 0 ] 0 1 1 \n");
-				SW.Write ("( " + x2.ToString () + " " + y1.ToString () + " 0 ) " +
-					"( " + (x2 - 8).ToString () + " " + (y1 - 8).ToString () + " 0 ) " +
-					"( " + (x2 - 8).ToString () + " " + (y1 - 8).ToString () + " " + h.ToString () + " ) " +
-					Texture + " [ 0 1 0 0 ] [ 0 0 -1 0 ] 0 1 1 \n");
-				SW.Write ("( " + (x2 - 8).ToString () + " " + (y1 + 8).ToString () + " 0 ) " +
-					"( " + x2.ToString () + " " + y1.ToString () + " 0 ) " +
-					"( " + x2.ToString () + " " + y1.ToString () + " " + h.ToString () + " ) " +
-					Texture + " [ 0 1 0 0 ] [ 0 0 -1 0 ] 0 1 1 \n");
+				xa = x1.ToString ();
+				xb = (x1 + d).ToString ();
+				xc = (x2 - d).ToString ();
+				xd = x2.ToString ();
+				ya = (y1 - d).ToString ();
+				yb = y1.ToString ();
+				yc = (y1 + d).ToString ();
+
+				SW.Write ("( " + xc + " " + ya + " " + z2 + " ) " +
+					"( " + xb + " " + ya + " " + z2 + " ) " +
+					"( " + xa + " " + yb + " " + z2 + " ) " +
+					textures[0] + " [ 1 0 0 0 ] [ 0 -1 0 0 ] 0 1 1 \n");
+				SW.Write ("( " + xc + " " + yc + " " + z1 + " ) " +
+					"( " + xb + " " + yc + " " + z1 + " ) " +
+					"( " + xa + " " + yb + " " + z1 + " ) " +
+					textures[1] + " [ 1 0 0 0 ] [ 0 -1 0 0 ] 0 1 1 \n");
+				SW.Write ("( " + xb + " " + yc + " " + z1 + " ) " +
+					"( " + xc + " " + yc + " " + z1 + " ) " +
+					"( " + xc + " " + yc + " " + z2 + " ) " +
+					textures[2] + " [ 1 0 0 0 ] [ 0 0 -1 0 ] 0 1 1 \n");
+				SW.Write ("( " + xc + " " + ya + " " + z1 + " ) " +
+					"( " + xb + " " + ya + " " + z1 + " ) " +
+					"( " + xb + " " + ya + " " + z2 + " ) " +
+					textures[3] + " [ 1 0 0 0 ] [ 0 0 -1 0 ] 0 1 1 \n");
+				SW.Write ("( " + xa + " " + yb + " " + z1 + " ) " +
+					"( " + xb + " " + yc + " " + z1 + " ) " +
+					"( " + xb + " " + yc + " " + z2 + " ) " +
+					textures[4] + " [ 0 1 0 0 ] [ 0 0 -1 0 ] 0 1 1 \n");
+				SW.Write ("( " + xb + " " + ya + " " + z1 + " ) " +
+					"( " + xa + " " + yb + " " + z1 + " ) " +
+					"( " + xa + " " + yb + " " + z2 + " ) " +
+					textures[5] + " [ 0 1 0 0 ] [ 0 0 -1 0 ] 0 1 1 \n");
+				SW.Write ("( " + xd + " " + yb + " " + z1 + " ) " +
+					"( " + xc + " " + ya + " " + z1 + " ) " +
+					"( " + xc + " " + ya + " " + z2 + " ) " +
+					textures[6] + " [ 0 1 0 0 ] [ 0 0 -1 0 ] 0 1 1 \n");
+				SW.Write ("( " + xc + " " + yc + " " + z1 + " ) " +
+					"( " + xd + " " + yb + " " + z1 + " ) " +
+					"( " + xd + " " + yb + " " + z2 + " ) " +
+					textures[7] + " [ 0 1 0 0 ] [ 0 0 -1 0 ] 0 1 1 \n");
 				}
 
 			SW.Write ("}\n");
+			}
+
+		/// <summary>
+		/// Метод записывает раму окна на карту
+		/// </summary>
+		/// <param name="SW">Дескриптор файла карты</param>
+		/// <param name="RelativePosition">Относительная позиция точки создания</param>
+		/// <param name="Texture">Текстура стены для рамы</param>
+		public static void WriteMapWindow (StreamWriter SW, Point RelativePosition, string Texture)
+			{
+			WriteMapBarrier (SW, RelativePosition, BarrierTypes.WindowFrameTop, Texture);
+			WriteMapBarrier (SW, RelativePosition, BarrierTypes.WindowFrameBottom, Texture);
+			}
+
+		/// <summary>
+		/// Метод записывает стекло окна на карту
+		/// </summary>
+		/// <param name="SW">Дескриптор файла карты</param>
+		/// <param name="RelativePosition">Относительная позиция точки создания</param>
+		public static void WriteMapWindow (StreamWriter SW, Point RelativePosition)
+			{
+			SW.Write ("{\n");
+			SW.Write ("\"classname\" \"func_breakable\"\n");
+			SW.Write ("\"rendermode\" \"2\"\n");
+			SW.Write ("\"renderamt\" \"80\"\n");
+			SW.Write ("\"health\" \"20\"\n");
+			SW.Write ("\"material\" \"0\"\n");
+
+			WriteMapBarrier (SW, RelativePosition, BarrierTypes.Window, null);
+
+			SW.Write ("}\n");
+			}
+
+		/// <summary>
+		/// Возможные типы препятствий
+		/// </summary>
+		public enum BarrierTypes
+			{
+			/// <summary>
+			/// Обычная стена
+			/// </summary>
+			DefaultWall,
+
+			/// <summary>
+			/// Шлюз
+			/// </summary>
+			Gate,
+
+			/// <summary>
+			/// Верхняя рама окна
+			/// </summary>
+			WindowFrameTop,
+
+			/// <summary>
+			/// Нижняя рама окна
+			/// </summary>
+			WindowFrameBottom,
+
+			/// <summary>
+			/// Окно
+			/// </summary>
+			Window
 			}
 
 		/// <summary>
@@ -722,13 +899,15 @@ namespace RD_AAOW
 		/// <param name="Top">Флаг отрисовки декали на потолке вместо пола</param>
 		public static void WriteMapDecal (StreamWriter SW, Point RelativePosition, string Decal, bool Top)
 			{
+			// Расчёт параметров
 			string x = (RelativePosition.X * WallLength / 2).ToString ();
 			string y = (RelativePosition.Y * WallLength / 2).ToString ();
 
+			// Запись
 			SW.Write ("{\n");
 			SW.Write ("\"classname\" \"infodecal\"\n");
 			SW.Write ("\"texture\" \"" + Decal + "\"\n");
-			SW.Write ("\"origin\" \"" + x + " " + y + " " + (Top ? WallHeightString : "0") + "\"\n");
+			SW.Write ("\"origin\" \"" + x + " " + y + " " + (Top ? WallHeightInt.ToString () : "0") + "\"\n");
 			SW.Write ("}\n");
 			}
 
@@ -741,6 +920,7 @@ namespace RD_AAOW
 		/// <param name="Sound">Звук</param>
 		public static void WriteMapSound (StreamWriter SW, Point RelativePosition, string Sound, AmbientTypes Ambient)
 			{
+			// Расчёт параметров
 			string x = (RelativePosition.X * WallLength / 2).ToString ();
 			string y = (RelativePosition.Y * WallLength / 2).ToString ();
 
@@ -760,6 +940,7 @@ namespace RD_AAOW
 					break;
 				}
 
+			// Запись
 			SW.Write ("{\n");
 			SW.Write ("\"classname\" \"ambient_generic\"\n");
 			SW.Write ("\"spawnflags\" \"2\"\n");
@@ -810,11 +991,13 @@ namespace RD_AAOW
 		/// <param name="StartOrFinish">Флаг указывает на начальную или конечную точку пути</param>
 		public static void WriteMapPathTrace (StreamWriter SW, Point RelativePosition, bool StartOrFinish)
 			{
-			string decal = "{foot_r";
+			string decal;
 			if (StartOrFinish)
 				decal = "{target";
 			else if (leftStep)
 				decal = "{foot_l";
+			else
+				decal = "{foot_r";
 
 			WriteMapDecal (SW, RelativePosition, decal, false);
 
@@ -870,6 +1053,7 @@ namespace RD_AAOW
 		public static void WriteMapRoofFloor (StreamWriter SW, byte Section, int RealMapWidth, int RealMapHeight,
 			string RoofTexture, string FloorTexture)
 			{
+			// Расчёт параметров
 			bool negX = ((Section & NegativeX) != 0);
 			bool negY = ((Section & NegativeY) != 0);
 
@@ -878,7 +1062,10 @@ namespace RD_AAOW
 			string y1 = (negY ? (-RealMapHeight / 2) : 0).ToString ();
 			string y2 = (negY ? 0 : (RealMapHeight / 2)).ToString ();
 
-			SW.Write ("{\n");
+			string h2 = (WallHeightInt + 32).ToString ();
+			string h1 = (IsSkyTexture (RoofTexture) ? WallHeightInt + 16 : WallHeightInt).ToString ();
+
+			/*SW.Write ("{\n");
 			SW.Write ("( " + x2 + " " + y1 + " 0 ) ( " + x1 + " " + y1 + " 0 ) ( " + x1 + " " + y2 + " 0 ) " +
 				FloorTexture + " [ 1 0 0 0 ] [ 0 -1 0 0 ] 0 1 1 \n");
 			SW.Write ("( " + x2 + " " + y2 + " -16 ) ( " + x1 + " " + y2 + " -16 ) ( " + x1 + " " + y1 + " -16 ) " +
@@ -891,14 +1078,16 @@ namespace RD_AAOW
 				FloorTexture + " [ 0 1 0 0 ] [ 0 0 -1 0 ] 0 1 1 \n");
 			SW.Write ("( " + x2 + " " + y2 + " -16 ) ( " + x2 + " " + y1 + " -16 ) ( " + x2 + " " + y1 + " 0 ) " +
 				FloorTexture + " [ 0 1 0 0 ] [ 0 0 -1 0 ] 0 1 1 \n");
-			SW.Write ("}\n{\n");
+			SW.Write ("}\n{\n");*/
 
-			int h1 = WallHeightInt + 32;
-			int h2 = WallHeightInt;
-			if (IsSkyTexture (RoofTexture))
-				h2 += 16;
+			// Запись
+			WriteBlock (SW, x1, y1, "-16", x2, y2, "0", new string[] { FloorTexture, FloorTexture, FloorTexture,
+				FloorTexture, FloorTexture, FloorTexture });
 
-			SW.Write ("( " + x2 + " " + y1 + " " + h1.ToString () + " ) " +
+			WriteBlock (SW, x1, y1, h1, x2, y2, h2, new string[] { RoofTexture, RoofTexture, RoofTexture,
+				RoofTexture, RoofTexture, RoofTexture });
+
+			/*SW.Write ("( " + x2 + " " + y1 + " " + h1.ToString () + " ) " +
 				"( " + x1 + " " + y1 + " " + h1.ToString () + " ) " +
 				"( " + x1 + " " + y2 + " " + h1.ToString () + " ) " +
 				RoofTexture + " [ 1 0 0 0 ] [ 0 -1 0 0 ] 0 1 1 \n");
@@ -922,7 +1111,7 @@ namespace RD_AAOW
 				"( " + x2 + " " + y1 + " " + h2.ToString () + " ) " +
 				"( " + x2 + " " + y1 + " " + h1.ToString () + " ) " +
 				RoofTexture + " [ 0 1 0 0 ] [ 0 0 -1 0 ] 0 1 1 \n");
-			SW.Write ("}\n");
+			SW.Write ("}\n");*/
 			}
 
 		/// <summary>
@@ -1012,10 +1201,14 @@ namespace RD_AAOW
 				}
 			else if (!IsSkyTexture (RoofTexture))
 				{
+				WriteBlock (SW, (x - 16).ToString (), (y - 16).ToString (), (WallHeightInt - 4).ToString (),
+					(x + 16).ToString (), (y + 16).ToString (), WallHeightInt.ToString (),
+					new string[] { RoofTexture, RoofTexture, RoofTexture, RoofTexture, RoofTexture, "~LAMP07" });
+
 				/*SW.Write ("\"classname\" \"func_wall\"\n");
 				SW.Write ("\"rendercolor\" \"0 0 0\"\n");
 				SW.Write ("\"zhlt_lightflags\" \"2\"\n");*/
-				SW.Write ("{\n");
+				/*SW.Write ("{\n");
 
 				SW.Write ("( " + (x + 16).ToString () + " " + (y - 16).ToString () + " " + WallHeightString + " ) " +
 					"( " + (x - 16).ToString () + " " + (y - 16).ToString () + " " + WallHeightString + " ) " +
@@ -1041,7 +1234,7 @@ namespace RD_AAOW
 					"( " + (x - 16).ToString () + " " + (y + 16).ToString () + " " + (WallHeightInt - 4).ToString () + " ) " +
 					"( " + (x - 16).ToString () + " " + (y - 16).ToString () + " " + (WallHeightInt - 4).ToString () + " ) " +
 					"~LAMP07 [ 1 0 0 0 ] [ 0 -1 0 0 ] 0 1 1 \n");
-				SW.Write ("}\n");
+				SW.Write ("}\n");*/
 
 				return false;
 				}
@@ -1054,17 +1247,5 @@ namespace RD_AAOW
 		/// </summary>
 		public static bool EnvironmentAdded = false;
 		private static string lightColor = "";
-
-		/*/// <summary>
-		/// Возвращает общее число созданных динамических объектов
-		/// </summary>
-		public static uint TotalEntities
-			{
-			get
-				{
-				return totalEntities;
-				}
-			}
-		private static uint totalEntities = 0;*/
 		}
 	}
