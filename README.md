@@ -11,7 +11,7 @@ Modification uses its own fork of [Xash3d engine](https://github.com/adslbarxato
 This tool will be started by the engine automatically, every time it will need a new map.
 It may be started directly: after building of the map it will start the game.
 
-Requires next compilation tools, directories and files:
+The tool requires next compilation tools, directories and files for work:
 - `.\hlcsg.exe`;
 - `.\hlbsp.exe`;
 - `.\hlvis.exe`;
