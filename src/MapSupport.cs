@@ -525,7 +525,7 @@ namespace RD_AAOW
 				}
 
 			// Добавление
-			const string rat = "\"classname\" \"monster_human_grunt\"\n";
+			const string rat = "\"classname\" \"monster_rat\"\n";
 			switch (Rnd.Next (prngRange))
 				{
 				// Солдаты
@@ -632,6 +632,20 @@ namespace RD_AAOW
 		private static string[] gruntWeapons = new string[] { "1", "3", "5", "8", "10" };
 
 		/// <summary>
+		/// Примечание к строке разрешений для врагов
+		/// </summary>
+		public const string EnemiesPermissionsMessage = "Permitted enemies (" +
+			"Assassins, " +
+			"Bullchickens, " +
+			"human Grunts, " +
+			"Headcrabs, " +
+			"alien gRunts, " +
+			"Slaves, " +
+			"Turrets, " +
+			"Zombies" +
+			"):";
+
+		/// <summary>
 		/// Метод записывает дверь на карту
 		/// </summary>
 		/// <param name="SW">Дескриптор файла карты</param>
@@ -662,17 +676,6 @@ namespace RD_AAOW
 			{
 			WriteMapBarrier (SW, RelativePosition, BarrierTypes.DefaultWall, Texture);
 			}
-
-		/*/// <summary>
-		/// Метод записывает препятствие на карту
-		/// </summary>
-		/// <param name="SW">Дескриптор файла карты</param>
-		/// <param name="RelativePosition">Относительная позиция точки создания</param>
-		/// <param name="Type">Тип препятствия</param>
-		private static void WriteMapBarrier (StreamWriter SW, Point RelativePosition, BarrierTypes Type)
-			{
-			WriteMapBarrier (SW, RelativePosition, Type, null);
-			}*/
 
 		// Общий метод для стен и препятствий
 		private static void WriteMapBarrier (StreamWriter SW, Point RelativePosition, BarrierTypes Type, string Texture)
@@ -1022,7 +1025,7 @@ namespace RD_AAOW
 			SW.Write ("\"sounds\" \"1\"\n");
 			SW.Write ("\"WaveHeight\" \"0.1\"\n");
 			SW.Write ("\"newunit\" \"1\"\n");
-			SW.Write ("\"wad\" \"" + RDGenerics.AppStartupPath + "..\\valve\\eshq.wad\"\n");
+			SW.Write ("\"wad\" \"" + Program.MainWAD + "\"\n");
 
 			if (MapNumber == 1)
 				{
