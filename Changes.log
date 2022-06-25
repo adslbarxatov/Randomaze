@@ -2,7 +2,9 @@ Randomaze changes log
 
 Version 1.4:
 • Implemented the requirements check: app will not start the process if needed tools or WAD
-  is missing
+  is missing;
+• Added crates with explosives and alive snarks (may be helpful in some cases);
+• Some fixes and improvements applied to maps geometry
 
 Version 1.3:
 • Complete code refactoring has been performed; the speed of map generation has been increased
