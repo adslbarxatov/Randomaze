@@ -79,7 +79,7 @@ namespace RD_AAOW
 
 			WriteBlock (SW, x1, y1, z1, x2, y2, z2,
 				new string[] { TriggerTexture, TriggerTexture, TriggerTexture, TriggerTexture,
-					TriggerTexture, TriggerTexture,});
+					TriggerTexture, TriggerTexture }, BlockTypes.Default);
 
 			SW.Write ("}\n");
 
@@ -126,7 +126,7 @@ namespace RD_AAOW
 
 			WriteBlock (SW, x1, y1, z1, x2, y2, z2,
 				new string[] { TriggerTexture, TriggerTexture, TriggerTexture, TriggerTexture,
-					TriggerTexture, TriggerTexture,});
+					TriggerTexture, TriggerTexture }, BlockTypes.Default);
 
 			SW.Write ("}\n");
 
@@ -238,7 +238,7 @@ namespace RD_AAOW
 
 				WriteBlock (SW, x1, y1, z1, x2, y2, z2,
 					new string[] { TriggerTexture, TriggerTexture, TriggerTexture, TriggerTexture,
-						TriggerTexture, TriggerTexture,});
+						TriggerTexture, TriggerTexture }, BlockTypes.Default);
 
 				SW.Write ("}\n");
 				}
@@ -247,46 +247,57 @@ namespace RD_AAOW
 			WriteMapSound (SW, RelativePosition, "Teleport1", AmbientTypes.None);
 			}
 
-		// Метод записывает кубик по указанным коориданатм
-		private static void WriteBlock (StreamWriter SW, string X1, string Y1, string Z1,
+		/*private static void WriteBlock (StreamWriter SW, string X1, string Y1, string Z1,
 			string X2, string Y2, string Z2, string[] Textures)
 			{
 			WriteBlock (SW, X1, Y1, Z1, X2, Y2, Z2, Textures, false);
-			}
+			}*/
 
+		// Метод записывает блок по указанным коориданатм
 		private static void WriteBlock (StreamWriter SW, string X1, string Y1, string Z1,
-			string X2, string Y2, string Z2, string[] Textures, bool Crate)
+			string X2, string Y2, string Z2, string[] Textures, BlockTypes BlockType)
 			{
-			string texOffset = (Crate ? "32" : "0");
-			string texScale = (Crate ? "0.5 0.5" : "1 1");
+			string texOffsetX = ((BlockType > BlockTypes.Default) ? "32" : "0");
+			string texOffsetY = ((BlockType == BlockTypes.Crate) ? "32" : "0");
+			string texScale = ((BlockType == BlockTypes.Crate) ? "0.5 0.5" : "1 1");
 
 			SW.Write ("{\n");
 			SW.Write ("( " + X2 + " " + Y1 + " " + Z2 + " ) " +
 				"( " + X1 + " " + Y1 + " " + Z2 + " ) " +
 				"( " + X1 + " " + Y2 + " " + Z2 + " ) " +
-				Textures[0] + " [ 1 0 0 " + texOffset + " ] [ 0 -1 0 " + texOffset + " ] 0 " + texScale + " \n");
+				Textures[0] + " [ 1 0 0 " + texOffsetX + " ] [ 0 -1 0 " + texOffsetY + " ] 0 " + texScale + " \n");
 			SW.Write ("( " + X2 + " " + Y2 + " " + Z1 + " ) " +
 				"( " + X2 + " " + Y2 + " " + Z2 + " ) " +
 				"( " + X1 + " " + Y2 + " " + Z2 + " ) " +
-				Textures[1] + " [ 1 0 0 " + texOffset + " ] [ 0 0 -1 0 ] 0 " + texScale + " \n");
+				Textures[1] + " [ 1 0 0 " + texOffsetX + " ] [ 0 0 -1 0 ] 0 " + texScale + " \n");
 			SW.Write ("( " + X1 + " " + Y1 + " " + Z1 + " ) " +
 				"( " + X1 + " " + Y1 + " " + Z2 + " ) " +
 				"( " + X2 + " " + Y1 + " " + Z2 + " ) " +
-				Textures[2] + " [ 1 0 0 " + texOffset + " ] [ 0 0 -1 0 ] 0 " + texScale + " \n");
+				Textures[2] + " [ 1 0 0 " + texOffsetX + " ] [ 0 0 -1 0 ] 0 " + texScale + " \n");
 			SW.Write ("( " + X1 + " " + Y2 + " " + Z1 + " ) " +
 				"( " + X1 + " " + Y2 + " " + Z2 + " ) " +
 				"( " + X1 + " " + Y1 + " " + Z2 + " ) " +
-				Textures[3] + " [ 0 1 0 " + texOffset + " ] [ 0 0 -1 0 ] 0 " + texScale + " \n");
+				Textures[3] + " [ 0 1 0 " + texOffsetX + " ] [ 0 0 -1 0 ] 0 " + texScale + " \n");
 			SW.Write ("( " + X2 + " " + Y1 + " " + Z1 + " ) " +
 				"( " + X2 + " " + Y1 + " " + Z2 + " ) " +
 				"( " + X2 + " " + Y2 + " " + Z2 + " ) " +
-				Textures[4] + " [ 0 1 0 " + texOffset + " ] [ 0 0 -1 0 ] 0 " + texScale + " \n");
+				Textures[4] + " [ 0 1 0 " + texOffsetX + " ] [ 0 0 -1 0 ] 0 " + texScale + " \n");
 			SW.Write ("( " + X2 + " " + Y2 + " " + Z1 + " ) " +
 				"( " + X1 + " " + Y2 + " " + Z1 + " ) " +
 				"( " + X1 + " " + Y1 + " " + Z1 + " ) " +
-				Textures[5] + " [ 1 0 0 " + texOffset + " ] [ 0 -1 0 " + texOffset + " ] 0 " + texScale + " \n");
+				Textures[5] + " [ 1 0 0 " + texOffsetX + " ] [ 0 -1 0 " + texOffsetY + " ] 0 " + texScale + " \n");
 			SW.Write ("}\n");
 			}
+
+		// Возможные типы блоков
+		private enum BlockTypes
+			{
+			Default = 0,
+			Crate = 1,
+			Door = 2
+			}
+
+		// Стандартная текстура триггера
 		private const string TriggerTexture = "AAATRIGGER";
 
 		/// <summary>
@@ -478,9 +489,9 @@ namespace RD_AAOW
 				{
 				// Солдаты
 				default:
-					if (Permissions.Contains (permissionsKeys[2]))
+					if (Permissions.Contains (EnemiesPermissionsKeys[2]))
 						{
-						SW.Write ("\"classname\" \"" + permissionsEnemies[2] + "\"\n");
+						SW.Write ("\"classname\" \"" + enemies[2] + "\"\n");
 						SW.Write ("\"weapons\" \"" + gruntWeapons[Rnd.Next (gruntWeapons.Length)] + "\"\n");
 						}
 					else
@@ -492,9 +503,9 @@ namespace RD_AAOW
 				// Зомби
 				case 0:
 				case 16:
-					if (Permissions.Contains (permissionsKeys[7]))
+					if (Permissions.Contains (EnemiesPermissionsKeys[7]))
 						{
-						SW.Write ("\"classname\" \"" + permissionsEnemies[7] + "\"\n");
+						SW.Write ("\"classname\" \"" + enemies[7] + "\"\n");
 						SW.Write ("\"skin\" \"" + Rnd.Next (2).ToString () + "\"\n");
 						}
 					else
@@ -506,24 +517,24 @@ namespace RD_AAOW
 				// Крабы
 				case 1:
 				case 17:
-					if (Permissions.Contains (permissionsKeys[3]))
-						SW.Write ("\"classname\" \"" + permissionsEnemies[3] + "\"\n");
+					if (Permissions.Contains (EnemiesPermissionsKeys[3]))
+						SW.Write ("\"classname\" \"" + enemies[3] + "\"\n");
 					else
 						SW.Write (rat);
 					break;
 
 				// Алиены
 				case 10:
-					if (Permissions.Contains (permissionsKeys[5]))
-						SW.Write ("\"classname\" \"" + permissionsEnemies[5] + "\"\n");
+					if (Permissions.Contains (EnemiesPermissionsKeys[5]))
+						SW.Write ("\"classname\" \"" + enemies[5] + "\"\n");
 					else
 						SW.Write (rat);
 					break;
 
 				// Куры
 				case 11:
-					if (Permissions.Contains (permissionsKeys[1]))
-						SW.Write ("\"classname\" \"" + permissionsEnemies[1] + "\"\n");
+					if (Permissions.Contains (EnemiesPermissionsKeys[1]))
+						SW.Write ("\"classname\" \"" + enemies[1] + "\"\n");
 					else
 						SW.Write (rat);
 					break;
@@ -531,17 +542,17 @@ namespace RD_AAOW
 				// Ассассины
 				case 12:
 				case 13:
-					if (Permissions.Contains (permissionsKeys[0]))
-						SW.Write ("\"classname\" \"" + permissionsEnemies[0] + "\"\n");
+					if (Permissions.Contains (EnemiesPermissionsKeys[0]))
+						SW.Write ("\"classname\" \"" + enemies[0] + "\"\n");
 					else
 						SW.Write (rat);
 					break;
 
 				// Турель
 				case 14:
-					if (Permissions.Contains (permissionsKeys[6]))
+					if (Permissions.Contains (EnemiesPermissionsKeys[6]))
 						{
-						SW.Write ("\"classname\" \"" + permissionsEnemies[6] + "\"\n");
+						SW.Write ("\"classname\" \"" + enemies[6] + "\"\n");
 						SW.Write ("\"spawnflags\" \"32\"\n");
 						SW.Write ("\"orientation\" \"0\"\n");
 						}
@@ -553,8 +564,8 @@ namespace RD_AAOW
 
 				// Солдаты алиенов
 				case 15:
-					if (Permissions.Contains (permissionsKeys[4]))
-						SW.Write ("\"classname\" \"" + permissionsEnemies[4] + "\"\n");
+					if (Permissions.Contains (EnemiesPermissionsKeys[4]))
+						SW.Write ("\"classname\" \"" + enemies[4] + "\"\n");
 					else
 						SW.Write (rat);
 					break;
@@ -579,10 +590,15 @@ namespace RD_AAOW
 			"Turrets, " +
 			"Zombies" +
 			"):";
-		private static string[] permissionsKeys = new string[] {
+
+		/// <summary>
+		/// Набор ключевых символов разрешений для врагов
+		/// </summary>
+		public static string[] EnemiesPermissionsKeys = new string[] {
 			"a", "b", "g", "h", "r", "s", "t", "z"
 			};
-		private static string[] permissionsEnemies = new string[] {
+
+		private static string[] enemies = new string[] {
 			"monster_human_assassin",
 			"monster_bullchicken",
 			"monster_human_grunt",
@@ -624,6 +640,40 @@ namespace RD_AAOW
 			}
 
 		/// <summary>
+		/// Метод записывает дверь на карту
+		/// </summary>
+		/// <param name="SW">Дескриптор файла карты</param>
+		/// <param name="RelativePosition">Относительная позиция точки создания</param>
+		/// <param name="Texture">Текстура двери</param>
+		public static void WriteMapDoor (StreamWriter SW, Point RelativePosition, string Texture)
+			{
+			// Расчёт параметров
+			int x = RelativePosition.X * WallLength / 2;
+			int y = RelativePosition.Y * WallLength / 2;
+			string x1, y1, x2, y2;
+
+			// Вертикальная
+			if (RelativePosition.X % 2 == 0)
+				{
+				x1 = (x - 8).ToString ();
+				y1 = (y - 32).ToString ();
+				x2 = (x + 8).ToString ();
+				y2 = (y + 32).ToString ();
+				}
+			else
+				{
+				x1 = (x - 32).ToString ();
+				y1 = (y - 8).ToString ();
+				x2 = (x + 32).ToString ();
+				y2 = (y + 8).ToString ();
+				}
+
+			// Запись
+			WriteBlock (SW, x1, y1, "0", x2, y2, "96", new string[] { Texture, Texture, Texture,
+				Texture, Texture, Texture }, BlockTypes.Door);
+			}
+
+		/// <summary>
 		/// Метод записывает ящик на карту
 		/// </summary>
 		/// <param name="SW">Дескриптор файла карты</param>
@@ -652,9 +702,9 @@ namespace RD_AAOW
 			if (Explosive)
 				SW.Write ("\"explodemagnitude\" \"200\"\n");
 			else
-				SW.Write ("\"spawnobject\" \"26\"\n");
+				SW.Write ("\"spawnobject\" \"28\"\n");
 
-			WriteBlock (SW, x1, y1, "0", x2, y2, "32", new string[] { tex, tex, tex, tex, tex, tex }, true);
+			WriteBlock (SW, x1, y1, "0", x2, y2, "32", new string[] { tex, tex, tex, tex, tex, tex }, BlockTypes.Crate);
 
 			SW.Write ("}\n");
 			}
@@ -674,7 +724,6 @@ namespace RD_AAOW
 		private static void WriteMapBarrier (StreamWriter SW, Point RelativePosition, BarrierTypes Type, string Texture)
 			{
 			// Расчёт параметров
-			bool vertical = (RelativePosition.X % 2 == 0);
 			int x1, y1, x2, y2, d;
 			string xa, xb, xc, xd, ya, yb, yc, yd, z1, z2;
 			string[] textures;
@@ -724,7 +773,7 @@ namespace RD_AAOW
 			SW.Write ("{\n");
 
 			// Вертикальная
-			if (vertical)
+			if (RelativePosition.X % 2 == 0)
 				{
 				x1 = RelativePosition.X * WallLength / 2;
 				y1 = (RelativePosition.Y - 1) * WallLength / 2;
@@ -1063,10 +1112,10 @@ namespace RD_AAOW
 
 			// Запись
 			WriteBlock (SW, x1, y1, "-16", x2, y2, "0", new string[] { FloorTexture, FloorTexture, FloorTexture,
-				FloorTexture, FloorTexture, FloorTexture });
+				FloorTexture, FloorTexture, FloorTexture }, BlockTypes.Default);
 
 			WriteBlock (SW, x1, y1, h1, x2, y2, h2, new string[] { RoofTexture, RoofTexture, RoofTexture,
-				RoofTexture, RoofTexture, RoofTexture });
+				RoofTexture, RoofTexture, RoofTexture }, BlockTypes.Default);
 			}
 
 		/// <summary>
@@ -1161,7 +1210,8 @@ namespace RD_AAOW
 				{
 				WriteBlock (SW, (x - 16).ToString (), (y - 16).ToString (), (WallHeightInt - 4).ToString (),
 					(x + 16).ToString (), (y + 16).ToString (), WallHeightInt.ToString (),
-					new string[] { RoofTexture, RoofTexture, RoofTexture, RoofTexture, RoofTexture, "~LAMP07" });
+					new string[] { RoofTexture, RoofTexture, RoofTexture, RoofTexture, RoofTexture, "~LAMP07" },
+					BlockTypes.Default);
 
 				return false;
 				}

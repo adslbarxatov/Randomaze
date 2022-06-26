@@ -1,10 +1,10 @@
-# Randomaze v 1.4
+# Randomaze v 1.5
 
 ES: Randomaze – The maps generator
 
 #
 
-**ES: Randomaze**  is the maps generator for the sub-mod with the same name.
+**ES: Randomaze** is the maps generator for the sub-mod with the same name.
 It is the child project of the [ESHQ mod](https://moddb.com/mods/eshq) for Half-Life part 1.
 
 Modification uses its own fork of [Xash3d engine](https://github.com/adslbarxatov/xash3d-for-ESHQ).
@@ -40,10 +40,12 @@ The tool requires next compilation tools, directories and files for work:
 
 ### From `Randomaze.cfg` file
 
-- ***Maze size coefficient***. Range: 1 – 8.
-- ***Difficulty coefficient***. Range: 1 – 8. Affects quantities of enemies and items / weapons on the map.
-- ***Walls density coefficient***. Range: 1 – 12. The larger the value, the fewer “branches” the maze will have.
-  *12* means almost a snake-shaped corridor, *1* is for a hangar with a few walls.
+- ***Maze size coefficient***. Range: `1 – 8`. `R` value initiates the random selection.
+- ***Difficulty coefficient***. Range: `1 – 8`. Affects quantities of enemies and items / weapons
+  on the map. `R` value initiates the random selection.
+- ***Walls density coefficient***. Range: `1 – 12`. The larger the value, the fewer “branches” the maze
+  will have. `R` value initiates the random selection.
+  `12` means almost a snake-shaped corridor, `1` is for a hangar with a few walls.
 - ***Enemies permissions line***. Consists of key letters of enemies (`a`ssassins, `b`ullchickens, `g`runts, `h`eadcrabs,
   alien g`r`unts, alien `s`laves, `t`urrets, `z`ombies). Missing letter means forbidden enemy.
 
