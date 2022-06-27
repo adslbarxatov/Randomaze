@@ -1,5 +1,9 @@
 Randomaze changes log
 
+Version 1.6:
+• Added controllers into the enemies list;
+• Crate height has been doubled: now it can be hit by other enemies
+
 Version 1.5:
 • Processing of the configuration file is now more strict;
 • Implemented the R value for maze size, difficulty and walls density. This value will make
