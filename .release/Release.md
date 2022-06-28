@@ -1,5 +1,4 @@
-_Changes for v 1.5_:
-- Processing of the configuration file is now more strict;
-- Implemented the R value for maze size, difficulty and walls density. This value will make the app randomly select these parameters for each generation;
-- Breakable crates: snarks replaced with babycrabs (they are more durable);
-- Added visual exit doors for maps
+_Changes for v 1.6_:
+- Controllers and houndeyes have been added to the enemies list;
+- Crate height has been doubled: now it can be hit by other enemies;
+- Implemented the “button mode”. If enabled, among other things you will need to find the button that opens the exit gate
