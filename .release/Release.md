@@ -1,4 +1,5 @@
-_Changes for v 1.6_:
-- Controllers and houndeyes have been added to the enemies list;
-- Crate height has been doubled: now it can be hit by other enemies;
-- Implemented the “button mode”. If enabled, among other things you will need to find the button that opens the exit gate
+_Changes for v 1.7_:
+- Walls generation mechanism has been upgraded: they are flat now, and some of them now have correct borders;
+- Added the *crates density coefficient*;
+- Crates are now more dynamic;
+- A hornetgun has been added

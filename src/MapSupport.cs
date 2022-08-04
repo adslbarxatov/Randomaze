@@ -342,39 +342,19 @@ namespace RD_AAOW
 					break;
 
 				case 2:
-				/*prngRange = 16;
-				break;*/
-
 				case 3:
-				/*prngRange = 17;
-				break;*/
-
 				case 4:
-				/*prngRange = 18;
-				break;*/
-
 				case 5:
-				/*prngRange = 19;
-				break;*/
-
 				case 6:
-				/*prngRange = 20;
-				break;*/
-
 				case 7:
-				/*prngRange = 21;
-				break;*/
-
 				case 8:
-				/*prngRange = 22;
-				break;*/
-
 				case 9:
+				case 10:
 					prngRange = (int)MapNumber + 14;
 					break;
 
 				default:
-					prngRange = 24;
+					prngRange = 25;
 					break;
 				}
 
@@ -434,6 +414,14 @@ namespace RD_AAOW
 						SW.Write ("\"classname\" \"weapon_crowbar\"\n");
 					else
 						SW.Write ("\"classname\" \"weapon_satchel\"\n");
+					break;
+
+				// Улей или граната
+				case 24:
+					if (Rnd.Next (5) > 3)
+						SW.Write ("\"classname\" \"weapon_hornetgun\"\n");
+					else
+						SW.Write ("\"classname\" \"weapon_handgrenade\"\n");
 					break;
 				}
 
@@ -705,7 +693,7 @@ namespace RD_AAOW
 			// Запись рамы
 			if (Frame)
 				{
-				WriteMapBarrier (SW, RelativePosition, BarrierTypes.WindowFrameTop, tex);
+				WriteMapBarrier (SW, RelativePosition, BarrierTypes.GateFrameTop, tex);
 				return;
 				}
 
@@ -717,7 +705,7 @@ namespace RD_AAOW
 			SW.Write ("\"movesnd\" \"3\"\n");
 			SW.Write ("\"stopsnd\" \"1\"\n");
 			SW.Write ("\"wait\" \"-1\"\n");
-			SW.Write ("\"lip\" \"8\"\n");
+			SW.Write ("\"lip\" \"9\"\n");
 			if (MapNumber <= MapsLimit)
 				SW.Write ("\"targetname\" \"Gate" + MapNumber.ToString (MapsNumbersFormat) + "\"\n");
 
@@ -799,8 +787,8 @@ namespace RD_AAOW
 		/// </summary>
 		/// <param name="SW">Дескриптор файла карты</param>
 		/// <param name="RelativePosition">Относительная позиция точки создания</param>
-		/// <param name="Explosive">Флаг взрывоопасности ящика</param>
-		public static void WriteMapCrate (StreamWriter SW, Point RelativePosition, bool Explosive)
+		/// <param name="Rnd">ГПСЧ</param>
+		public static void WriteMapCrate (StreamWriter SW, Point RelativePosition, Random Rnd)
 			{
 			// Расчёт параметров
 			int x = RelativePosition.X * WallLength / 2;
@@ -810,7 +798,9 @@ namespace RD_AAOW
 			string y1 = (y - 16).ToString ();
 			string x2 = (x + 16).ToString ();
 			string y2 = (y + 16).ToString ();
-			string tex = (Explosive ? "CRATE01" : "CRATE08");
+
+			bool explosive = (Rnd.Next (2) == 0);
+			string tex = (explosive ? "CRATE01" : "CRATE08");
 
 			SW.Write ("{\n");
 			SW.Write ("\"classname\" \"func_pushable\"\n");
@@ -820,10 +810,16 @@ namespace RD_AAOW
 			SW.Write ("\"friction\" \"40\"\n");
 			SW.Write ("\"buoyancy\" \"60\"\n");
 
-			if (Explosive)
-				SW.Write ("\"explodemagnitude\" \"200\"\n");
+			if (explosive)
+				{
+				SW.Write ("\"explodemagnitude\" \"" + Rnd.Next (160, 200).ToString () + "\"\n");
+				}
 			else
-				SW.Write ("\"spawnobject\" \"28\"\n");
+				{
+				int r = Rnd.Next (4);
+				if (r > 0)
+					SW.Write ("\"spawnobject\" \"" + (r + 25).ToString () + "\"\n");
+				}
 
 			WriteBlock (SW, x1, y1, "0", x2, y2, "64", new string[] { tex, tex, tex, tex, tex, tex }, BlockTypes.Crate);
 
@@ -836,28 +832,74 @@ namespace RD_AAOW
 		/// <param name="SW">Дескриптор файла карты</param>
 		/// <param name="RelativePosition">Относительная позиция точки создания</param>
 		/// <param name="Texture">Текстура стены</param>
-		public static void WriteMapWall (StreamWriter SW, Point RelativePosition, string Texture)
+		/// <param name="LeftEnd">Тип левого торца стены</param>
+		/// <param name="RightEnd">Тип правого торца стены</param>
+		public static void WriteMapWall (StreamWriter SW, Point RelativePosition, string Texture,
+			NeighborsTypes LeftEnd, NeighborsTypes RightEnd)
 			{
+			neighborLeft = LeftEnd;
+			neighborRight = RightEnd;
+
 			WriteMapBarrier (SW, RelativePosition, BarrierTypes.DefaultWall, Texture);
 			}
 
 		// Общий метод для стен и препятствий
+		private static NeighborsTypes neighborLeft, neighborRight;
 		private static void WriteMapBarrier (StreamWriter SW, Point RelativePosition, BarrierTypes Type, string Texture)
 			{
 			// Расчёт параметров
-			int x1, y1, x2, y2, d;
+			int x1, y1, x2, y2;
 			string xa, xb, xc, xd, ya, yb, yc, yd, z1, z2;
 			string[] textures;
 
-			d = 8;
+			int lDelta = 8, rDelta = 8, mDelta = 8;
 			switch (Type)
 				{
 				case BarrierTypes.DefaultWall:
 				default:
 					z1 = "0";
 					z2 = (WallHeightInt + 16).ToString ();
+
+					string lTex = Texture;
+					if (neighborLeft == NeighborsTypes.Gate)
+						{
+						lTex = "BorderRub01";
+						}
+					else if (neighborLeft == NeighborsTypes.Window)
+						{
+						lTex = "Metal08";
+						lDelta = 0;
+						}
+					else if (neighborLeft == NeighborsTypes.WindowCorner)
+						{
+						lTex = "Metal08";
+						}
+					else if (neighborLeft == NeighborsTypes.Wall)
+						{
+						lDelta = 0;
+						}
+
+					string rTex = Texture;
+					if (neighborRight == NeighborsTypes.Gate)
+						{
+						rTex = "BorderRub01";
+						}
+					else if (neighborRight == NeighborsTypes.Window)
+						{
+						rTex = "Metal08";
+						rDelta = 0;
+						}
+					else if (neighborRight == NeighborsTypes.WindowCorner)
+						{
+						rTex = "Metal08";
+						}
+					else if (neighborRight == NeighborsTypes.Wall)
+						{
+						rDelta = 0;
+						}
+
 					textures = new string[] { Texture, Texture, Texture, Texture,
-						Texture, Texture, Texture, Texture };
+						lTex, lTex, rTex, rTex };
 					break;
 
 				case BarrierTypes.Gate:
@@ -872,14 +914,19 @@ namespace RD_AAOW
 					z2 = (WallHeightInt - 8).ToString ();
 					textures = new string[] { "Glass01", "Glass01", "Glass01", "Glass01",
 						"Glass01", "Glass01", "Glass01", "Glass01" };
-					d = 4;
+					rDelta = lDelta = 0;
+					mDelta = 4;
 					break;
 
 				case BarrierTypes.WindowFrameTop:
+				case BarrierTypes.GateFrameTop:
 					z1 = (WallHeightInt - 8).ToString ();
 					z2 = (WallHeightInt + 16).ToString ();
 					textures = new string[] { Texture, "Metal08", Texture, Texture,
 						Texture, Texture, Texture, Texture };
+
+					if (Type == BarrierTypes.WindowFrameTop)
+						rDelta = lDelta = 0;
 					break;
 
 				case BarrierTypes.WindowFrameBottom:
@@ -887,6 +934,7 @@ namespace RD_AAOW
 					z2 = "8";
 					textures = new string[] { "Metal08", Texture, Texture, Texture,
 						Texture, Texture, Texture, Texture };
+					rDelta = lDelta = 0;
 					break;
 				}
 
@@ -900,14 +948,15 @@ namespace RD_AAOW
 				y1 = (RelativePosition.Y - 1) * WallLength / 2;
 				y2 = (RelativePosition.Y + 1) * WallLength / 2;
 
-				xa = (x1 - d).ToString ();
+				xa = (x1 - mDelta).ToString ();
 				xb = x1.ToString ();
-				xc = (x1 + d).ToString ();
+				xc = (x1 + mDelta).ToString ();
 				ya = y1.ToString ();
-				yb = (y1 + d).ToString ();
-				yc = (y2 - d).ToString ();
+				yb = (y1 + lDelta).ToString ();
+				yc = (y2 - rDelta).ToString ();
 				yd = y2.ToString ();
 
+				// Нижний и верхний торцы
 				SW.Write ("( " + xc + " " + yc + " " + z2 + " ) " +
 					"( " + xc + " " + yb + " " + z2 + " ) " +
 					"( " + xb + " " + ya + " " + z2 + " ) " +
@@ -916,6 +965,8 @@ namespace RD_AAOW
 					"( " + xa + " " + yb + " " + z1 + " ) " +
 					"( " + xb + " " + ya + " " + z1 + " ) " +
 					textures[1] + " [ 1 0 0 0 ] [ 0 -1 0 0 ] 0 1 1 \n");
+
+				// Лицевая и задняя сторона
 				SW.Write ("( " + xa + " " + yb + " " + z1 + " ) " +
 					"( " + xa + " " + yc + " " + z1 + " ) " +
 					"( " + xa + " " + yc + " " + z2 + " ) " +
@@ -924,22 +975,46 @@ namespace RD_AAOW
 					"( " + xc + " " + yb + " " + z1 + " ) " +
 					"( " + xc + " " + yb + " " + z2 + " ) " +
 					textures[3] + " [ 0 1 0 0 ] [ 0 0 -1 0 ] 0 1 1 \n");
-				SW.Write ("( " + xb + " " + ya + " " + z1 + " ) " +
-					"( " + xa + " " + yb + " " + z1 + " ) " +
-					"( " + xa + " " + yb + " " + z2 + " ) " +
-					textures[4] + " [ 0 1 0 0 ] [ 0 0 -1 0 ] 0 1 1 \n");
-				SW.Write ("( " + xc + " " + yb + " " + z1 + " ) " +
-					"( " + xb + " " + ya + " " + z1 + " ) " +
-					"( " + xb + " " + ya + " " + z2 + " ) " +
-					textures[5] + " [ 0 1 0 0 ] [ 0 0 -1 0 ] 0 1 1 \n");
-				SW.Write ("( " + xb + " " + yd + " " + z1 + " ) " +
-					"( " + xc + " " + yc + " " + z1 + " ) " +
-					"( " + xc + " " + yc + " " + z2 + " ) " +
-					textures[6] + " [ 0 1 0 0 ] [ 0 0 -1 0 ] 0 1 1 \n");
-				SW.Write ("( " + xa + " " + yc + " " + z1 + " ) " +
-					"( " + xb + " " + yd + " " + z1 + " ) " +
-					"( " + xb + " " + yd + " " + z2 + " ) " +
-					textures[7] + " [ 0 1 0 0 ] [ 0 0 -1 0 ] 0 1 1 \n");
+
+				// Верхний торец
+				if (lDelta == 0)
+					{
+					SW.Write ("( " + xc + " " + ya + " " + z1 + " ) " +
+						"( " + xa + " " + yb + " " + z1 + " ) " +
+						"( " + xa + " " + yb + " " + z2 + " ) " +
+						textures[4] + " [ 1 0 0 0 ] [ 0 0 -1 0 ] 0 1 1 \n");
+					}
+				else
+					{
+					SW.Write ("( " + xb + " " + ya + " " + z1 + " ) " +
+						"( " + xa + " " + yb + " " + z1 + " ) " +
+						"( " + xa + " " + yb + " " + z2 + " ) " +
+						textures[4] + " [ 0 1 0 0 ] [ 0 0 -1 0 ] 0 1 1 \n");
+					SW.Write ("( " + xc + " " + yb + " " + z1 + " ) " +
+						"( " + xb + " " + ya + " " + z1 + " ) " +
+						"( " + xb + " " + ya + " " + z2 + " ) " +
+						textures[5] + " [ 0 1 0 0 ] [ 0 0 -1 0 ] 0 1 1 \n");
+					}
+
+				// Нижний торец
+				if (rDelta == 0)
+					{
+					SW.Write ("( " + xa + " " + yd + " " + z1 + " ) " +
+						"( " + xc + " " + yc + " " + z1 + " ) " +
+						"( " + xc + " " + yc + " " + z2 + " ) " +
+						textures[6] + " [ 1 0 0 0 ] [ 0 0 -1 0 ] 0 1 1 \n");
+					}
+				else
+					{
+					SW.Write ("( " + xb + " " + yd + " " + z1 + " ) " +
+						"( " + xc + " " + yc + " " + z1 + " ) " +
+						"( " + xc + " " + yc + " " + z2 + " ) " +
+						textures[6] + " [ 0 1 0 0 ] [ 0 0 -1 0 ] 0 1 1 \n");
+					SW.Write ("( " + xa + " " + yc + " " + z1 + " ) " +
+						"( " + xb + " " + yd + " " + z1 + " ) " +
+						"( " + xb + " " + yd + " " + z2 + " ) " +
+						textures[7] + " [ 0 1 0 0 ] [ 0 0 -1 0 ] 0 1 1 \n");
+					}
 				}
 
 			// Горизонтальная
@@ -950,13 +1025,14 @@ namespace RD_AAOW
 				x2 = (RelativePosition.X + 1) * WallLength / 2;
 
 				xa = x1.ToString ();
-				xb = (x1 + d).ToString ();
-				xc = (x2 - d).ToString ();
+				xb = (x1 + lDelta).ToString ();
+				xc = (x2 - rDelta).ToString ();
 				xd = x2.ToString ();
-				ya = (y1 - d).ToString ();
+				ya = (y1 - mDelta).ToString ();
 				yb = y1.ToString ();
-				yc = (y1 + d).ToString ();
+				yc = (y1 + mDelta).ToString ();
 
+				// Нижний и верхний торец
 				SW.Write ("( " + xc + " " + ya + " " + z2 + " ) " +
 					"( " + xb + " " + ya + " " + z2 + " ) " +
 					"( " + xa + " " + yb + " " + z2 + " ) " +
@@ -965,6 +1041,8 @@ namespace RD_AAOW
 					"( " + xb + " " + yc + " " + z1 + " ) " +
 					"( " + xa + " " + yb + " " + z1 + " ) " +
 					textures[1] + " [ 1 0 0 0 ] [ 0 -1 0 0 ] 0 1 1 \n");
+
+				// Лицевая и задняя сторона
 				SW.Write ("( " + xb + " " + yc + " " + z1 + " ) " +
 					"( " + xc + " " + yc + " " + z1 + " ) " +
 					"( " + xc + " " + yc + " " + z2 + " ) " +
@@ -973,22 +1051,46 @@ namespace RD_AAOW
 					"( " + xb + " " + ya + " " + z1 + " ) " +
 					"( " + xb + " " + ya + " " + z2 + " ) " +
 					textures[3] + " [ 1 0 0 0 ] [ 0 0 -1 0 ] 0 1 1 \n");
-				SW.Write ("( " + xa + " " + yb + " " + z1 + " ) " +
-					"( " + xb + " " + yc + " " + z1 + " ) " +
-					"( " + xb + " " + yc + " " + z2 + " ) " +
-					textures[4] + " [ 0 1 0 0 ] [ 0 0 -1 0 ] 0 1 1 \n");
-				SW.Write ("( " + xb + " " + ya + " " + z1 + " ) " +
-					"( " + xa + " " + yb + " " + z1 + " ) " +
-					"( " + xa + " " + yb + " " + z2 + " ) " +
-					textures[5] + " [ 0 1 0 0 ] [ 0 0 -1 0 ] 0 1 1 \n");
-				SW.Write ("( " + xd + " " + yb + " " + z1 + " ) " +
-					"( " + xc + " " + ya + " " + z1 + " ) " +
-					"( " + xc + " " + ya + " " + z2 + " ) " +
-					textures[6] + " [ 0 1 0 0 ] [ 0 0 -1 0 ] 0 1 1 \n");
-				SW.Write ("( " + xc + " " + yc + " " + z1 + " ) " +
-					"( " + xd + " " + yb + " " + z1 + " ) " +
-					"( " + xd + " " + yb + " " + z2 + " ) " +
-					textures[7] + " [ 0 1 0 0 ] [ 0 0 -1 0 ] 0 1 1 \n");
+
+				// Левый торец
+				if (lDelta == 0)
+					{
+					SW.Write ("( " + xa + " " + ya + " " + z1 + " ) " +
+						"( " + xb + " " + yc + " " + z1 + " ) " +
+						"( " + xb + " " + yc + " " + z2 + " ) " +
+						textures[4] + " [ 0 1 0 0 ] [ 0 0 -1 0 ] 0 1 1 \n");
+					}
+				else
+					{
+					SW.Write ("( " + xa + " " + yb + " " + z1 + " ) " +
+						"( " + xb + " " + yc + " " + z1 + " ) " +
+						"( " + xb + " " + yc + " " + z2 + " ) " +
+						textures[4] + " [ 0 1 0 0 ] [ 0 0 -1 0 ] 0 1 1 \n");
+					SW.Write ("( " + xb + " " + ya + " " + z1 + " ) " +
+						"( " + xa + " " + yb + " " + z1 + " ) " +
+						"( " + xa + " " + yb + " " + z2 + " ) " +
+						textures[5] + " [ 0 1 0 0 ] [ 0 0 -1 0 ] 0 1 1 \n");
+					}
+
+				// Правый торец
+				if (rDelta == 0)
+					{
+					SW.Write ("( " + xd + " " + yc + " " + z1 + " ) " +
+						"( " + xc + " " + ya + " " + z1 + " ) " +
+						"( " + xc + " " + ya + " " + z2 + " ) " +
+						textures[6] + " [ 0 1 0 0 ] [ 0 0 -1 0 ] 0 1 1 \n");
+					}
+				else
+					{
+					SW.Write ("( " + xd + " " + yb + " " + z1 + " ) " +
+						"( " + xc + " " + ya + " " + z1 + " ) " +
+						"( " + xc + " " + ya + " " + z2 + " ) " +
+						textures[6] + " [ 0 1 0 0 ] [ 0 0 -1 0 ] 0 1 1 \n");
+					SW.Write ("( " + xc + " " + yc + " " + z1 + " ) " +
+						"( " + xd + " " + yb + " " + z1 + " ) " +
+						"( " + xd + " " + yb + " " + z2 + " ) " +
+						textures[7] + " [ 0 1 0 0 ] [ 0 0 -1 0 ] 0 1 1 \n");
+					}
 				}
 
 			SW.Write ("}\n");
@@ -1053,7 +1155,43 @@ namespace RD_AAOW
 			/// <summary>
 			/// Окно
 			/// </summary>
-			Window
+			Window,
+
+			/// <summary>
+			/// Верхняя рама шлюза
+			/// </summary>
+			GateFrameTop
+			}
+
+		/// <summary>
+		/// Возможные типы соседних препятствий
+		/// </summary>
+		public enum NeighborsTypes
+			{
+			/// <summary>
+			/// Обычная стена
+			/// </summary>
+			Wall,
+
+			/// <summary>
+			/// Шлюз
+			/// </summary>
+			Gate,
+
+			/// <summary>
+			/// Окно
+			/// </summary>
+			Window,
+
+			/// <summary>
+			/// Окно под углом к стене
+			/// </summary>
+			WindowCorner,
+
+			/// <summary>
+			/// Свободный проход
+			/// </summary>
+			Passage
 			}
 
 		/// <summary>

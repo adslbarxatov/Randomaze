@@ -1,5 +1,12 @@
 Randomaze changes log
 
+Version 1.7:
+• Walls generation mechanism has been upgraded: they are flat now, and some of them
+  now have correct borders;
+• Added the crates density coefficient;
+• Crates are now more dynamic;
+• A hornetgun has been added
+
 Version 1.6:
 • Controllers and houndeyes have been added to the enemies list;
 • Crate height has been doubled: now it can be hit by other enemies;

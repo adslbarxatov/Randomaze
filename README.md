@@ -1,4 +1,4 @@
-# Randomaze v 1.6
+# Randomaze v 1.7
 
 ES: Randomaze – The maps generator
 
@@ -48,6 +48,8 @@ The tool requires next compilation tools, directories and files for work:
   `12` means almost a snake-shaped corridor, `1` is for a hangar with a few walls.
 - ***Enemies permissions line***. Consists of key letters of enemies (`a`ssassins, `b`ullchickens, `g`runts, `h`eadcrabs,
   alien g`r`unts, alien `s`laves, `t`urrets, `z`ombies). Missing letter means forbidden enemy.
+- ***Crates density coefficient***. Range: `1 – 5`. Describes, how much enemies will be replaced with crates
+  with bugs or explosives. `R` value initiates the random selection.
 
 &nbsp;
 
@@ -56,6 +58,7 @@ The tool requires next compilation tools, directories and files for work:
 ## Requirements
 
 - Windows XP or newer;
+- Installed [ESHQ mod](https://moddb.com/mods/eshq);
 - [Microsoft .NET Framework 4.0](https://microsoft.com/en-us/download/details.aspx?id=17718).
 
 Interface languages: en_us.
