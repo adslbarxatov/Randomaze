@@ -1,11 +1,17 @@
 Randomaze changes log
 
+ToDo:
+- Cockroaches;
+- Settings window;
+- Different crates for different bugs;
+- Make the hornetgun mor useful
+
 Version 1.7:
 • Walls generation mechanism has been upgraded: they are flat now, and some of them
   now have correct borders;
 • Added the crates density coefficient;
 • Crates are now more dynamic;
-• A hornetgun has been added
+• The hornetgun has been added
 
 Version 1.6:
 • Controllers and houndeyes have been added to the enemies list;
