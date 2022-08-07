@@ -457,41 +457,14 @@ namespace RD_AAOW
 					break;
 
 				case 3:
-				/*prngRange = 11;
-				break;*/
-
 				case 4:
-				/*prngRange = 12;
-				break;*/
-
 				case 5:
-				/*prngRange = 13;
-				break;*/
-
 				case 6:
-				/*prngRange = 14;
-				break;*/
-
 				case 7:
-				/*prngRange = 15;
-				break;*/
-
 				case 8:
-				/*prngRange = 16;
-				break;*/
-
 				case 9:
-				/*prngRange = 17;
-				break;*/
-
 				case 10:
-				/*prngRange = 18;
-				break;*/
-
 				case 11:
-				/*prngRange = 19;
-				break;*/
-
 				case 12:
 					prngRange = (int)MapNumber + 8;
 					break;
@@ -502,7 +475,8 @@ namespace RD_AAOW
 				}
 
 			// Добавление
-			const string rat = "\"classname\" \"monster_rat\"\n";
+			string rat = Rnd.Next (2) == 0 ? "\"classname\" \"monster_rat\"\n" :
+				"\"classname\" \"monster_cockroach\"\n";
 			string z = "0";
 
 			switch (Rnd.Next (prngRange))
@@ -625,7 +599,7 @@ namespace RD_AAOW
 		// Подстановки номеров оружия для солдат
 		private static string[] gruntWeapons = new string[] { "1", "3", "5", "8", "10" };
 
-		/// <summary>
+		/*/// <summary>
 		/// Примечание к строке разрешений для врагов
 		/// </summary>
 		public const string EnemiesPermissionsMessage = "Permitted enemies (" +
@@ -639,7 +613,7 @@ namespace RD_AAOW
 			"Slaves, " +
 			"Turrets, " +
 			"Zombies" +
-			"):";
+			"):";*/
 
 		/// <summary>
 		/// Набор ключевых символов разрешений для врагов
@@ -800,7 +774,7 @@ namespace RD_AAOW
 			string y2 = (y + 16).ToString ();
 
 			bool explosive = (Rnd.Next (2) == 0);
-			string tex = (explosive ? "CRATE01" : "CRATE08");
+			string tex = "CRATE01"; // Взрывчатка по умолчанию
 
 			SW.Write ("{\n");
 			SW.Write ("\"classname\" \"func_pushable\"\n");
@@ -819,6 +793,24 @@ namespace RD_AAOW
 				int r = Rnd.Next (4);
 				if (r > 0)
 					SW.Write ("\"spawnobject\" \"" + (r + 25).ToString () + "\"\n");
+				else
+					r = Rnd.Next (3);   // Случайная текстура для пустых ящиков
+
+				switch (r)
+					{
+					case 1:
+						tex = "CRATE04";
+						break;
+
+					case 2:
+						tex = "CRATE07";
+						break;
+
+					case 0:
+					default:
+						tex = "CRATE08";
+						break;
+					}
 				}
 
 			WriteBlock (SW, x1, y1, "0", x2, y2, "64", new string[] { tex, tex, tex, tex, tex, tex }, BlockTypes.Crate);
