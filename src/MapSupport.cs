@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 
@@ -286,7 +287,7 @@ namespace RD_AAOW
 			SW.Write ("( " + X2 + " " + Y2 + " " + Z1 + " ) " +
 				"( " + X2 + " " + Y2 + " " + Z2 + " ) " +
 				"( " + X1 + " " + Y2 + " " + Z2 + " ) " +
-				Textures[1] + " [ 1 0 0 " + texOffsetX + " ] [ 0 0 -1 0 ] 0 " + texScale + " \n");
+				Textures[1] + " [ 1 0 0 " + texOffsetX + " ] [ 0 0 -1 0 ] 0 -" + texScale + " \n");
 			SW.Write ("( " + X1 + " " + Y1 + " " + Z1 + " ) " +
 				"( " + X1 + " " + Y1 + " " + Z2 + " ) " +
 				"( " + X2 + " " + Y1 + " " + Z2 + " ) " +
@@ -294,7 +295,7 @@ namespace RD_AAOW
 			SW.Write ("( " + X1 + " " + Y2 + " " + Z1 + " ) " +
 				"( " + X1 + " " + Y2 + " " + Z2 + " ) " +
 				"( " + X1 + " " + Y1 + " " + Z2 + " ) " +
-				Textures[3] + " [ 0 1 0 " + texOffsetX + " ] [ 0 0 -1 0 ] 0 " + texScale + " \n");
+				Textures[3] + " [ 0 1 0 " + texOffsetX + " ] [ 0 0 -1 0 ] 0 -" + texScale + " \n");
 			SW.Write ("( " + X2 + " " + Y1 + " " + Z1 + " ) " +
 				"( " + X2 + " " + Y1 + " " + Z2 + " ) " +
 				"( " + X2 + " " + Y2 + " " + Z2 + " ) " +
@@ -426,7 +427,7 @@ namespace RD_AAOW
 				}
 
 			SW.Write ("\"angles\" \"0 " + Rnd.Next (360) + " 0\"\n");
-			SW.Write ("\"origin\" \"" + x + " " + y + " 0\"\n");
+			SW.Write ("\"origin\" \"" + x + " " + y + " 40\"\n");   // На некоторой высоте над полом
 			SW.Write ("}\n");
 			}
 
@@ -599,22 +600,6 @@ namespace RD_AAOW
 		// Подстановки номеров оружия для солдат
 		private static string[] gruntWeapons = new string[] { "1", "3", "5", "8", "10" };
 
-		/*/// <summary>
-		/// Примечание к строке разрешений для врагов
-		/// </summary>
-		public const string EnemiesPermissionsMessage = "Permitted enemies (" +
-			"Assassins, " +
-			"Bullchickens, " +
-			"alien Controllers, " +
-			"houndEyes, " +
-			"human Grunts, " +
-			"Headcrabs, " +
-			"alien gRunts, " +
-			"Slaves, " +
-			"Turrets, " +
-			"Zombies" +
-			"):";*/
-
 		/// <summary>
 		/// Набор ключевых символов разрешений для врагов
 		/// </summary>
@@ -783,6 +768,8 @@ namespace RD_AAOW
 			SW.Write ("\"spawnflags\" \"128\"\n");
 			SW.Write ("\"friction\" \"40\"\n");
 			SW.Write ("\"buoyancy\" \"60\"\n");
+			SW.Write ("\"rendermode\" \"4\"\n");    // Прозрачность для врагов
+			SW.Write ("\"renderamt\" \"255\"\n");
 
 			if (explosive)
 				{
@@ -1302,6 +1289,29 @@ namespace RD_AAOW
 		private static bool leftStep = false;
 
 		/// <summary>
+		/// Метод записывает отметки пути от входа к выходу на карту
+		/// </summary>
+		/// <param name="SW">Дескриптор файла карты</param>
+		/// <param name="RelativePosition">Относительная позиция точки создания</param>
+		/// <param name="StartOrFinish">Флаг указывает на начальную или конечную точку пути</param>
+		public static void WriteMapPathStone (StreamWriter SW, Point RelativePosition, bool StartOrFinish)
+			{
+			// Расчёт параметров
+			int x = RelativePosition.X * WallLength / 2;
+			int y = RelativePosition.Y * WallLength / 2;
+
+			string tex;
+			if (StartOrFinish)
+				tex = "StripesYB";
+			else
+				tex = "StripesRW";
+
+			WriteBlock (SW, (x - 8).ToString (), (y - 8).ToString (), "-8",
+				(x + 8).ToString (), (y + 8).ToString (), "0",
+				new string[] { tex, tex, tex, tex, tex, tex }, BlockTypes.Default);
+			}
+
+		/// <summary>
 		/// Метод записывает заголовок карты
 		/// </summary>
 		/// <param name="SW">Дескриптор файла карты</param>
@@ -1475,5 +1485,233 @@ namespace RD_AAOW
 		/// </summary>
 		public static bool EnvironmentAdded = false;
 		private static string lightColor = "";
+
+		/// <summary>
+		/// Результаты проверки позиции на соседство с целевыми объектами.
+		/// Образуют флаговое поле
+		/// </summary>
+		public enum CPResults
+			{
+			/// <summary>
+			/// Нет объектов
+			/// </summary>
+			None = 0x0,
+
+			/// <summary>
+			/// Справа
+			/// </summary>
+			Right = 0x1,
+
+			/// <summary>
+			/// Слева
+			/// </summary>
+			Left = 0x2,
+
+			/// <summary>
+			/// Снизу
+			/// </summary>
+			Down = 0x4,
+
+			/// <summary>
+			/// Сверху
+			/// </summary>
+			Up = 0x8
+			}
+
+		// Массивы и текстуры шаблонов окружения
+		private static int[] propsCoords = new int[] {
+			-64, -32, 0, -40, 32, 128,		// 0. Компьютер 1
+			-64, -32, 0, -40, 32, 128,		// 1. Компьютер 2
+			-64, -32, 0, -40, 32, 128,		// 2. Компьютер 3
+
+			-64, -32, 32, -52, 32, 64,		// 3. Пульт 1
+			-64, -32, 32, -52, 32, 64,		// 4. Пульт 2
+			-64, -32, 32, -52, 32, 64,		// 5. Пульт 3
+			-64, -32, 32, -52, 32, 64,		// 6. Пульт 4
+
+			-64, -32, 0, -32, 32, 32,		// 7. Стол с ящиками
+			-64, -16, 0, 64, 16, 36,		// 8. Стол-перегородка
+
+			-64, -48, 0, -32, 48, 24,		// 9. Скамейка 1
+			-64, -48, 0, -32, 48, 24,		// 10. Скамейка 2
+
+			-64, -32, 0, -40, 32, 96,		// 11. Электрощит
+			-64, -16, 0, -32, 16, 144,		// 12. Труба 1
+			-64, -16, 0, -32, 16, 144,		// 13. Труба 2
+
+			-64, -32, 32, -52, 32, 64,		// 14. Панель индикаторов
+			};
+
+		private static string[] propsTextures = new string[] {
+			"", "", "", "+0_Computer01", "", "",	// R
+			"", "", "", "", "+0_Computer01", "",	// L
+			"", "+0_Computer01", "", "", "", "",	// D
+			"", "", "+0_Computer01", "", "", "",	// U
+
+			"", "", "", "+0_Computer09", "", "",
+			"", "", "", "", "+0_Computer09", "",
+			"", "+0_Computer09", "", "", "", "",
+			"", "", "+0_Computer09", "", "", "",
+
+			"", "", "", "+0_Computer10", "", "",
+			"", "", "", "", "+0_Computer10", "",
+			"", "+0_Computer10", "", "", "", "",
+			"", "", "+0_Computer10", "", "", "",
+
+			"M", "M", "M", "+0_Computer04", "M", "M",
+			"M", "M", "M", "M", "+0_Computer04", "M",
+			"M", "+0_Computer04", "M", "M", "M", "M",
+			"M", "M", "+0_Computer04", "M", "M", "M",
+
+			"M", "M", "M", "+0_Computer05", "M", "M",
+			"M", "M", "M", "M", "+0_Computer05", "M",
+			"M", "+0_Computer05", "M", "M", "M", "M",
+			"M", "M", "+0_Computer05", "M", "M", "M",
+
+			"M", "M", "M", "+0_Computer07", "M", "M",
+			"M", "M", "M", "M", "+0_Computer07", "M",
+			"M", "+0_Computer07", "M", "M", "M", "M",
+			"M", "M", "+0_Computer07", "M", "M", "M",
+
+			"M", "M", "M", "+0_Computer08", "M", "M",
+			"M", "M", "M", "M", "+0_Computer08", "M",
+			"M", "+0_Computer08", "M", "M", "M", "M",
+			"M", "M", "+0_Computer08", "M", "M", "M",
+
+			"Wood02", "", "", "Box01", "", "",
+			"Wood02", "", "", "", "Box01", "",
+			"Wood02", "Box01", "", "", "", "",
+			"Wood02", "", "Box01", "", "", "",
+
+			"Wood02", "", "", "", "", "",
+			"Wood02", "", "", "", "", "",
+			"Wood02", "", "", "", "", "",
+			"Wood02", "", "", "", "", "",
+
+			"Fabric01", "", "", "Fabric01", "", "",
+			"Fabric01", "", "", "", "Fabric01", "",
+			"Fabric01", "Fabric01", "", "", "", "",
+			"Fabric01", "", "Fabric01", "", "", "",
+
+			"Fabric02", "", "", "Fabric02", "", "",
+			"Fabric02", "", "", "", "Fabric02", "",
+			"Fabric02", "Fabric02", "", "", "", "",
+			"Fabric02", "", "Fabric02", "", "", "",
+
+			"M", "M", "M", "Door32", "M", "M",
+			"M", "M", "M", "M", "Door32", "M",
+			"M", "Door32", "M", "M", "M", "M",
+			"M", "M", "Door32", "M", "M", "M",
+
+			"", "", "", "", "", "",
+			"", "", "", "", "", "",
+			"", "", "", "", "", "",
+			"", "", "", "", "", "",
+
+			"M", "M", "M", "M", "M", "M",
+			"M", "M", "M", "M", "M", "M",
+			"M", "M", "M", "M", "M", "M",
+			"M", "M", "M", "M", "M", "M",
+
+			"M", "M", "M", "Keypad04", "M", "M",
+			"M", "M", "M", "M", "Keypad04", "M",
+			"M", "Keypad04", "M", "M", "M", "M",
+			"M", "M", "Keypad04", "M", "M", "M",
+			};
+
+		/// <summary>
+		/// Метод записывает объект окружения на карту
+		/// </summary>
+		/// <param name="SW">Дескриптор файла карты</param>
+		/// <param name="RelativePosition">Относительная позиция точки создания</param>
+		/// <param name="NearbyWalls">Доступные с указанной позиции стены</param>
+		/// <param name="WallTexture">Текстура окружающей стены</param>
+		/// <param name="Rnd">ГПСЧ</param>
+		/// <param name="PropIndices">Индексы доступных объектов окружения</param>
+		public static void WriteMapProp (StreamWriter SW, Point RelativePosition, int[] PropIndices,
+			CPResults NearbyWalls, string WallTexture, Random Rnd)
+			{
+			// Контроль
+			if (NearbyWalls == CPResults.None)
+				return; // Нет подходящих стен
+
+			// Расчёт параметров
+			int x = RelativePosition.X * WallLength / 2;
+			int y = RelativePosition.Y * WallLength / 2;
+
+			// Выбор варианта расположения
+			List<CPResults> placements = new List<CPResults> ();
+			if ((int)(NearbyWalls & CPResults.Right) != 0)
+				placements.Add (CPResults.Right);
+			if ((int)(NearbyWalls & CPResults.Left) != 0)
+				placements.Add (CPResults.Left);
+			if ((int)(NearbyWalls & CPResults.Down) != 0)
+				placements.Add (CPResults.Down);
+			if ((int)(NearbyWalls & CPResults.Up) != 0)
+				placements.Add (CPResults.Up);
+			CPResults placement = placements[Rnd.Next (placements.Count)];
+
+			// Расчёт координат
+			int propIndex = PropIndices[Rnd.Next (PropIndices.Length)];
+			int[] coords = new int[6];
+			for (int i = 0; i < coords.Length; i++)
+				coords[i] = propsCoords[i + coords.Length * propIndex];
+
+			int v;
+			int texIndex = 1;
+			if (placement == CPResults.Right)
+				{
+				v = coords[0] * -1;
+				coords[0] = coords[3] * -1;
+				coords[3] = v;
+
+				texIndex = 0;
+				}
+			else if (placement == CPResults.Down)
+				{
+				v = coords[0];
+				coords[0] = coords[1];
+				coords[1] = v;
+				v = coords[3];
+				coords[3] = coords[4];
+				coords[4] = v;
+
+				texIndex = 2;
+				}
+			else if (placement == CPResults.Up)
+				{
+				v = coords[0] * -1;
+				coords[0] = coords[4] * -1;
+				coords[4] = v;
+				v = coords[3] * -1;
+				coords[3] = coords[1] * -1;
+				coords[1] = v;
+
+				texIndex = 3;
+				}
+
+			// Введение смещения
+			coords[0] += x;
+			coords[3] += x;
+			coords[1] += y;
+			coords[4] += y;
+
+			// Сборка линии текстур
+			string[] tex = new string[coords.Length];
+			for (int i = 0; i < tex.Length; i++)
+				{
+				int j = 24 * propIndex + tex.Length * texIndex + i;
+				if (string.IsNullOrWhiteSpace (propsTextures[j]))
+					tex[i] = WallTexture;
+				else if (propsTextures[j] == "M")
+					tex[i] = "Metal08";
+				else
+					tex[i] = propsTextures[j];
+				}
+
+			// Запись
+			WriteBlock (SW, coords[0].ToString (), coords[1].ToString (), coords[2].ToString (),
+				coords[3].ToString (), coords[4].ToString (), coords[5].ToString (), tex, BlockTypes.Door);
+			}
 		}
 	}
