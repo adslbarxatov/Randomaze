@@ -1532,14 +1532,16 @@ namespace RD_AAOW
 			-64, -32, 0, -32, 32, 32,		// 7. Стол с ящиками
 			-64, -16, 0, 64, 16, 36,		// 8. Стол-перегородка
 
-			-64, -48, 0, -32, 48, 24,		// 9. Скамейка 1
-			-64, -48, 0, -32, 48, 24,		// 10. Скамейка 2
+			-64, -56, 0, -32, 56, 24,		// 9. Скамейка 1
+			-64, -56, 0, -32, 56, 24,		// 10. Скамейка 2
 
 			-64, -32, 0, -40, 32, 96,		// 11. Электрощит
-			-64, -16, 0, -32, 16, 144,		// 12. Труба 1
-			-64, -16, 0, -32, 16, 144,		// 13. Труба 2
+			-64, -16, 0, -32, 16, 144,		// 12. Труба (стена)
+			-64, -16, 0, -32, 16, 144,		// 13. Труба (металл)
 
 			-64, -32, 32, -52, 32, 64,		// 14. Панель индикаторов
+
+			-48, -8, 1, -32, 8, 127,		// 15. Малая труба (металл)
 			};
 
 		private static string[] propsTextures = new string[] {
@@ -1608,15 +1610,20 @@ namespace RD_AAOW
 			"", "", "", "", "", "",
 			"", "", "", "", "", "",
 
-			"M", "M", "M", "M", "M", "M",
-			"M", "M", "M", "M", "M", "M",
-			"M", "M", "M", "M", "M", "M",
-			"M", "M", "M", "M", "M", "M",
+			"Metal05", "Metal05", "Metal05", "Metal05", "Metal05", "Metal05",
+			"Metal05", "Metal05", "Metal05", "Metal05", "Metal05", "Metal05",
+			"Metal05", "Metal05", "Metal05", "Metal05", "Metal05", "Metal05",
+			"Metal05", "Metal05", "Metal05", "Metal05", "Metal05", "Metal05",
 
 			"M", "M", "M", "Keypad04", "M", "M",
 			"M", "M", "M", "M", "Keypad04", "M",
 			"M", "Keypad04", "M", "M", "M", "M",
 			"M", "M", "Keypad04", "M", "M", "M",
+
+			"Metal09", "Metal09", "Metal09", "Metal09", "Metal09", "Metal09",
+			"Metal09", "Metal09", "Metal09", "Metal09", "Metal09", "Metal09",
+			"Metal09", "Metal09", "Metal09", "Metal09", "Metal09", "Metal09",
+			"Metal09", "Metal09", "Metal09", "Metal09", "Metal09", "Metal09",
 			};
 
 		/// <summary>
@@ -1628,12 +1635,12 @@ namespace RD_AAOW
 		/// <param name="WallTexture">Текстура окружающей стены</param>
 		/// <param name="Rnd">ГПСЧ</param>
 		/// <param name="PropIndices">Индексы доступных объектов окружения</param>
-		public static void WriteMapProp (StreamWriter SW, Point RelativePosition, int[] PropIndices,
+		public static bool WriteMapProp (StreamWriter SW, Point RelativePosition, int[] PropIndices,
 			CPResults NearbyWalls, string WallTexture, Random Rnd)
 			{
 			// Контроль
 			if (NearbyWalls == CPResults.None)
-				return; // Нет подходящих стен
+				return false; // Нет подходящих стен
 
 			// Расчёт параметров
 			int x = RelativePosition.X * WallLength / 2;
@@ -1704,7 +1711,7 @@ namespace RD_AAOW
 				if (string.IsNullOrWhiteSpace (propsTextures[j]))
 					tex[i] = WallTexture;
 				else if (propsTextures[j] == "M")
-					tex[i] = "Metal08";
+					tex[i] = "Metal06";
 				else
 					tex[i] = propsTextures[j];
 				}
@@ -1712,6 +1719,7 @@ namespace RD_AAOW
 			// Запись
 			WriteBlock (SW, coords[0].ToString (), coords[1].ToString (), coords[2].ToString (),
 				coords[3].ToString (), coords[4].ToString (), coords[5].ToString (), tex, BlockTypes.Door);
+			return true;
 			}
 		}
 	}
