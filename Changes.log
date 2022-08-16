@@ -1,5 +1,9 @@
 Randomaze changes log
 
+ToDo:
+- Двери внутри лабиринта;
+- Разделение индексов собираемых объектов и врагов
+
 Version 2.2:
 • Types of furniture are now correspond to types of exterior;
 • Fixed possible attachment of furniture items to exit doors;
