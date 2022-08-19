@@ -1,8 +1,11 @@
-_Changes for v 2.2_:
-- Types of furniture are now correspond to types of exterior;
-- Fixed possible attachment of furniture items to exit doors;
-- Adjusted algorithm of furniture generation;
-- Implemented the algorithm for map furniture generation. It properly skips enemies and crates and properly attaches to walls (skips windows and open air). Furniture kinds autoselection will be implemented in the next version (now all types can be found both under ceiling and under sky);
-- Steps replaced with special stones on the floor;
-- Implemented the settings window. It will be called on the first start of this version of the app or when `-s` key is specified;
-- Settings file has been replaced with the system registry. At the first start settings from the file will be automatically converted
+_Changes for v 3.0_:
+- App now has a manageable interface. It allows you to:
+    - change settings right before the map compilation without extraneous shortcuts;
+    - manually cleanup previous saves and compiled maps;
+    - interrupt the compilation if necessary;
+    - view error messages in a more convenient way.
+- All keys except `-m` and `-go` have been removed. Some of them have been implemented as new interface elements;
+- Added `-n` key that will enable generation of the extraneous maps. I. e. without this key map will not be generated if the required one already exists;
+- Adjusted furniture types for some locations;
+- Added visual doors for internal walls that have only one visible side;
+- Difficulty coefficient divided by `enemies density` and `items density`

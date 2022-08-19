@@ -26,19 +26,34 @@ namespace RD_AAOW
 		public uint MaximumMazeSizeCoefficient;
 
 		/// <summary>
-		/// Коэффициент сложности
+		/// Коэффициент плотности врагов
 		/// </summary>
-		public uint DifficultyCoefficient;
+		public uint EnemiesDensityCoefficient;
 
 		/// <summary>
-		/// Случайный коэффициент сложности
+		/// Случайный коэффициент плотности врагов
 		/// </summary>
-		public bool RandomDifficultyCoefficient;
+		public bool RandomEnemiesDensityCoefficient;
 
 		/// <summary>
-		/// Ограничение коэффициента сложности
+		/// Ограничение коэффициента плотности врагов
 		/// </summary>
-		public uint MaximumDifficultyCoefficient;
+		public uint MaximumEnemiesDensityCoefficient;
+
+		/// <summary>
+		/// Коэффициент плотности собираемых объектов
+		/// </summary>
+		public uint ItemsDensityCoefficient;
+
+		/// <summary>
+		/// Случайный коэффициент плотности собираемых объектов
+		/// </summary>
+		public bool RandomItemsDensityCoefficient;
+
+		/// <summary>
+		/// Ограничение коэффициента плотности собираемых объектов
+		/// </summary>
+		public uint MaximumItemsDensityCoefficient;
 
 		/// <summary>
 		/// Коэффициент насыщенности лабиринта стенами
@@ -125,10 +140,15 @@ namespace RD_AAOW
 			MazeSizeFlag.Checked = settings.RandomMazeSizeCoefficient;
 			MazeSizeFlag_CheckedChanged (null, null);
 
-			DifficultyTrack.Maximum = (int)settings.MaximumDifficultyCoefficient;
-			DifficultyTrack.Value = (int)settings.DifficultyCoefficient;
-			DifficultyFlag.Checked = settings.RandomDifficultyCoefficient;
-			DifficultyFlag_CheckedChanged (null, null);
+			EnemiesDensityTrack.Maximum = (int)settings.MaximumEnemiesDensityCoefficient;
+			EnemiesDensityTrack.Value = (int)settings.EnemiesDensityCoefficient;
+			EnemiesDensityFlag.Checked = settings.RandomEnemiesDensityCoefficient;
+			EnemiesDensityFlag_CheckedChanged (null, null);
+
+			ItemsDensityTrack.Maximum = (int)settings.MaximumItemsDensityCoefficient;
+			ItemsDensityTrack.Value = (int)settings.ItemsDensityCoefficient;
+			ItemsDensityFlag.Checked = settings.RandomItemsDensityCoefficient;
+			ItemsDensityFlag_CheckedChanged (null, null);
 
 			WallsDensityTrack.Maximum = (int)settings.MaximumWallsDensityCoefficient;
 			WallsDensityTrack.Value = (int)settings.WallsDensityCoefficient;
@@ -177,8 +197,11 @@ namespace RD_AAOW
 			settings.MazeSizeCoefficient = (uint)MazeSizeTrack.Value;
 			settings.RandomMazeSizeCoefficient = MazeSizeFlag.Checked;
 
-			settings.DifficultyCoefficient = (uint)DifficultyTrack.Value;
-			settings.RandomDifficultyCoefficient = DifficultyFlag.Checked;
+			settings.EnemiesDensityCoefficient = (uint)EnemiesDensityTrack.Value;
+			settings.RandomEnemiesDensityCoefficient = EnemiesDensityFlag.Checked;
+
+			settings.ItemsDensityCoefficient = (uint)ItemsDensityTrack.Value;
+			settings.RandomItemsDensityCoefficient = ItemsDensityFlag.Checked;
 
 			settings.WallsDensityCoefficient = (uint)WallsDensityTrack.Value;
 			settings.RandomWallsDensityCoefficient = WallsDensityFlag.Checked;
@@ -209,10 +232,16 @@ namespace RD_AAOW
 			MazeSizeTrack.BackColor = MazeSizeTrack.Enabled ? enabledColor : disabledColor;
 			}
 
-		private void DifficultyFlag_CheckedChanged (object sender, EventArgs e)
+		private void EnemiesDensityFlag_CheckedChanged (object sender, EventArgs e)
 			{
-			DifficultyTrack.Enabled = !DifficultyFlag.Checked;
-			DifficultyTrack.BackColor = DifficultyTrack.Enabled ? enabledColor : disabledColor;
+			EnemiesDensityTrack.Enabled = !EnemiesDensityFlag.Checked;
+			EnemiesDensityTrack.BackColor = EnemiesDensityTrack.Enabled ? enabledColor : disabledColor;
+			}
+
+		private void ItemsDensityFlag_CheckedChanged (object sender, EventArgs e)
+			{
+			ItemsDensityTrack.Enabled = !ItemsDensityFlag.Checked;
+			ItemsDensityTrack.BackColor = ItemsDensityTrack.Enabled ? enabledColor : disabledColor;
 			}
 
 		private void WallsDensityFlag_CheckedChanged (object sender, EventArgs e)

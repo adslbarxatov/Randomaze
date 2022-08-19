@@ -106,7 +106,7 @@ namespace RD_AAOW
 			int x = RelativePosition.X * WallLength / 2;
 			int y = RelativePosition.Y * WallLength / 2;
 
-			string mapName = Program.MainAlias + (MapNumber + 1).ToString (MapsNumbersFormat);
+			string mapName = RandomazeForm.MainAlias + (MapNumber + 1).ToString (MapsNumbersFormat);
 
 			// Запись
 			SW.Write ("{\n");
@@ -228,13 +228,13 @@ namespace RD_AAOW
 				{
 				SW.Write ("{\n");
 				SW.Write ("\"classname\" \"info_landmark\"\n");
-				SW.Write ("\"targetname\" \"" + Program.MainAlias + MapNumber.ToString (MapsNumbersFormat) + "m\"\n");
+				SW.Write ("\"targetname\" \"" + RandomazeForm.MainAlias + MapNumber.ToString (MapsNumbersFormat) + "m\"\n");
 				SW.Write ("\"origin\" \"" + xs + " " + ys + " 40\"\n");
 
 				SW.Write ("}\n{\n");
 				SW.Write ("\"classname\" \"trigger_changelevel\"\n");
-				SW.Write ("\"map\" \"" + Program.MainAlias + (MapNumber - 1).ToString (MapsNumbersFormat) + "\"\n");
-				SW.Write ("\"landmark\" \"" + Program.MainAlias + MapNumber.ToString (MapsNumbersFormat) + "m\"\n");
+				SW.Write ("\"map\" \"" + RandomazeForm.MainAlias + (MapNumber - 1).ToString (MapsNumbersFormat) + "\"\n");
+				SW.Write ("\"landmark\" \"" + RandomazeForm.MainAlias + MapNumber.ToString (MapsNumbersFormat) + "m\"\n");
 
 				WriteBlock (SW, x1, y1, z1, x2, y2, z2,
 					new string[] { TriggerTexture, TriggerTexture, TriggerTexture, TriggerTexture,
@@ -721,7 +721,7 @@ namespace RD_AAOW
 			string x1, y1, x2, y2;
 
 			// Вертикальная
-			if (RelativePosition.X % 2 == 0)
+			if (IsWallVertical (RelativePosition))
 				{
 				x1 = (x - 8).ToString ();
 				y1 = (y - 32).ToString ();
@@ -921,7 +921,7 @@ namespace RD_AAOW
 			SW.Write ("{\n");
 
 			// Вертикальная
-			if (RelativePosition.X % 2 == 0)
+			if (IsWallVertical (RelativePosition))
 				{
 				x1 = RelativePosition.X * WallLength / 2;
 				y1 = (RelativePosition.Y - 1) * WallLength / 2;
@@ -1073,6 +1073,16 @@ namespace RD_AAOW
 				}
 
 			SW.Write ("}\n");
+			}
+
+		/// <summary>
+		/// Метод определяет положение стены
+		/// </summary>
+		/// <param name="RelativePosition">Относительная позиция точки создания</param>
+		/// <returns>Возвращает true, если стена вертикальная</returns>
+		public static bool IsWallVertical (Point RelativePosition)
+			{
+			return (RelativePosition.X % 2 == 0);
 			}
 
 		/// <summary>
@@ -1328,7 +1338,7 @@ namespace RD_AAOW
 			SW.Write ("\"sounds\" \"1\"\n");
 			SW.Write ("\"WaveHeight\" \"0.1\"\n");
 			SW.Write ("\"newunit\" \"1\"\n");
-			SW.Write ("\"wad\" \"" + Program.MainWAD + "\"\n");
+			SW.Write ("\"wad\" \"" + RandomazeForm.MainWAD + "\"\n");
 
 			if (MapNumber == 1)
 				{

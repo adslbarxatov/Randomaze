@@ -1,4 +1,4 @@
-# Randomaze v 2.2
+# Randomaze v 3.0
 
 ES: Randomaze – The maps generator
 
@@ -34,19 +34,17 @@ The tool requires next compilation tools, directories and files for work:
 ### From the command line
 
 - `-go`: aborts start of the game (only map building will be performed).
-- `-c`: cleans *maps*, *save* and *sprites* directories.
 - `-m <map_name>`: compares specified map (currently saved map expected) with the last created.
-- `-s`: calls settings window.
-  Skips building of the new map if the next map is already available.
+- `-n`: forces the app to generate the next map even if the required map already exists.
 
 ### From the settings window
 
 - ***Maze size coefficient***. Range: `1 – 8`. `Random` flag (here and below) initiates the random selection.
-- ***Difficulty coefficient***. Range: `1 – 8`. Affects quantities of enemies and items / weapons on the map.
+- ***Enemies density coefficient***. Range: `1 – 8`. Affects quantity of enemies and crates on the map.
+- ***Items density coefficient***. Range: `1 – 8`. Affects quantity of collectable items / weapons on the map.
 - ***Walls density coefficient***. Range: `1 – 12`. The larger the value, the fewer “branches” the maze will have.
   `12` means almost a snake-shaped corridor, `1` is for a hangar with a few walls.
-- ***Crates density coefficient***. Range: `1 – 5`. Describes, how much enemies will be replaced with crates
-  with bugs or explosives.
+- ***Crates density coefficient***. Range: `1 – 5`. Describes, how much enemies will be replaced with crates with bugs or explosives.
 - ***Enemies permissions line***. Consists of flags of monsters that will be allowed on maps.
 - ***Button mode flag***. Adds the button to the map. This button must be found and pressed to open the exit gate.
 

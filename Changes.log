@@ -1,8 +1,22 @@
 Randomaze changes log
 
 ToDo:
-- Двери внутри лабиринта;
-- Разделение индексов собираемых объектов и врагов
+- Рефакторинг
+- Перевод окна настроек
+
+Version 3.0:
+• App now has a manageable interface. It allows you to:
+  - change settings right before the map compilation without extraneous shortcuts;
+  - manually cleanup previous saves and compiled maps;
+  - interrupt the compilation if necessary;
+  - view error messages in a more convenient way.
+• All keys except -m and -go have been removed. Some of them have been implemented as new
+  interface elements;
+• Added -n key that will enable generation of the extraneous maps. I. e. without this key map
+  will not be generated if the required one already exists;
+• Adjusted furniture types for some locations;
+• Added visual doors for internal walls that have only one visible side;
+• Difficulty coefficient divided by enemies density and items density
 
 Version 2.2:
 • Types of furniture are now correspond to types of exterior;
