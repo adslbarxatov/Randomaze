@@ -6,97 +6,6 @@ using System.Windows.Forms;
 namespace RD_AAOW
 	{
 	/// <summary>
-	/// Структура описывает настраиваемые параметры приложения
-	/// </summary>
-	public struct ESRMSettings
-		{
-		/// <summary>
-		/// Масштабный коэффициент размера лабиринта
-		/// </summary>
-		public uint MazeSizeCoefficient;
-
-		/// <summary>
-		/// Случайный масштабный коэффициент размера лабиринта
-		/// </summary>
-		public bool RandomMazeSizeCoefficient;
-
-		/// <summary>
-		/// Ограничение коэффициента размера лабиринта
-		/// </summary>
-		public uint MaximumMazeSizeCoefficient;
-
-		/// <summary>
-		/// Коэффициент плотности врагов
-		/// </summary>
-		public uint EnemiesDensityCoefficient;
-
-		/// <summary>
-		/// Случайный коэффициент плотности врагов
-		/// </summary>
-		public bool RandomEnemiesDensityCoefficient;
-
-		/// <summary>
-		/// Ограничение коэффициента плотности врагов
-		/// </summary>
-		public uint MaximumEnemiesDensityCoefficient;
-
-		/// <summary>
-		/// Коэффициент плотности собираемых объектов
-		/// </summary>
-		public uint ItemsDensityCoefficient;
-
-		/// <summary>
-		/// Случайный коэффициент плотности собираемых объектов
-		/// </summary>
-		public bool RandomItemsDensityCoefficient;
-
-		/// <summary>
-		/// Ограничение коэффициента плотности собираемых объектов
-		/// </summary>
-		public uint MaximumItemsDensityCoefficient;
-
-		/// <summary>
-		/// Коэффициент насыщенности лабиринта стенами
-		/// </summary>
-		public uint WallsDensityCoefficient;
-
-		/// <summary>
-		/// Случайный коэффициент насыщенности лабиринта стенами
-		/// </summary>
-		public bool RandomWallsDensityCoefficient;
-
-		/// <summary>
-		/// Ограничение коэффициента насыщенности лабиринта стенами
-		/// </summary>
-		public uint MaximumWallsDensityCoefficient;
-
-		/// <summary>
-		/// Режим блокировки выхода кнопкой
-		/// </summary>
-		public bool ButtonMode;
-
-		/// <summary>
-		/// Коэффициент преобразования врагов в ящики
-		/// </summary>
-		public uint CratesDensityCoefficient;
-
-		/// <summary>
-		/// Случайный коэффициент преобразования врагов в ящики
-		/// </summary>
-		public bool RandomCratesDensityCoefficient;
-
-		/// <summary>
-		/// Ограничение коэффициента преобразования врагов в ящики
-		/// </summary>
-		public uint MaximumCratesDensityCoefficient;
-
-		/// <summary>
-		/// Строка разрешённых врагов
-		/// </summary>
-		public string EnemiesPermissionLine;
-		}
-
-	/// <summary>
 	/// Класс описывает форму выбора параметров приложения
 	/// </summary>
 	public partial class SettingsForm:Form
@@ -117,18 +26,26 @@ namespace RD_AAOW
 		private List<CheckBox> enemiesFlags = new List<CheckBox> ();
 		private Color enabledColor = Color.FromArgb (0, 200, 0),
 			disabledColor = Color.FromArgb (200, 200, 200);
+		private SupportedLanguages al;
 
 		/// <summary>
 		/// Конструктор. Запускает форму
 		/// </summary>
 		/// <param name="OldSettings">Параметры, полученные из файла настроек</param>
-		public SettingsForm (ESRMSettings OldSettings)
+		/// <param name="InterfaceLanguage">Язык интерфейса</param>
+		public SettingsForm (ESRMSettings OldSettings, SupportedLanguages InterfaceLanguage)
 			{
 			// Инициализация и локализация формы
 			InitializeComponent ();
 
+			al = InterfaceLanguage;
+			Localization.SetControlsText (this, al);
+			Localization.SetControlsText (EnemiesContainer, al);
+			MazeSizeFlag.Text = EnemiesDensityFlag.Text = ItemsDensityFlag.Text =
+				CratesDensityFlag.Text = WallsDensityFlag.Text = Localization.GetText ("SettingsForm_Random", al);
+
 			this.TopMost = true;
-			this.Text = ProgramDescription.AssemblyTitle + ": settings";
+			this.Text = ProgramDescription.AssemblyTitle + ": " + Localization.GetText ("SettingsForm_T", al);
 			this.CancelButton = AbortButton;
 			this.AcceptButton = ApplyButton;
 

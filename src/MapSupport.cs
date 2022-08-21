@@ -25,10 +25,20 @@ namespace RD_AAOW
 		/// </summary>
 		public const int MapsLimit = 999;
 
-		/// <summary>
+		/*/// <summary>
 		/// Возвращает формат номеров карт
 		/// </summary>
-		public const string MapsNumbersFormat = "D3";
+		public const string MapsNumbersFormat = "D3";*/
+
+		/// <summary>
+		/// Метод формирует каноничное имя карты по её номеру
+		/// </summary>
+		/// <param name="MapNumber">Номер карты</param>
+		/// <returns>Строка с название карты</returns>
+		public static string BuildMapName (uint MapNumber)
+			{
+			return RandomazeForm.MainAlias + MapNumber.ToString ("D3");
+			}
 
 		/// <summary>
 		/// Метод записывает точку выхода с карты
@@ -106,7 +116,8 @@ namespace RD_AAOW
 			int x = RelativePosition.X * WallLength / 2;
 			int y = RelativePosition.Y * WallLength / 2;
 
-			string mapName = RandomazeForm.MainAlias + (MapNumber + 1).ToString (MapsNumbersFormat);
+			/*string mapName = RandomazeForm.MainAlias + (MapNumber + 1).ToString (MapsNumbersFormat);*/
+			string mapName = BuildMapName (MapNumber + 1);
 
 			// Запись
 			SW.Write ("{\n");
@@ -228,13 +239,22 @@ namespace RD_AAOW
 				{
 				SW.Write ("{\n");
 				SW.Write ("\"classname\" \"info_landmark\"\n");
-				SW.Write ("\"targetname\" \"" + RandomazeForm.MainAlias + MapNumber.ToString (MapsNumbersFormat) + "m\"\n");
+				SW.Write ("\"targetname\" \"" +
+					/*RandomazeForm.MainAlias + MapNumber.ToString (MapsNumbersFormat) +*/
+					BuildMapName (MapNumber) +
+					"m\"\n");
 				SW.Write ("\"origin\" \"" + xs + " " + ys + " 40\"\n");
 
 				SW.Write ("}\n{\n");
 				SW.Write ("\"classname\" \"trigger_changelevel\"\n");
-				SW.Write ("\"map\" \"" + RandomazeForm.MainAlias + (MapNumber - 1).ToString (MapsNumbersFormat) + "\"\n");
-				SW.Write ("\"landmark\" \"" + RandomazeForm.MainAlias + MapNumber.ToString (MapsNumbersFormat) + "m\"\n");
+				SW.Write ("\"map\" \"" +
+					/*RandomazeForm.MainAlias + (MapNumber - 1).ToString (MapsNumbersFormat) + */
+					BuildMapName (MapNumber - 1) +
+					"\"\n");
+				SW.Write ("\"landmark\" \"" +
+					/*RandomazeForm.MainAlias + MapNumber.ToString (MapsNumbersFormat) + */
+					BuildMapName (MapNumber) +
+					"m\"\n");
 
 				WriteBlock (SW, x1, y1, z1, x2, y2, z2,
 					new string[] { TriggerTexture, TriggerTexture, TriggerTexture, TriggerTexture,
@@ -666,7 +686,10 @@ namespace RD_AAOW
 			SW.Write ("\"wait\" \"-1\"\n");
 			SW.Write ("\"lip\" \"9\"\n");
 			if (MapNumber <= MapsLimit)
-				SW.Write ("\"targetname\" \"Gate" + MapNumber.ToString (MapsNumbersFormat) + "\"\n");
+				SW.Write ("\"targetname\" \"Gate" +
+					/*MapNumber.ToString (MapsNumbersFormat) + */
+					BuildMapName (MapNumber) +
+					"\"\n");
 
 			WriteMapBarrier (SW, RelativePosition, BarrierTypes.Gate, tex);
 
@@ -689,7 +712,10 @@ namespace RD_AAOW
 			// Запись
 			SW.Write ("{\n");
 			SW.Write ("\"classname\" \"func_button\"\n");
-			SW.Write ("\"target\" \"Gate" + MapNumber.ToString (MapsNumbersFormat) + "\"\n");
+			SW.Write ("\"target\" \"Gate" +
+				/*MapNumber.ToString (MapsNumbersFormat) + */
+				BuildMapName (MapNumber) +
+				"\"\n");
 			SW.Write ("\"spawnflags\" \"1\"\n");
 			SW.Write ("\"delay\" \"1\"\n");
 			SW.Write ("\"speed\" \"50\"\n");
@@ -1330,7 +1356,10 @@ namespace RD_AAOW
 			{
 			SW.Write ("{\n");
 			SW.Write ("\"classname\" \"worldspawn\"\n");
-			SW.Write ("\"message\" \"ESHQ: Randomaze #" + MapNumber.ToString (MapsNumbersFormat) + " by FDL\"\n");
+			SW.Write ("\"message\" \"ES: Randomaze map " +
+				/*MapNumber.ToString (MapsNumbersFormat) + */
+				BuildMapName (MapNumber) +
+				" by FDL\"\n");
 			SW.Write ("\"MaxRange\" \"3000\"\n");
 			SW.Write ("\"mapversion\" \"220\"\n");
 			SW.Write ("\"skyname\" \"eshq_desmor_\"\n");
@@ -1528,7 +1557,7 @@ namespace RD_AAOW
 			Up = 0x8
 			}
 
-		// Массивы и текстуры шаблонов окружения
+		/*// Массивы и текстуры шаблонов окружения
 		private static int[] propsCoords = new int[] {
 			-64, -32, 0, -40, 32, 128,		// 0. Компьютер 1
 			-64, -32, 0, -40, 32, 128,		// 1. Компьютер 2
@@ -1552,9 +1581,9 @@ namespace RD_AAOW
 			-64, -32, 32, -52, 32, 64,		// 14. Панель индикаторов
 
 			-48, -8, 1, -32, 8, 127,		// 15. Малая труба (металл)
-			};
+			};*/
 
-		private static string[] propsTextures = new string[] {
+		/*private static string[] propsTextures = new string[] {
 			"", "", "", "+0_Computer01", "", "",	// R
 			"", "", "", "", "+0_Computer01", "",	// L
 			"", "+0_Computer01", "", "", "", "",	// D
@@ -1634,18 +1663,18 @@ namespace RD_AAOW
 			"Metal09", "Metal09", "Metal09", "Metal09", "Metal09", "Metal09",
 			"Metal09", "Metal09", "Metal09", "Metal09", "Metal09", "Metal09",
 			"Metal09", "Metal09", "Metal09", "Metal09", "Metal09", "Metal09",
-			};
+			};*/
 
 		/// <summary>
-		/// Метод записывает объект окружения на карту
+		/// Метод записывает мебель на карту
 		/// </summary>
 		/// <param name="SW">Дескриптор файла карты</param>
 		/// <param name="RelativePosition">Относительная позиция точки создания</param>
-		/// <param name="NearbyWalls">Доступные с указанной позиции стены</param>
+		/// <param name="NearbyWalls">Доступные (с указанной позиции) стены</param>
 		/// <param name="WallTexture">Текстура окружающей стены</param>
 		/// <param name="Rnd">ГПСЧ</param>
-		/// <param name="PropIndices">Индексы доступных объектов окружения</param>
-		public static bool WriteMapProp (StreamWriter SW, Point RelativePosition, int[] PropIndices,
+		/// <param name="FurnitureIndex">Индекс мебели</param>
+		public static bool WriteMapFurniture (StreamWriter SW, Point RelativePosition, uint FurnitureIndex,
 			CPResults NearbyWalls, string WallTexture, Random Rnd)
 			{
 			// Контроль
@@ -1669,12 +1698,11 @@ namespace RD_AAOW
 			CPResults placement = placements[Rnd.Next (placements.Count)];
 
 			// Расчёт координат
-			int propIndex = PropIndices[Rnd.Next (PropIndices.Length)];
-			int[] coords = new int[6];
-			for (int i = 0; i < coords.Length; i++)
-				coords[i] = propsCoords[i + coords.Length * propIndex];
+			int[] coords = Furniture.GetFurniture (FurnitureIndex, placement).Coordinates;
+			/*for (int i = 0; i < coords.Length; i++)
+				coords[i] = propsCoords[i + coords.Length * FurnitureIndex];*/
 
-			int v;
+			/*int v;
 			int texIndex = 1;
 			if (placement == CPResults.Right)
 				{
@@ -1705,7 +1733,7 @@ namespace RD_AAOW
 				coords[1] = v;
 
 				texIndex = 3;
-				}
+				}*/
 
 			// Введение смещения
 			coords[0] += x;
@@ -1714,16 +1742,16 @@ namespace RD_AAOW
 			coords[4] += y;
 
 			// Сборка линии текстур
-			string[] tex = new string[coords.Length];
+			string[] tex = Furniture.GetFurniture (FurnitureIndex, placement).Textures;
 			for (int i = 0; i < tex.Length; i++)
 				{
-				int j = 24 * propIndex + tex.Length * texIndex + i;
-				if (string.IsNullOrWhiteSpace (propsTextures[j]))
+				/*int j = 24 * FurnitureIndex + tex.Length * texIndex + i;*/
+				if (string.IsNullOrWhiteSpace (tex[i]))
 					tex[i] = WallTexture;
-				else if (propsTextures[j] == "M")
+				/*else if (propsTextures[j] == "M")
 					tex[i] = "Metal06";
 				else
-					tex[i] = propsTextures[j];
+					tex[i] = propsTextures[j];*/
 				}
 
 			// Запись

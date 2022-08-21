@@ -1,4 +1,7 @@
-_Changes for v 3.0_:
+_Changes for v 3.1_:
+- Code for map sections has been completely refactored;
+- Removed redundant code;
+- Fixed some interface bugs;
 - App now has a manageable interface. It allows you to:
     - change settings right before the map compilation without extraneous shortcuts;
     - manually cleanup previous saves and compiled maps;

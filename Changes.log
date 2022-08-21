@@ -1,8 +1,9 @@
 Randomaze changes log
 
-ToDo:
-- Рефакторинг
-- Перевод окна настроек
+Version 3.1:
+• Code for map sections has been completely refactored;
+• Some redundant code has been removed;
+• Fixed some interface bugs
 
 Version 3.0:
 • App now has a manageable interface. It allows you to:
