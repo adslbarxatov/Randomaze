@@ -1,5 +1,10 @@
 Randomaze changes log
 
+ToDo:
+- Recompilation after settings changes;
+- Remove extraneous command line keys;
+- Split pre- and post-compilation operations
+
 Version 3.1:
 • Code for map sections has been completely refactored;
 • Some redundant code has been removed;
