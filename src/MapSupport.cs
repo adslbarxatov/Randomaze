@@ -25,11 +25,6 @@ namespace RD_AAOW
 		/// </summary>
 		public const int MapsLimit = 999;
 
-		/*/// <summary>
-		/// Возвращает формат номеров карт
-		/// </summary>
-		public const string MapsNumbersFormat = "D3";*/
-
 		/// <summary>
 		/// Метод формирует каноничное имя карты по её номеру
 		/// </summary>
@@ -115,8 +110,6 @@ namespace RD_AAOW
 			// Расчёт параметров
 			int x = RelativePosition.X * WallLength / 2;
 			int y = RelativePosition.Y * WallLength / 2;
-
-			/*string mapName = RandomazeForm.MainAlias + (MapNumber + 1).ToString (MapsNumbersFormat);*/
 			string mapName = BuildMapName (MapNumber + 1);
 
 			// Запись
@@ -239,22 +232,13 @@ namespace RD_AAOW
 				{
 				SW.Write ("{\n");
 				SW.Write ("\"classname\" \"info_landmark\"\n");
-				SW.Write ("\"targetname\" \"" +
-					/*RandomazeForm.MainAlias + MapNumber.ToString (MapsNumbersFormat) +*/
-					BuildMapName (MapNumber) +
-					"m\"\n");
+				SW.Write ("\"targetname\" \"" + BuildMapName (MapNumber) + "m\"\n");
 				SW.Write ("\"origin\" \"" + xs + " " + ys + " 40\"\n");
 
 				SW.Write ("}\n{\n");
 				SW.Write ("\"classname\" \"trigger_changelevel\"\n");
-				SW.Write ("\"map\" \"" +
-					/*RandomazeForm.MainAlias + (MapNumber - 1).ToString (MapsNumbersFormat) + */
-					BuildMapName (MapNumber - 1) +
-					"\"\n");
-				SW.Write ("\"landmark\" \"" +
-					/*RandomazeForm.MainAlias + MapNumber.ToString (MapsNumbersFormat) + */
-					BuildMapName (MapNumber) +
-					"m\"\n");
+				SW.Write ("\"map\" \"" + BuildMapName (MapNumber - 1) + "\"\n");
+				SW.Write ("\"landmark\" \"" + BuildMapName (MapNumber) + "m\"\n");
 
 				WriteBlock (SW, x1, y1, z1, x2, y2, z2,
 					new string[] { TriggerTexture, TriggerTexture, TriggerTexture, TriggerTexture,
@@ -686,10 +670,7 @@ namespace RD_AAOW
 			SW.Write ("\"wait\" \"-1\"\n");
 			SW.Write ("\"lip\" \"9\"\n");
 			if (MapNumber <= MapsLimit)
-				SW.Write ("\"targetname\" \"Gate" +
-					/*MapNumber.ToString (MapsNumbersFormat) + */
-					BuildMapName (MapNumber) +
-					"\"\n");
+				SW.Write ("\"targetname\" \"Gate" + BuildMapName (MapNumber) + "\"\n");
 
 			WriteMapBarrier (SW, RelativePosition, BarrierTypes.Gate, tex);
 
@@ -712,10 +693,7 @@ namespace RD_AAOW
 			// Запись
 			SW.Write ("{\n");
 			SW.Write ("\"classname\" \"func_button\"\n");
-			SW.Write ("\"target\" \"Gate" +
-				/*MapNumber.ToString (MapsNumbersFormat) + */
-				BuildMapName (MapNumber) +
-				"\"\n");
+			SW.Write ("\"target\" \"Gate" + BuildMapName (MapNumber) + "\"\n");
 			SW.Write ("\"spawnflags\" \"1\"\n");
 			SW.Write ("\"delay\" \"1\"\n");
 			SW.Write ("\"speed\" \"50\"\n");
@@ -1356,10 +1334,7 @@ namespace RD_AAOW
 			{
 			SW.Write ("{\n");
 			SW.Write ("\"classname\" \"worldspawn\"\n");
-			SW.Write ("\"message\" \"ES: Randomaze map " +
-				/*MapNumber.ToString (MapsNumbersFormat) + */
-				BuildMapName (MapNumber) +
-				" by FDL\"\n");
+			SW.Write ("\"message\" \"ES: Randomaze map " + BuildMapName (MapNumber) + " by FDL\"\n");
 			SW.Write ("\"MaxRange\" \"3000\"\n");
 			SW.Write ("\"mapversion\" \"220\"\n");
 			SW.Write ("\"skyname\" \"eshq_desmor_\"\n");
@@ -1557,114 +1532,6 @@ namespace RD_AAOW
 			Up = 0x8
 			}
 
-		/*// Массивы и текстуры шаблонов окружения
-		private static int[] propsCoords = new int[] {
-			-64, -32, 0, -40, 32, 128,		// 0. Компьютер 1
-			-64, -32, 0, -40, 32, 128,		// 1. Компьютер 2
-			-64, -32, 0, -40, 32, 128,		// 2. Компьютер 3
-
-			-64, -32, 32, -52, 32, 64,		// 3. Пульт 1
-			-64, -32, 32, -52, 32, 64,		// 4. Пульт 2
-			-64, -32, 32, -52, 32, 64,		// 5. Пульт 3
-			-64, -32, 32, -52, 32, 64,		// 6. Пульт 4
-
-			-64, -32, 0, -32, 32, 32,		// 7. Стол с ящиками
-			-64, -16, 0, 64, 16, 36,		// 8. Стол-перегородка
-
-			-64, -56, 0, -32, 56, 24,		// 9. Скамейка 1
-			-64, -56, 0, -32, 56, 24,		// 10. Скамейка 2
-
-			-64, -32, 0, -40, 32, 96,		// 11. Электрощит
-			-64, -16, 0, -32, 16, 144,		// 12. Труба (стена)
-			-64, -16, 0, -32, 16, 144,		// 13. Труба (металл)
-
-			-64, -32, 32, -52, 32, 64,		// 14. Панель индикаторов
-
-			-48, -8, 1, -32, 8, 127,		// 15. Малая труба (металл)
-			};*/
-
-		/*private static string[] propsTextures = new string[] {
-			"", "", "", "+0_Computer01", "", "",	// R
-			"", "", "", "", "+0_Computer01", "",	// L
-			"", "+0_Computer01", "", "", "", "",	// D
-			"", "", "+0_Computer01", "", "", "",	// U
-
-			"", "", "", "+0_Computer09", "", "",
-			"", "", "", "", "+0_Computer09", "",
-			"", "+0_Computer09", "", "", "", "",
-			"", "", "+0_Computer09", "", "", "",
-
-			"", "", "", "+0_Computer10", "", "",
-			"", "", "", "", "+0_Computer10", "",
-			"", "+0_Computer10", "", "", "", "",
-			"", "", "+0_Computer10", "", "", "",
-
-			"M", "M", "M", "+0_Computer04", "M", "M",
-			"M", "M", "M", "M", "+0_Computer04", "M",
-			"M", "+0_Computer04", "M", "M", "M", "M",
-			"M", "M", "+0_Computer04", "M", "M", "M",
-
-			"M", "M", "M", "+0_Computer05", "M", "M",
-			"M", "M", "M", "M", "+0_Computer05", "M",
-			"M", "+0_Computer05", "M", "M", "M", "M",
-			"M", "M", "+0_Computer05", "M", "M", "M",
-
-			"M", "M", "M", "+0_Computer07", "M", "M",
-			"M", "M", "M", "M", "+0_Computer07", "M",
-			"M", "+0_Computer07", "M", "M", "M", "M",
-			"M", "M", "+0_Computer07", "M", "M", "M",
-
-			"M", "M", "M", "+0_Computer08", "M", "M",
-			"M", "M", "M", "M", "+0_Computer08", "M",
-			"M", "+0_Computer08", "M", "M", "M", "M",
-			"M", "M", "+0_Computer08", "M", "M", "M",
-
-			"Wood02", "", "", "Box01", "", "",
-			"Wood02", "", "", "", "Box01", "",
-			"Wood02", "Box01", "", "", "", "",
-			"Wood02", "", "Box01", "", "", "",
-
-			"Wood02", "", "", "", "", "",
-			"Wood02", "", "", "", "", "",
-			"Wood02", "", "", "", "", "",
-			"Wood02", "", "", "", "", "",
-
-			"Fabric01", "", "", "Fabric01", "", "",
-			"Fabric01", "", "", "", "Fabric01", "",
-			"Fabric01", "Fabric01", "", "", "", "",
-			"Fabric01", "", "Fabric01", "", "", "",
-
-			"Fabric02", "", "", "Fabric02", "", "",
-			"Fabric02", "", "", "", "Fabric02", "",
-			"Fabric02", "Fabric02", "", "", "", "",
-			"Fabric02", "", "Fabric02", "", "", "",
-
-			"M", "M", "M", "Door32", "M", "M",
-			"M", "M", "M", "M", "Door32", "M",
-			"M", "Door32", "M", "M", "M", "M",
-			"M", "M", "Door32", "M", "M", "M",
-
-			"", "", "", "", "", "",
-			"", "", "", "", "", "",
-			"", "", "", "", "", "",
-			"", "", "", "", "", "",
-
-			"Metal05", "Metal05", "Metal05", "Metal05", "Metal05", "Metal05",
-			"Metal05", "Metal05", "Metal05", "Metal05", "Metal05", "Metal05",
-			"Metal05", "Metal05", "Metal05", "Metal05", "Metal05", "Metal05",
-			"Metal05", "Metal05", "Metal05", "Metal05", "Metal05", "Metal05",
-
-			"M", "M", "M", "Keypad04", "M", "M",
-			"M", "M", "M", "M", "Keypad04", "M",
-			"M", "Keypad04", "M", "M", "M", "M",
-			"M", "M", "Keypad04", "M", "M", "M",
-
-			"Metal09", "Metal09", "Metal09", "Metal09", "Metal09", "Metal09",
-			"Metal09", "Metal09", "Metal09", "Metal09", "Metal09", "Metal09",
-			"Metal09", "Metal09", "Metal09", "Metal09", "Metal09", "Metal09",
-			"Metal09", "Metal09", "Metal09", "Metal09", "Metal09", "Metal09",
-			};*/
-
 		/// <summary>
 		/// Метод записывает мебель на карту
 		/// </summary>
@@ -1699,41 +1566,6 @@ namespace RD_AAOW
 
 			// Расчёт координат
 			int[] coords = Furniture.GetFurniture (FurnitureIndex, placement).Coordinates;
-			/*for (int i = 0; i < coords.Length; i++)
-				coords[i] = propsCoords[i + coords.Length * FurnitureIndex];*/
-
-			/*int v;
-			int texIndex = 1;
-			if (placement == CPResults.Right)
-				{
-				v = coords[0] * -1;
-				coords[0] = coords[3] * -1;
-				coords[3] = v;
-
-				texIndex = 0;
-				}
-			else if (placement == CPResults.Down)
-				{
-				v = coords[0];
-				coords[0] = coords[1];
-				coords[1] = v;
-				v = coords[3];
-				coords[3] = coords[4];
-				coords[4] = v;
-
-				texIndex = 2;
-				}
-			else if (placement == CPResults.Up)
-				{
-				v = coords[0] * -1;
-				coords[0] = coords[4] * -1;
-				coords[4] = v;
-				v = coords[3] * -1;
-				coords[3] = coords[1] * -1;
-				coords[1] = v;
-
-				texIndex = 3;
-				}*/
 
 			// Введение смещения
 			coords[0] += x;
@@ -1745,13 +1577,8 @@ namespace RD_AAOW
 			string[] tex = Furniture.GetFurniture (FurnitureIndex, placement).Textures;
 			for (int i = 0; i < tex.Length; i++)
 				{
-				/*int j = 24 * FurnitureIndex + tex.Length * texIndex + i;*/
 				if (string.IsNullOrWhiteSpace (tex[i]))
 					tex[i] = WallTexture;
-				/*else if (propsTextures[j] == "M")
-					tex[i] = "Metal06";
-				else
-					tex[i] = propsTextures[j];*/
 				}
 
 			// Запись

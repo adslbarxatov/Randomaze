@@ -1,4 +1,4 @@
-# Randomaze v 3.1
+# Randomaze v 3.2
 
 ES: Randomaze – The maps generator
 
@@ -33,9 +33,9 @@ The tool requires next compilation tools, directories and files for work:
 
 ### From the command line
 
-- `-go`: aborts start of the game (only map building will be performed).
-- `-m <map_name>`: compares specified map (currently saved map expected) with the last created.
-- `-n`: forces the app to generate the next map even if the required map already exists.
+- `-go` [*legacy*]: aborts start of the game (only map building will be performed).
+- `-n` [*legacy*]: forces the app to generate the next map even if the required map already exists.
+- `-x <map_name>`: compares specified map (currently saved map expected) with the last created one. Also enables `-go` and `-n` keys.
 
 ### From the settings window
 
