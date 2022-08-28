@@ -45,6 +45,8 @@ The tool requires next compilation tools, directories and files for work:
 - ***Walls density coefficient***. Range: `1 – 12`. The larger the value, the fewer “branches” the maze will have.
   `12` means almost a snake-shaped corridor, `1` is for a hangar with a few walls.
 - ***Crates density coefficient***. Range: `1 – 5`. Describes, how much enemies will be replaced with crates with bugs or explosives.
+- ***Lighting coefficient***. Range: `1 – 5`. Affects quantity of enabled lights and the type of the sky.
+- ***Map section types***. Supports “all types”, “only under sky” and “only inside the room” variants.
 - ***Enemies permissions line***. Consists of flags of monsters that will be allowed on maps.
 - ***Button mode flag***. Adds the button to the map. This button must be found and pressed to open the exit gate.
 

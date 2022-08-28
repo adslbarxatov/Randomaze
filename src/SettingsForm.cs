@@ -42,7 +42,8 @@ namespace RD_AAOW
 			Localization.SetControlsText (this, al);
 			Localization.SetControlsText (EnemiesContainer, al);
 			MazeSizeFlag.Text = EnemiesDensityFlag.Text = ItemsDensityFlag.Text =
-				CratesDensityFlag.Text = WallsDensityFlag.Text = Localization.GetText ("SettingsForm_Random", al);
+				CratesDensityFlag.Text = WallsDensityFlag.Text = LightingFlag.Text =
+				Localization.GetText ("SettingsForm_Random", al);
 
 			this.TopMost = true;
 			this.Text = ProgramDescription.AssemblyTitle + ": " + Localization.GetText ("SettingsForm_T", al);
@@ -77,6 +78,11 @@ namespace RD_AAOW
 			CratesDensityFlag.Checked = settings.RandomCratesDensityCoefficient;
 			CratesDensityFlag_CheckedChanged (null, null);
 
+			LightingTrack.Maximum = (int)settings.MaximumLightingCoefficient;
+			LightingTrack.Value = (int)settings.LightingCoefficient;
+			LightingFlag.Checked = settings.RandomLightingCoefficient;
+			LightingFlag_CheckedChanged (null, null);
+
 			ButtonModeFlag.Checked = settings.ButtonMode;
 
 			for (int i = 0; i < MapSupport.EnemiesPermissionsKeys.Length; i++)
@@ -84,6 +90,22 @@ namespace RD_AAOW
 
 			for (int i = 0; i < MapSupport.EnemiesPermissionsKeys.Length; i++)
 				enemiesFlags[i].Checked = settings.EnemiesPermissionLine.Contains (MapSupport.EnemiesPermissionsKeys[i]);
+
+			switch (settings.SectionType)
+				{
+				default:
+				case MapSectionTypes.AllTypes:
+					AllTypesRadio.Checked = true;
+					break;
+
+				case MapSectionTypes.OnlyUnderSky:
+					OnlySkyRadio.Checked = true;
+					break;
+
+				case MapSectionTypes.OnlyInside:
+					OnlyInsideRadio.Checked = true;
+					break;
+				}
 
 			// Запуск
 			this.ShowDialog ();
@@ -126,6 +148,9 @@ namespace RD_AAOW
 			settings.CratesDensityCoefficient = (uint)CratesDensityTrack.Value;
 			settings.RandomCratesDensityCoefficient = CratesDensityFlag.Checked;
 
+			settings.LightingCoefficient = (uint)LightingTrack.Value;
+			settings.RandomLightingCoefficient = LightingFlag.Checked;
+
 			settings.ButtonMode = ButtonModeFlag.Checked;
 
 			settings.EnemiesPermissionLine = "";
@@ -136,6 +161,13 @@ namespace RD_AAOW
 				else
 					settings.EnemiesPermissionLine += "-";
 				}
+
+			if (OnlyInsideRadio.Checked)
+				settings.SectionType = MapSectionTypes.OnlyInside;
+			else if (OnlySkyRadio.Checked)
+				settings.SectionType = MapSectionTypes.OnlyUnderSky;
+			else
+				settings.SectionType = MapSectionTypes.AllTypes;
 
 			// Выход
 			cancelled = false;
@@ -171,6 +203,31 @@ namespace RD_AAOW
 			{
 			CratesDensityTrack.Enabled = !CratesDensityFlag.Checked;
 			CratesDensityTrack.BackColor = CratesDensityTrack.Enabled ? enabledColor : disabledColor;
+			}
+
+		private void LightingFlag_CheckedChanged (object sender, EventArgs e)
+			{
+			LightingTrack.Enabled = !LightingFlag.Checked;
+			LightingTrack.BackColor = LightingTrack.Enabled ? enabledColor : disabledColor;
+			}
+
+		// Ограничение суммарного коэффициента размерности лабиринта и плотности стен
+		private int sizeWallsDifferenceLimit = 6;
+		private void MazeSizeTrack_Scroll (object sender, EventArgs e)
+			{
+			int coeff = (int)settings.MaximumWallsDensityCoefficient - WallsDensityTrack.Value + MazeSizeTrack.Value;
+			int limit = (int)(settings.MaximumMazeSizeCoefficient + settings.MaximumWallsDensityCoefficient);
+
+			if (coeff < limit - sizeWallsDifferenceLimit)
+				return;
+
+			TrackBar tb = (TrackBar)sender;
+			if (tb.Name == MazeSizeTrack.Name)
+				WallsDensityTrack.Value = (int)settings.MaximumWallsDensityCoefficient -
+					(limit - sizeWallsDifferenceLimit - MazeSizeTrack.Value);
+			else
+				MazeSizeTrack.Value = limit - sizeWallsDifferenceLimit -
+					((int)settings.MaximumWallsDensityCoefficient - WallsDensityTrack.Value);
 			}
 		}
 	}

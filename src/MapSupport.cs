@@ -6,6 +6,38 @@ using System.IO;
 namespace RD_AAOW
 	{
 	/// <summary>
+	/// Результаты проверки позиции на соседство с целевыми объектами.
+	/// Образуют флаговое поле
+	/// </summary>
+	public enum CPResults
+		{
+		/// <summary>
+		/// Нет объектов
+		/// </summary>
+		None = 0x0,
+
+		/// <summary>
+		/// Справа
+		/// </summary>
+		Right = 0x1,
+
+		/// <summary>
+		/// Слева
+		/// </summary>
+		Left = 0x2,
+
+		/// <summary>
+		/// Снизу
+		/// </summary>
+		Down = 0x4,
+
+		/// <summary>
+		/// Сверху
+		/// </summary>
+		Up = 0x8
+		}
+
+	/// <summary>
 	/// Класс обеспечивает вспомогательные методы для создания карт Xash3D
 	/// </summary>
 	public static class MapSupport
@@ -782,29 +814,43 @@ namespace RD_AAOW
 			else
 				{
 				int r = Rnd.Next (4);
-				if (r > 0)
-					SW.Write ("\"spawnobject\" \"" + (r + 25).ToString () + "\"\n");
+
+				// Враги
+				if (r < 3)
+					{
+					SW.Write ("\"spawnobject\" \"" + (r + 26).ToString () + "\"\n");
+					}
+
+				// Пустые или редкие ящики
 				else
-					r = Rnd.Next (3);   // Случайная текстура для пустых ящиков
+					{
+					// Иногда добавлять случайное оружие или предмет
+					if (Rnd.Next (5) == 0)
+						SW.Write ("\"spawnobject\" \"" + (Rnd.Next (25) + 1).ToString () + "\"\n");
+
+					// Случайная текстура для ящиков без врагов
+					r = Rnd.Next (3);
+					}
 
 				switch (r)
 					{
-					case 1:
+					case 0:
 						tex = "CRATE04";
 						break;
 
-					case 2:
+					case 1:
 						tex = "CRATE07";
 						break;
 
-					case 0:
+					case 2:
 					default:
 						tex = "CRATE08";
 						break;
 					}
 				}
 
-			WriteBlock (SW, x1, y1, "0", x2, y2, "64", new string[] { tex, tex, tex, tex, tex, tex }, BlockTypes.Crate);
+			WriteBlock (SW, x1, y1, "0", x2, y2, "64", new string[] { tex, tex, tex, tex, tex, tex },
+				BlockTypes.Crate);
 
 			SW.Write ("}\n");
 			}
@@ -1187,6 +1233,8 @@ namespace RD_AAOW
 			Passage
 			}
 
+#if false
+
 		/// <summary>
 		/// Метод записывает декаль на карту
 		/// </summary>
@@ -1207,6 +1255,30 @@ namespace RD_AAOW
 			SW.Write ("\"origin\" \"" + x + " " + y + " " + (Top ? WallHeightInt.ToString () : "0") + "\"\n");
 			SW.Write ("}\n");
 			}
+
+		/// <summary>
+		/// Метод записывает декали пути от входа к выходу на карту
+		/// </summary>
+		/// <param name="SW">Дескриптор файла карты</param>
+		/// <param name="RelativePosition">Относительная позиция точки создания</param>
+		/// <param name="StartOrFinish">Флаг указывает на начальную или конечную точку пути</param>
+		public static void WriteMapPathTrace (StreamWriter SW, Point RelativePosition, bool StartOrFinish)
+			{
+			string decal;
+			if (StartOrFinish)
+				decal = "{target";
+			else if (leftStep)
+				decal = "{foot_l";
+			else
+				decal = "{foot_r";
+
+			WriteMapDecal (SW, RelativePosition, decal, false);
+
+			leftStep = !leftStep;
+			}
+		private static bool leftStep = false;
+
+#endif
 
 		/// <summary>
 		/// Метод записывает звуковое сопровождение и эффект помещения на карту
@@ -1281,28 +1353,6 @@ namespace RD_AAOW
 			}
 
 		/// <summary>
-		/// Метод записывает декали пути от входа к выходу на карту
-		/// </summary>
-		/// <param name="SW">Дескриптор файла карты</param>
-		/// <param name="RelativePosition">Относительная позиция точки создания</param>
-		/// <param name="StartOrFinish">Флаг указывает на начальную или конечную точку пути</param>
-		public static void WriteMapPathTrace (StreamWriter SW, Point RelativePosition, bool StartOrFinish)
-			{
-			string decal;
-			if (StartOrFinish)
-				decal = "{target";
-			else if (leftStep)
-				decal = "{foot_l";
-			else
-				decal = "{foot_r";
-
-			WriteMapDecal (SW, RelativePosition, decal, false);
-
-			leftStep = !leftStep;
-			}
-		private static bool leftStep = false;
-
-		/// <summary>
 		/// Метод записывает отметки пути от входа к выходу на карту
 		/// </summary>
 		/// <param name="SW">Дескриптор файла карты</param>
@@ -1316,9 +1366,9 @@ namespace RD_AAOW
 
 			string tex;
 			if (StartOrFinish)
-				tex = "StripesYB";
+				tex = "~Path02";
 			else
-				tex = "StripesRW";
+				tex = "~Path01";
 
 			WriteBlock (SW, (x - 8).ToString (), (y - 8).ToString (), "-8",
 				(x + 8).ToString (), (y + 8).ToString (), "0",
@@ -1330,14 +1380,20 @@ namespace RD_AAOW
 		/// </summary>
 		/// <param name="SW">Дескриптор файла карты</param>
 		/// <param name="MapNumber">Текущий номер карты</param>
-		public static void WriteMapHeader (StreamWriter SW, uint MapNumber)
+		/// <param name="Dark">Флаг указывает на низкий уровень освещения</param>
+		public static void WriteMapHeader (StreamWriter SW, uint MapNumber, bool Dark)
 			{
 			SW.Write ("{\n");
 			SW.Write ("\"classname\" \"worldspawn\"\n");
 			SW.Write ("\"message\" \"ES: Randomaze map " + BuildMapName (MapNumber) + " by FDL\"\n");
 			SW.Write ("\"MaxRange\" \"3000\"\n");
 			SW.Write ("\"mapversion\" \"220\"\n");
-			SW.Write ("\"skyname\" \"eshq_desmor_\"\n");
+
+			if (Dark)
+				SW.Write ("\"skyname\" \"eshq_firmor_\"\n");
+			else
+				SW.Write ("\"skyname\" \"eshq_desmor_\"\n");
+
 			SW.Write ("\"light\" \"1\"\n");
 			SW.Write ("\"sounds\" \"1\"\n");
 			SW.Write ("\"WaveHeight\" \"0.1\"\n");
@@ -1370,7 +1426,7 @@ namespace RD_AAOW
 		/// <param name="RoofTexture">Текстура потолка</param>
 		/// <param name="RealMapHeight">Реальная (в точках) ширина карты</param>
 		/// <param name="RealMapWidth">Реальная (в точках) длина карты</param>
-		public static void WriteMapRoofFloor (StreamWriter SW, byte Section, int RealMapWidth, int RealMapHeight,
+		public static void WriteMapCeilingAndFloor (StreamWriter SW, byte Section, int RealMapWidth, int RealMapHeight,
 			string RoofTexture, string FloorTexture)
 			{
 			// Расчёт параметров
@@ -1433,7 +1489,9 @@ namespace RD_AAOW
 		/// <param name="RelativePosition">Относительная позиция точки создания</param>
 		/// <param name="RoofTexture">Текстура потолка</param>
 		/// <param name="AddBulb">Флаг указывает, что добавляется лампочка, а не источник света</param>
-		public static bool WriteMapLight (StreamWriter SW, Point RelativePosition, string RoofTexture, bool AddBulb)
+		/// <param name="Dark">Флаг указывает на низкий уровень освещения</param>
+		public static bool WriteMapLight (StreamWriter SW, Point RelativePosition, string RoofTexture,
+			bool AddBulb, bool Dark)
 			{
 			// Защита
 			if (MapSupport.IsSkyTexture (RoofTexture) && EnvironmentAdded)
@@ -1457,9 +1515,19 @@ namespace RD_AAOW
 				{
 				SW.Write ("{\n");
 				SW.Write ("\"classname\" \"light_environment\"\n");
-				SW.Write (lightColor);
 				SW.Write ("\"_fade\" \"1.0\"\n");
-				SW.Write ("\"angles\" \"330 180 0\"\n");
+
+				if (Dark)
+					{
+					SW.Write ("\"angles\" \"90 0 0\"\n");
+					SW.Write ("\"_light\" \"128 128 128 150\"\n");
+					}
+				else
+					{
+					SW.Write ("\"angles\" \"330 180 0\"\n");
+					SW.Write (lightColor);
+					}
+
 				SW.Write ("\"origin\" \"" + x.ToString () + " " + y.ToString () + " " +
 					(WallHeightInt - 8).ToString () + "\"\n");
 				SW.Write ("}\n");
@@ -1499,38 +1567,6 @@ namespace RD_AAOW
 		/// </summary>
 		public static bool EnvironmentAdded = false;
 		private static string lightColor = "";
-
-		/// <summary>
-		/// Результаты проверки позиции на соседство с целевыми объектами.
-		/// Образуют флаговое поле
-		/// </summary>
-		public enum CPResults
-			{
-			/// <summary>
-			/// Нет объектов
-			/// </summary>
-			None = 0x0,
-
-			/// <summary>
-			/// Справа
-			/// </summary>
-			Right = 0x1,
-
-			/// <summary>
-			/// Слева
-			/// </summary>
-			Left = 0x2,
-
-			/// <summary>
-			/// Снизу
-			/// </summary>
-			Down = 0x4,
-
-			/// <summary>
-			/// Сверху
-			/// </summary>
-			Up = 0x8
-			}
 
 		/// <summary>
 		/// Метод записывает мебель на карту

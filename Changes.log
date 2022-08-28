@@ -1,5 +1,19 @@
 Randomaze changes log
 
+Version 3.3:
+• Implemented the map lighting coefficient. It will affect the quantity of active lights
+  inside the compartments and the type of the sky outside;
+• Implemented the filter for the map section type. Now you can select only “under sky” or
+  only “inside the room” maps;
+• Added the restriction for size-walls coefficients pair: too large mazes with too small
+  walls density are exceeding the compiler’s limitations;
+• Some code refactoring has been applied;
+• Empty crates can now rarely spawn some useful stuff that is not available in other
+  sources;
+• Settings saving now works properly;
+• Loading settings from the configuration file is not available anymore;
+• A path to the exit is now literally highlighted
+
 Version 3.2:
 • If user changes the compilation settings before running the mod, app will:
   - delete all maps following the one on which the player last saved;
