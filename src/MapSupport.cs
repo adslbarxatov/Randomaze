@@ -825,7 +825,7 @@ namespace RD_AAOW
 				else
 					{
 					// Иногда добавлять случайное оружие или предмет
-					if (Rnd.Next (5) == 0)
+					if (Rnd.Next (3) == 0)
 						SW.Write ("\"spawnobject\" \"" + (Rnd.Next (25) + 1).ToString () + "\"\n");
 
 					// Случайная текстура для ящиков без врагов

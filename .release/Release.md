@@ -1,4 +1,5 @@
-_Changes for v 3.3_:
+_Changes for v 3.3.1_:
+- Some minor fixes applied;
 - Implemented the ***map lighting coefficient***. It will affect the quantity of active lights inside the compartments and the type of the sky outside;
 - Implemented the filter for the map section type. Now you can select only “under sky” or only “inside the room” maps;
 - Added the restriction for size-walls coefficients pair: too large mazes with too small walls density are exceeding the compiler’s limitations;

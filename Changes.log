@@ -1,5 +1,13 @@
 Randomaze changes log
 
+ToDo:
+- Different sky types;
+- Different furniture subtypes;
+- Babycrab behavior fix
+
+Version 3.3.1:
+• Some minor fixes applied
+
 Version 3.3:
 • Implemented the map lighting coefficient. It will affect the quantity of active lights
   inside the compartments and the type of the sky outside;
