@@ -31,7 +31,7 @@ Version 3.2:
   - delete all maps following the one on which the player last saved;
   - immediately rebuild the next map after the saved one.
   So, changes will be applied faster, right after the next “jump”;
-• Compilation mechanism has been properly incapsulated into its own thread: app interface
+• Compilation mechanism has been properly encapsulated into its own thread: app interface
   will not freeze on this operation anymore;
 • Removed some obsolete code;
 • Command line keys -n and -go are not required anymore. But they are still available for
