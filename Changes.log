@@ -1,9 +1,13 @@
 Randomaze changes log
 
-ToDo:
-- Different sky types;
-- Different furniture subtypes;
-- Babycrab behavior fix
+Version 3.4:
+• Code for furniture processing has been refactored, some new objects have been added;
+• App will now properly scroll the compilation log to its end;
+• App will now save the compilation log to the file after exiting;
+• Fixed some interface bugs;
+• Improved the furniture alignment algorithm;
+• Implemented the random sky boxes;
+• Fixed lights placement in the dark mode
 
 Version 3.3.1:
 • Some minor fixes applied

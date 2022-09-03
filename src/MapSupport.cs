@@ -1375,13 +1375,41 @@ namespace RD_AAOW
 				new string[] { tex, tex, tex, tex, tex, tex }, BlockTypes.Default);
 			}
 
+		// Параметры неба
+		private static string[] skyTypes = new string[] {
+			"eshq_citday_",
+			"eshq_desday_",
+			"eshq_desmor_",
+			"eshq_out_",
+			"eshq_seanig_",
+			"eshq_firmor_"
+			};
+		private static string[] sunColors = new string[] {
+			"255 255 128 200",
+			"255 255 128 200",
+			"255 224 128 180",
+			"160 128 96 120",
+			"96 128 160 150",
+			"128 128 128 150",
+			};
+		private static string[] sunAngles = new string[] {
+			"280 170 0",
+			"290 160 0",
+			"330 150 0",
+			"340 135 0",
+			"90 0 0",
+			"90 0 0"
+			};
+		private static int skyIndex;
+
 		/// <summary>
 		/// Метод записывает заголовок карты
 		/// </summary>
 		/// <param name="SW">Дескриптор файла карты</param>
 		/// <param name="MapNumber">Текущий номер карты</param>
 		/// <param name="Dark">Флаг указывает на низкий уровень освещения</param>
-		public static void WriteMapHeader (StreamWriter SW, uint MapNumber, bool Dark)
+		/// <param name="Rnd">ГПСЧ</param>
+		public static void WriteMapHeader (StreamWriter SW, uint MapNumber, Random Rnd, bool Dark)
 			{
 			SW.Write ("{\n");
 			SW.Write ("\"classname\" \"worldspawn\"\n");
@@ -1389,10 +1417,14 @@ namespace RD_AAOW
 			SW.Write ("\"MaxRange\" \"3000\"\n");
 			SW.Write ("\"mapversion\" \"220\"\n");
 
-			if (Dark)
+			/*if (Dark)
 				SW.Write ("\"skyname\" \"eshq_firmor_\"\n");
 			else
-				SW.Write ("\"skyname\" \"eshq_desmor_\"\n");
+				SW.Write ("\"skyname\" \"eshq_desmor_\"\n");*/
+			skyIndex = Rnd.Next (skyTypes.Length / 2);
+			if (Dark)
+				skyIndex += skyTypes.Length / 2;
+			SW.Write ("\"skyname\" \"" + skyTypes[skyIndex] + "\"\n");
 
 			SW.Write ("\"light\" \"1\"\n");
 			SW.Write ("\"sounds\" \"1\"\n");
@@ -1405,6 +1437,14 @@ namespace RD_AAOW
 				SW.Write ("\"chaptertitle\" \"" + ProgramDescription.AssemblyTitle + "\"\n");
 				SW.Write ("\"startdark\" \"1\"\n");
 				SW.Write ("\"gametitle\" \"1\"\n");
+				}
+
+			// Создание цвета ламп
+			if (string.IsNullOrWhiteSpace (lightColor))
+				{
+				lightColor = "\"_light\" \"" + (224 + Rnd.Next (32)).ToString () + " " +
+					(224 + Rnd.Next (32)).ToString () + " " +
+					(112 + Rnd.Next (32)).ToString () + " 150\"\n";
 				}
 			}
 
@@ -1489,22 +1529,12 @@ namespace RD_AAOW
 		/// <param name="RelativePosition">Относительная позиция точки создания</param>
 		/// <param name="RoofTexture">Текстура потолка</param>
 		/// <param name="AddBulb">Флаг указывает, что добавляется лампочка, а не источник света</param>
-		/// <param name="Dark">Флаг указывает на низкий уровень освещения</param>
 		public static bool WriteMapLight (StreamWriter SW, Point RelativePosition, string RoofTexture,
-			bool AddBulb, bool Dark)
+			bool AddBulb)
 			{
 			// Защита
 			if (MapSupport.IsSkyTexture (RoofTexture) && EnvironmentAdded)
 				return false;
-
-			// Создание цвета
-			if (string.IsNullOrWhiteSpace (lightColor))
-				{
-				Random rnd = new Random ();
-				lightColor = "\"_light\" \"" + (224 + rnd.Next (32)).ToString () + " " +
-					(224 + rnd.Next (32)).ToString () + " " +
-					(112 + rnd.Next (32)).ToString () + " 150\"\n";
-				}
 
 			// Расчёт параметров
 			int x = RelativePosition.X * WallLength / 2;
@@ -1517,7 +1547,7 @@ namespace RD_AAOW
 				SW.Write ("\"classname\" \"light_environment\"\n");
 				SW.Write ("\"_fade\" \"1.0\"\n");
 
-				if (Dark)
+				/*if (Dark)
 					{
 					SW.Write ("\"angles\" \"90 0 0\"\n");
 					SW.Write ("\"_light\" \"128 128 128 150\"\n");
@@ -1526,7 +1556,9 @@ namespace RD_AAOW
 					{
 					SW.Write ("\"angles\" \"330 180 0\"\n");
 					SW.Write (lightColor);
-					}
+					}*/
+				SW.Write ("\"angles\" \"" + sunAngles[skyIndex] + "\"\n");
+				SW.Write ("\"_light\" \"" + sunColors[skyIndex] + "\"\n");
 
 				SW.Write ("\"origin\" \"" + x.ToString () + " " + y.ToString () + " " +
 					(WallHeightInt - 8).ToString () + "\"\n");
@@ -1576,12 +1608,12 @@ namespace RD_AAOW
 		/// <param name="NearbyWalls">Доступные (с указанной позиции) стены</param>
 		/// <param name="WallTexture">Текстура окружающей стены</param>
 		/// <param name="Rnd">ГПСЧ</param>
-		/// <param name="FurnitureIndex">Индекс мебели</param>
-		public static bool WriteMapFurniture (StreamWriter SW, Point RelativePosition, uint FurnitureIndex,
-			CPResults NearbyWalls, string WallTexture, Random Rnd)
+		/// <param name="FurnitureType">Индекс мебели</param>
+		public static bool WriteMapFurniture (StreamWriter SW, Point RelativePosition, FurnitureTypes FurnitureType,
+			List<CPResults> NearbyWalls, string WallTexture, Random Rnd)
 			{
 			// Контроль
-			if (NearbyWalls == CPResults.None)
+			if (NearbyWalls.Count < 1)
 				return false; // Нет подходящих стен
 
 			// Расчёт параметров
@@ -1589,7 +1621,7 @@ namespace RD_AAOW
 			int y = RelativePosition.Y * WallLength / 2;
 
 			// Выбор варианта расположения
-			List<CPResults> placements = new List<CPResults> ();
+			/*List<CPResults> placements = new List<CPResults> ();
 			if ((int)(NearbyWalls & CPResults.Right) != 0)
 				placements.Add (CPResults.Right);
 			if ((int)(NearbyWalls & CPResults.Left) != 0)
@@ -1597,11 +1629,13 @@ namespace RD_AAOW
 			if ((int)(NearbyWalls & CPResults.Down) != 0)
 				placements.Add (CPResults.Down);
 			if ((int)(NearbyWalls & CPResults.Up) != 0)
-				placements.Add (CPResults.Up);
-			CPResults placement = placements[Rnd.Next (placements.Count)];
+				placements.Add (CPResults.Up);*/
+			CPResults placement = NearbyWalls[Rnd.Next (NearbyWalls.Count)];
 
 			// Расчёт координат
-			int[] coords = Furniture.GetFurniture (FurnitureIndex, placement).Coordinates;
+			/*int[] coords = Furniture.GetFurniture (FurnitureIndex, placement, Rnd).Coordinates;*/
+			Furniture f = Furniture.GetFurniture (FurnitureType, placement, Rnd);
+			int[] coords = f.Coordinates;
 
 			// Введение смещения
 			coords[0] += x;
@@ -1610,7 +1644,8 @@ namespace RD_AAOW
 			coords[4] += y;
 
 			// Сборка линии текстур
-			string[] tex = Furniture.GetFurniture (FurnitureIndex, placement).Textures;
+			/*string[] tex = Furniture.GetFurniture (FurnitureIndex, placement).Textures;*/
+			string[] tex = f.Textures;
 			for (int i = 0; i < tex.Length; i++)
 				{
 				if (string.IsNullOrWhiteSpace (tex[i]))
