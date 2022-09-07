@@ -1,5 +1,8 @@
 Randomaze changes log
 
+ToDo:
+- Fix ampersands
+
 Version 3.4:
 • Code for furniture processing has been refactored, some new objects have been added;
 • App will now properly scroll the compilation log to its end;
