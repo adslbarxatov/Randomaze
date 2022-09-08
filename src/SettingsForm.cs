@@ -55,7 +55,7 @@ namespace RD_AAOW
 
 			MazeSizeTrack.Maximum = (int)settings.MaximumMazeSizeCoefficient;
 			MazeSizeTrack.Value = (int)settings.MazeSizeCoefficient;
-			MazeSizeFlag.Checked = settings.RandomMazeSizeCoefficient;
+			MazeSizeFlag.Checked = MazeSizeFlag.Enabled = false;	// settings.RandomMazeSizeCoefficient;
 			MazeSizeFlag_CheckedChanged (null, null);
 
 			EnemiesDensityTrack.Maximum = (int)settings.MaximumEnemiesDensityCoefficient;
@@ -70,7 +70,7 @@ namespace RD_AAOW
 
 			WallsDensityTrack.Maximum = (int)settings.MaximumWallsDensityCoefficient;
 			WallsDensityTrack.Value = (int)settings.WallsDensityCoefficient;
-			WallsDensityFlag.Checked = settings.RandomWallsDensityCoefficient;
+			WallsDensityFlag.Checked = WallsDensityFlag.Enabled = false;	// settings.RandomWallsDensityCoefficient;
 			WallsDensityFlag_CheckedChanged (null, null);
 
 			CratesDensityTrack.Maximum = (int)settings.MaximumCratesDensityCoefficient;

@@ -1395,7 +1395,7 @@ namespace RD_AAOW
 		private static string[] sunAngles = new string[] {
 			"280 170 0",
 			"290 160 0",
-			"330 150 0",
+			"330 175 0",
 			"340 135 0",
 			"90 0 0",
 			"90 0 0"
@@ -1417,10 +1417,6 @@ namespace RD_AAOW
 			SW.Write ("\"MaxRange\" \"3000\"\n");
 			SW.Write ("\"mapversion\" \"220\"\n");
 
-			/*if (Dark)
-				SW.Write ("\"skyname\" \"eshq_firmor_\"\n");
-			else
-				SW.Write ("\"skyname\" \"eshq_desmor_\"\n");*/
 			skyIndex = Rnd.Next (skyTypes.Length / 2);
 			if (Dark)
 				skyIndex += skyTypes.Length / 2;
@@ -1547,16 +1543,6 @@ namespace RD_AAOW
 				SW.Write ("\"classname\" \"light_environment\"\n");
 				SW.Write ("\"_fade\" \"1.0\"\n");
 
-				/*if (Dark)
-					{
-					SW.Write ("\"angles\" \"90 0 0\"\n");
-					SW.Write ("\"_light\" \"128 128 128 150\"\n");
-					}
-				else
-					{
-					SW.Write ("\"angles\" \"330 180 0\"\n");
-					SW.Write (lightColor);
-					}*/
 				SW.Write ("\"angles\" \"" + sunAngles[skyIndex] + "\"\n");
 				SW.Write ("\"_light\" \"" + sunColors[skyIndex] + "\"\n");
 
@@ -1619,21 +1605,9 @@ namespace RD_AAOW
 			// Расчёт параметров
 			int x = RelativePosition.X * WallLength / 2;
 			int y = RelativePosition.Y * WallLength / 2;
-
-			// Выбор варианта расположения
-			/*List<CPResults> placements = new List<CPResults> ();
-			if ((int)(NearbyWalls & CPResults.Right) != 0)
-				placements.Add (CPResults.Right);
-			if ((int)(NearbyWalls & CPResults.Left) != 0)
-				placements.Add (CPResults.Left);
-			if ((int)(NearbyWalls & CPResults.Down) != 0)
-				placements.Add (CPResults.Down);
-			if ((int)(NearbyWalls & CPResults.Up) != 0)
-				placements.Add (CPResults.Up);*/
 			CPResults placement = NearbyWalls[Rnd.Next (NearbyWalls.Count)];
 
 			// Расчёт координат
-			/*int[] coords = Furniture.GetFurniture (FurnitureIndex, placement, Rnd).Coordinates;*/
 			Furniture f = Furniture.GetFurniture (FurnitureType, placement, Rnd);
 			int[] coords = f.Coordinates;
 
@@ -1644,7 +1618,6 @@ namespace RD_AAOW
 			coords[4] += y;
 
 			// Сборка линии текстур
-			/*string[] tex = Furniture.GetFurniture (FurnitureIndex, placement).Textures;*/
 			string[] tex = f.Textures;
 			for (int i = 0; i < tex.Length; i++)
 				{

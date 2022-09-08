@@ -1,12 +1,10 @@
-_Changes for v 3.4_:
+_Changes for v 3.4.1_:
+- Some interface bugs fixed;
+- Added the new engine assembly (rebuilt for the MSVC RTL 142 / 2015 – 2022);
 - Code for furniture processing has been refactored, some new objects have been added;
 - App will now properly scroll the compilation log to its end;
 - App will now save the compilation log to the file after exiting;
 - Fixed some interface bugs;
 - Improved the furniture alignment algorithm;
 - Implemented the random sky boxes;
-- Fixed lights placement in the dark mode;
-- Implemented the ***map lighting coefficient***. It will affect the quantity of active lights inside the compartments and the type of the sky outside;
-- Implemented the filter for the map section type. Now you can select only “under sky” or only “inside the room” maps;
-- Added the restriction for size-walls coefficients pair: too large mazes with too small walls density are exceeding the compiler’s limitations;
-- Empty crates can now rarely spawn some useful stuff that is not available in other sources
+- Fixed lights placement in the dark mode
