@@ -55,7 +55,7 @@ namespace RD_AAOW
 
 			MazeSizeTrack.Maximum = (int)settings.MaximumMazeSizeCoefficient;
 			MazeSizeTrack.Value = (int)settings.MazeSizeCoefficient;
-			MazeSizeFlag.Checked = MazeSizeFlag.Enabled = false;	// settings.RandomMazeSizeCoefficient;
+			MazeSizeFlag.Checked = MazeSizeFlag.Enabled = false;    // settings.RandomMazeSizeCoefficient;
 			MazeSizeFlag_CheckedChanged (null, null);
 
 			EnemiesDensityTrack.Maximum = (int)settings.MaximumEnemiesDensityCoefficient;
@@ -70,7 +70,7 @@ namespace RD_AAOW
 
 			WallsDensityTrack.Maximum = (int)settings.MaximumWallsDensityCoefficient;
 			WallsDensityTrack.Value = (int)settings.WallsDensityCoefficient;
-			WallsDensityFlag.Checked = WallsDensityFlag.Enabled = false;	// settings.RandomWallsDensityCoefficient;
+			WallsDensityFlag.Checked = WallsDensityFlag.Enabled = false;    // settings.RandomWallsDensityCoefficient;
 			WallsDensityFlag_CheckedChanged (null, null);
 
 			CratesDensityTrack.Maximum = (int)settings.MaximumCratesDensityCoefficient;
@@ -85,11 +85,11 @@ namespace RD_AAOW
 
 			ButtonModeFlag.Checked = settings.ButtonMode;
 
-			for (int i = 0; i < MapSupport.EnemiesPermissionsKeys.Length; i++)
+			for (int i = 0; i < EnemiesSupport.EnemiesPermissionsKeys.Length; i++)
 				enemiesFlags.Insert (0, (CheckBox)EnemiesContainer.Controls[i]);
 
-			for (int i = 0; i < MapSupport.EnemiesPermissionsKeys.Length; i++)
-				enemiesFlags[i].Checked = settings.EnemiesPermissionLine.Contains (MapSupport.EnemiesPermissionsKeys[i]);
+			for (int i = 0; i < EnemiesSupport.EnemiesPermissionsKeys.Length; i++)
+				enemiesFlags[i].Checked = settings.EnemiesPermissionLine.Contains (EnemiesSupport.EnemiesPermissionsKeys[i]);
 
 			switch (settings.SectionType)
 				{
@@ -106,6 +106,8 @@ namespace RD_AAOW
 					OnlyInsideRadio.Checked = true;
 					break;
 				}
+
+			TwoFloorsFlag.Checked = settings.TwoFloors;
 
 			// Запуск
 			this.ShowDialog ();
@@ -154,10 +156,10 @@ namespace RD_AAOW
 			settings.ButtonMode = ButtonModeFlag.Checked;
 
 			settings.EnemiesPermissionLine = "";
-			for (int i = 0; i < MapSupport.EnemiesPermissionsKeys.Length; i++)
+			for (int i = 0; i < EnemiesSupport.EnemiesPermissionsKeys.Length; i++)
 				{
 				if (enemiesFlags[i].Checked)
-					settings.EnemiesPermissionLine += MapSupport.EnemiesPermissionsKeys[i];
+					settings.EnemiesPermissionLine += EnemiesSupport.EnemiesPermissionsKeys[i];
 				else
 					settings.EnemiesPermissionLine += "-";
 				}
@@ -168,6 +170,8 @@ namespace RD_AAOW
 				settings.SectionType = MapSectionTypes.OnlyUnderSky;
 			else
 				settings.SectionType = MapSectionTypes.AllTypes;
+
+			settings.TwoFloors = TwoFloorsFlag.Checked;
 
 			// Выход
 			cancelled = false;
@@ -228,6 +232,15 @@ namespace RD_AAOW
 			else
 				MazeSizeTrack.Value = limit - sizeWallsDifferenceLimit -
 					((int)settings.MaximumWallsDensityCoefficient - WallsDensityTrack.Value);
+			}
+
+		// Включение дополнительных монстров
+		private void TwoFloorsFlag_CheckedChanged (object sender, EventArgs e)
+			{
+			if (TwoFloorsFlag.Checked)
+				EnemyFlag11.Enabled = true;
+			else
+				EnemyFlag11.Enabled = EnemyFlag11.Checked = false;
 			}
 		}
 	}

@@ -45,7 +45,30 @@ namespace RD_AAOW
 		/// <summary>
 		/// Стандартная высота стен на картах
 		/// </summary>
-		public const int WallHeightInt = 128;
+		public static int WallHeight
+			{
+			get
+				{
+				return wallHeight;
+				}
+			}
+		private static int wallHeight;
+
+		/// <summary>
+		/// Возвращает стандартную высоту стен лабиринта
+		/// </summary>
+		public const int DefaultWallHeight = 128;
+
+		/// <summary>
+		/// Возвращает флаг двухэтажного режима
+		/// </summary>
+		public static bool TwoFloors
+			{
+			get
+				{
+				return (wallHeight > DefaultWallHeight);
+				}
+			}
 
 		/// <summary>
 		/// Стандартная длина стен на картах
@@ -68,23 +91,103 @@ namespace RD_AAOW
 			}
 
 		/// <summary>
-		/// Метод записывает точку выхода с карты
+		/// Метод записывает заголовок карты
 		/// </summary>
 		/// <param name="SW">Дескриптор файла карты</param>
-		/// <param name="RelativePosition">Относительная позиция точки выхода</param>
-		public static void WriteMapEndPoint_Finish (StreamWriter SW, Point RelativePosition)
+		/// <param name="MapNumber">Текущий номер карты</param>
+		/// <param name="Lightness">Уровень затемнения неба (0.0 – 1.0)</param>
+		/// <param name="Rnd">ГПСЧ</param>
+		/// <param name="TwoFloors">Инициализация двухэтажной карты</param>
+		public static void WriteMapHeader (StreamWriter SW, uint MapNumber, Random Rnd, float Lightness,
+			bool TwoFloors)
+			{
+			// Начало карты
+			SW.Write ("{\n");
+			SW.Write ("\"classname\" \"worldspawn\"\n");
+			SW.Write ("\"message\" \"ES: Randomaze map " + BuildMapName (MapNumber) + " by FDL\"\n");
+			SW.Write ("\"mapversion\" \"220\"\n");
+
+			// Инициализация неба
+			skyIndex = Rnd.Next (skyTypes.Length / 2);
+
+			float inc = Lightness;
+			if (inc < 0.0f)
+				inc = 0.0f;
+			if (inc > 1.0f)
+				inc = 1.0f;
+			inc = (1.0f - inc) * skyTypes.Length / 2.0f;
+
+			skyIndex += (int)inc;
+			SW.Write ("\"skyname\" \"" + skyTypes[skyIndex] + "\"\n");
+
+			// Параметры карты
+			SW.Write ("\"MaxRange\" \"3000\"\n");
+			SW.Write ("\"light\" \"1\"\n");
+			SW.Write ("\"sounds\" \"1\"\n");
+			SW.Write ("\"WaveHeight\" \"0.1\"\n");
+			SW.Write ("\"newunit\" \"1\"\n");
+			SW.Write ("\"wad\" \"" + RandomazeForm.MainWAD + "\"\n");
+
+			// Параметры первой карты
+			if (MapNumber == 1)
+				{
+				SW.Write ("\"chaptertitle\" \"" + ProgramDescription.AssemblyTitle + "\"\n");
+				SW.Write ("\"startdark\" \"1\"\n");
+				SW.Write ("\"gametitle\" \"1\"\n");
+				}
+
+			// Создание цвета ламп
+			if (string.IsNullOrWhiteSpace (lightColor))
+				{
+				lightColor = "\"_light\" \"" + (224 + Rnd.Next (32)).ToString () + " " +
+					(224 + Rnd.Next (32)).ToString () + " " +
+					(112 + Rnd.Next (32)).ToString () + " " + (TwoFloors ? "200" : "150") + "\"\n";
+				subLightColor = "\"_light\" \"" + (224 + Rnd.Next (32)).ToString () + " " +
+					(224 + Rnd.Next (32)).ToString () + " " +
+					(112 + Rnd.Next (32)).ToString () + " 100\"\n";
+				}
+
+			// Выбор высоты карты
+			wallHeight = DefaultWallHeight;
+			if (TwoFloors)
+				wallHeight *= 2;
+			}
+
+		/// <summary>
+		/// Метод записывает закрывающий элемент геометрии карты
+		/// </summary>
+		/// <param name="SW">Дескриптор файла карты</param>
+		public static void WriteMapTerminator (StreamWriter SW)
+			{
+			SW.Write ("}\n");
+			}
+
+		/// <summary>
+		/// Метод формирует абсолютные координаты из относительных
+		/// </summary>
+		/// <param name="RelativePosition">Относительная точка</param>
+		/// <param name="X">Абсолютная абсцисса</param>
+		/// <param name="Y">Абсолютная ордината</param>
+		public static void EvaluateAbsolutePosition (Point RelativePosition, out int X, out int Y)
+			{
+			X = RelativePosition.X * WallLength / 2;
+			Y = RelativePosition.Y * WallLength / 2;
+			}
+
+		// Метод записывает точку выхода с карты
+		private static void WriteMapEndPoint_Finish (StreamWriter SW, Point RelativePosition)
 			{
 			// Расчёт параметров
-			int x = RelativePosition.X * WallLength / 2;
-			int y = RelativePosition.Y * WallLength / 2;
+			int x, y;
+			EvaluateAbsolutePosition (RelativePosition, out x, out y);
 
 			string x1 = (x - 8).ToString ();
 			string y1 = (y - 8).ToString ();
 			string x2 = (x + 8).ToString ();
 			string y2 = (y + 8).ToString ();
 			string z1 = "16";
-			string z2 = (WallHeightInt - 16).ToString ();
-			string z3 = (WallHeightInt - 8).ToString ();
+			string z2 = (wallHeight - 16).ToString ();
+			string z3 = (wallHeight - 8).ToString ();
 
 			// Запись
 			SW.Write ("{\n");
@@ -140,8 +243,11 @@ namespace RD_AAOW
 				}
 
 			// Расчёт параметров
-			int x = RelativePosition.X * WallLength / 2;
-			int y = RelativePosition.Y * WallLength / 2;
+			/*int x = RelativePosition.X * WallLength / 2;
+			int y = RelativePosition.Y * WallLength / 2;*/
+			int x, y;
+			EvaluateAbsolutePosition (RelativePosition, out x, out y);
+
 			string mapName = BuildMapName (MapNumber + 1);
 
 			// Запись
@@ -157,7 +263,7 @@ namespace RD_AAOW
 
 			WriteBlock (SW, (x - 8).ToString (), (y - 8).ToString (), "16",
 
-				(x + 8).ToString (), (y + 8).ToString (), (WallHeightInt - 16).ToString (),
+				(x + 8).ToString (), (y + 8).ToString (), (wallHeight - 16).ToString (),
 
 				new string[] { TriggerTexture, TriggerTexture, TriggerTexture, TriggerTexture,
 					TriggerTexture, TriggerTexture },
@@ -173,8 +279,8 @@ namespace RD_AAOW
 		private static void WriteMapPortal (StreamWriter SW, Point RelativePosition, bool Exit)
 			{
 			// Расчёт параметров
-			string x = (RelativePosition.X * WallLength / 2).ToString ();
-			string y = (RelativePosition.Y * WallLength / 2).ToString ();
+			int x, y;
+			EvaluateAbsolutePosition (RelativePosition, out x, out y);
 
 			// Запись
 			SW.Write ("{\n");
@@ -187,7 +293,8 @@ namespace RD_AAOW
 			SW.Write ("\"framerate\" \"10.0\"\n");
 			SW.Write ("\"model\" \"sprites/" + (Exit ? "exit" : "enter") + "1.spr\"\n");
 			SW.Write ("\"scale\" \"1\"\n");
-			SW.Write ("\"origin\" \"" + x + " " + y + " " + (WallHeightInt / 2).ToString () + "\"\n");
+			SW.Write ("\"origin\" \"" + x.ToString () + " " + y.ToString () + " " +
+				(DefaultWallHeight / 2).ToString () + "\"\n");
 			SW.Write ("}\n");
 			}
 
@@ -200,8 +307,10 @@ namespace RD_AAOW
 		public static void WriteMapEntryPoint (StreamWriter SW, Point RelativePosition, uint MapNumber)
 			{
 			// Расчёт параметров
-			int x = RelativePosition.X * WallLength / 2;
-			int y = RelativePosition.Y * WallLength / 2;
+			/*int x = RelativePosition.X * WallLength / 2;
+			int y = RelativePosition.Y * WallLength / 2;*/
+			int x, y;
+			EvaluateAbsolutePosition (RelativePosition, out x, out y);
 
 			string xs = x.ToString ();
 			string ys = y.ToString ();
@@ -209,8 +318,8 @@ namespace RD_AAOW
 			string y1 = (y - 8).ToString ();
 			string x2 = (x + 8).ToString ();
 			string y2 = (y + 8).ToString ();
-			string z1 = (WallHeightInt - 1).ToString ();
-			string z2 = WallHeightInt.ToString ();
+			string z1 = (wallHeight - 1).ToString ();
+			string z2 = wallHeight.ToString ();
 
 			// Первая карта
 			if (MapNumber == 1)
@@ -364,9 +473,13 @@ namespace RD_AAOW
 		/// <param name="MapNumber">Номер текущей карты</param>
 		public static void WriteMapItem (StreamWriter SW, Point RelativePosition, Random Rnd, uint MapNumber)
 			{
-			string x = (RelativePosition.X * WallLength / 2).ToString ();
-			string y = (RelativePosition.Y * WallLength / 2).ToString ();
+			// Расчёт параметров
+			/*string x = (RelativePosition.X * WallLength / 2).ToString ();
+			string y = (RelativePosition.Y * WallLength / 2).ToString ();*/
+			int x, y;
+			EvaluateAbsolutePosition (RelativePosition, out x, out y);
 
+			// Запись
 			SW.Write ("{\n");
 
 			// Диапазон противников задаётся ограничением на верхнюю границу диапазона ГПСЧ
@@ -463,249 +576,7 @@ namespace RD_AAOW
 				}
 
 			SW.Write ("\"angles\" \"0 " + Rnd.Next (360) + " 0\"\n");
-			SW.Write ("\"origin\" \"" + x + " " + y + " 40\"\n");   // На некоторой высоте над полом
-			SW.Write ("}\n");
-			}
-
-		/// <summary>
-		/// Метод добавляет врагов на карту
-		/// </summary>
-		/// <param name="SW">Дескриптор файла карты</param>
-		/// <param name="RelativePosition">Относительная позиция точки создания</param>
-		/// <param name="Rnd">ГПСЧ</param>
-		/// <param name="MapNumber">Номер карты, позволяющий выполнять наполнение с прогрессом</param>
-		/// <param name="Permissions">Строка флагов разрешённых врагов</param>
-		public static void WriteMapEnemy (StreamWriter SW, Point RelativePosition, Random Rnd,
-			uint MapNumber, string Permissions)
-			{
-			string x = (RelativePosition.X * WallLength / 2).ToString ();
-			string y = (RelativePosition.Y * WallLength / 2).ToString ();
-
-			SW.Write ("{\n");
-
-			// Диапазон противников задаётся ограничением на верхнюю границу диапазона ГПСЧ
-			int prngRange;
-			switch (MapNumber)
-				{
-				case 0:
-				case 1:
-				case 2:
-					prngRange = 10;
-					break;
-
-				case 3:
-				case 4:
-				case 5:
-				case 6:
-				case 7:
-				case 8:
-				case 9:
-				case 10:
-				case 11:
-				case 12:
-					prngRange = (int)MapNumber + 8;
-					break;
-
-				default:
-					prngRange = 21;
-					break;
-				}
-
-			// Добавление
-			string rat = Rnd.Next (2) == 0 ? "\"classname\" \"monster_rat\"\n" :
-				"\"classname\" \"monster_cockroach\"\n";
-			string z = "0";
-
-			switch (Rnd.Next (prngRange))
-				{
-				// Солдаты
-				default:
-					if (Permissions.Contains (EnemiesPermissionsKeys[4]))
-						{
-						SW.Write ("\"classname\" \"" + enemies[4] + "\"\n");
-						SW.Write ("\"weapons\" \"" + gruntWeapons[Rnd.Next (gruntWeapons.Length)] + "\"\n");
-						}
-					else
-						{
-						SW.Write (rat);
-						}
-					break;
-
-				// Зомби
-				case 0:
-				case 16:
-					if (Permissions.Contains (EnemiesPermissionsKeys[9]))
-						{
-						SW.Write ("\"classname\" \"" + enemies[9] + "\"\n");
-						SW.Write ("\"skin\" \"" + Rnd.Next (2).ToString () + "\"\n");
-						}
-					else
-						{
-						SW.Write (rat);
-						}
-					break;
-
-				// Крабы
-				case 1:
-				case 17:
-					if (Permissions.Contains (EnemiesPermissionsKeys[5]))
-						SW.Write ("\"classname\" \"" + enemies[5] + "\"\n");
-					else
-						SW.Write (rat);
-					break;
-
-				// Алиены
-				case 10:
-					if (Permissions.Contains (EnemiesPermissionsKeys[7]))
-						SW.Write ("\"classname\" \"" + enemies[7] + "\"\n");
-					else
-						SW.Write (rat);
-					break;
-
-				// Куры
-				case 19:
-					if (Permissions.Contains (EnemiesPermissionsKeys[1]))
-						SW.Write ("\"classname\" \"" + enemies[1] + "\"\n");
-					else
-						SW.Write (rat);
-					break;
-
-				// Ассассины
-				case 12:
-				case 13:
-					if (Permissions.Contains (EnemiesPermissionsKeys[0]))
-						SW.Write ("\"classname\" \"" + enemies[0] + "\"\n");
-					else
-						SW.Write (rat);
-					break;
-
-				// Турель
-				case 14:
-					if (Permissions.Contains (EnemiesPermissionsKeys[8]))
-						{
-						SW.Write ("\"classname\" \"" + enemies[8] + "\"\n");
-						SW.Write ("\"spawnflags\" \"32\"\n");
-						SW.Write ("\"orientation\" \"0\"\n");
-						}
-					else
-						{
-						SW.Write (rat);
-						}
-					break;
-
-				// Солдаты алиенов
-				case 18:
-					if (Permissions.Contains (EnemiesPermissionsKeys[6]))
-						SW.Write ("\"classname\" \"" + enemies[6] + "\"\n");
-					else
-						SW.Write (rat);
-					break;
-
-				// Контроллеры
-				case 15:
-					if (Permissions.Contains (EnemiesPermissionsKeys[2]))
-						{
-						SW.Write ("\"classname\" \"" + enemies[2] + "\"\n");
-						z = "32";
-						}
-					else
-						{
-						SW.Write (rat);
-						}
-					break;
-
-				// Собаки
-				case 11:
-				case 20:
-					if (Permissions.Contains (EnemiesPermissionsKeys[3]))
-						{
-						SW.Write ("\"classname\" \"" + enemies[3] + "\"\n");
-						}
-					else
-						{
-						SW.Write (rat);
-						}
-					break;
-				}
-
-			SW.Write ("\"angles\" \"0 " + Rnd.Next (360) + " 0\"\n");
-			SW.Write ("\"origin\" \"" + x + " " + y + " " + z + "\"\n");
-			SW.Write ("}\n");
-			}
-
-		// Подстановки номеров оружия для солдат
-		private static string[] gruntWeapons = new string[] { "1", "3", "5", "8", "10" };
-
-		/// <summary>
-		/// Набор ключевых символов разрешений для врагов
-		/// </summary>
-		public static string[] EnemiesPermissionsKeys = new string[] {
-			"a", "b", "c", "e", "g", "h", "r", "s", "t", "z"
-			};
-
-		private static string[] enemies = new string[] {
-			"monster_human_assassin",
-			"monster_bullchicken",
-			"monster_alien_controller",
-			"monster_houndeye",
-			"monster_human_grunt",
-			"monster_headcrab",
-			"monster_alien_grunt",
-			"monster_alien_slave",
-			"monster_miniturret",
-			"monster_zombie"
-			};
-
-		/// <summary>
-		/// Метод записывает шлюз, ограничивающий точку входа, на карту
-		/// </summary>
-		/// <param name="SW">Дескриптор файла карты</param>
-		/// <param name="RelativePosition">Относительная позиция точки создания</param>
-		/// <param name="Frame">Флаг указывает, что записывается рама шлюза вместо него самого</param>
-		public static void WriteMapGate (StreamWriter SW, Point RelativePosition, bool Frame)
-			{
-			WriteGate (SW, RelativePosition, Frame, MapsLimit + 1);
-			}
-
-		/// <summary>
-		/// Метод записывает шлюз, закрывающий точку выхода, на карту
-		/// </summary>
-		/// <param name="SW">Дескриптор файла карты</param>
-		/// <param name="RelativePosition">Относительная позиция точки создания</param>
-		/// <param name="Frame">Флаг указывает, что записывается рама шлюза вместо него самого</param>
-		/// <param name="MapNumber">Номер карты, используемый для создания уникального имени шлюза</param>
-		public static void WriteMapGate (StreamWriter SW, Point RelativePosition, bool Frame, uint MapNumber)
-			{
-			WriteGate (SW, RelativePosition, Frame, MapNumber);
-			}
-
-		// Универсальный метод формирования шлюза
-		private static void WriteGate (StreamWriter SW, Point RelativePosition, bool Frame, uint MapNumber)
-			{
-			// Расчёт параметров
-			string tex = (MapNumber > MapsLimit) ? "MetalGate06" : "MetalGate07";
-
-			// Запись рамы
-			if (Frame)
-				{
-				WriteMapBarrier (SW, RelativePosition, BarrierTypes.GateFrameTop, tex);
-				return;
-				}
-
-			// Запись шлюза
-			SW.Write ("{\n");
-			SW.Write ("\"classname\" \"func_door\"\n");
-			SW.Write ("\"angles\" \"90 0 0\"\n");
-			SW.Write ("\"speed\" \"100\"\n");
-			SW.Write ("\"movesnd\" \"3\"\n");
-			SW.Write ("\"stopsnd\" \"1\"\n");
-			SW.Write ("\"wait\" \"-1\"\n");
-			SW.Write ("\"lip\" \"9\"\n");
-			if (MapNumber <= MapsLimit)
-				SW.Write ("\"targetname\" \"Gate" + BuildMapName (MapNumber) + "\"\n");
-
-			WriteMapBarrier (SW, RelativePosition, BarrierTypes.Gate, tex);
-
+			SW.Write ("\"origin\" \"" + x.ToString () + " " + y.ToString () + " 40\"\n");   // На некоторой высоте над полом
 			SW.Write ("}\n");
 			}
 
@@ -716,11 +587,14 @@ namespace RD_AAOW
 		/// <param name="RelativePosition">Относительная позиция точки выхода</param>
 		/// <param name="MapNumber">Номер текущей карты, используемый для создания уникального имени кнопки</param>
 		/// <param name="Texture">Текстура секции</param>
-		public static void WriteMapButton (StreamWriter SW, Point RelativePosition, string Texture, uint MapNumber)
+		public static void WriteMapButton (StreamWriter SW, Point RelativePosition, string Texture,
+			uint MapNumber)
 			{
 			// Расчёт параметров
-			int x = RelativePosition.X * WallLength / 2;
-			int y = RelativePosition.Y * WallLength / 2;
+			/*int x = RelativePosition.X * WallLength / 2;
+			int y = RelativePosition.Y * WallLength / 2;*/
+			int x, y;
+			EvaluateAbsolutePosition (RelativePosition, out x, out y);
 
 			// Запись
 			SW.Write ("{\n");
@@ -752,12 +626,12 @@ namespace RD_AAOW
 		public static void WriteMapDoor (StreamWriter SW, Point RelativePosition, string Texture)
 			{
 			// Расчёт параметров
-			int x = RelativePosition.X * WallLength / 2;
-			int y = RelativePosition.Y * WallLength / 2;
+			int x, y;
+			EvaluateAbsolutePosition (RelativePosition, out x, out y);
 			string x1, y1, x2, y2;
 
 			// Вертикальная
-			if (IsWallVertical (RelativePosition))
+			if (WallsSupport.IsWallVertical (RelativePosition))
 				{
 				x1 = (x - 8).ToString ();
 				y1 = (y - 32).ToString ();
@@ -786,8 +660,10 @@ namespace RD_AAOW
 		public static void WriteMapCrate (StreamWriter SW, Point RelativePosition, Random Rnd)
 			{
 			// Расчёт параметров
-			int x = RelativePosition.X * WallLength / 2;
-			int y = RelativePosition.Y * WallLength / 2;
+			/*int x = RelativePosition.X * WallLength / 2;
+			int y = RelativePosition.Y * WallLength / 2;*/
+			int x, y;
+			EvaluateAbsolutePosition (RelativePosition, out x, out y);
 
 			string x1 = (x - 16).ToString ();
 			string y1 = (y - 16).ToString ();
@@ -856,442 +732,22 @@ namespace RD_AAOW
 			}
 
 		/// <summary>
-		/// Метод записывает стену на карту
-		/// </summary>
-		/// <param name="SW">Дескриптор файла карты</param>
-		/// <param name="RelativePosition">Относительная позиция точки создания</param>
-		/// <param name="Texture">Текстура стены</param>
-		/// <param name="LeftEnd">Тип левого торца стены</param>
-		/// <param name="RightEnd">Тип правого торца стены</param>
-		public static void WriteMapWall (StreamWriter SW, Point RelativePosition, string Texture,
-			NeighborsTypes LeftEnd, NeighborsTypes RightEnd)
-			{
-			neighborLeft = LeftEnd;
-			neighborRight = RightEnd;
-
-			WriteMapBarrier (SW, RelativePosition, BarrierTypes.DefaultWall, Texture);
-			}
-
-		// Общий метод для стен и препятствий
-		private static NeighborsTypes neighborLeft, neighborRight;
-		private static void WriteMapBarrier (StreamWriter SW, Point RelativePosition, BarrierTypes Type, string Texture)
-			{
-			// Расчёт параметров
-			int x1, y1, x2, y2;
-			string xa, xb, xc, xd, ya, yb, yc, yd, z1, z2;
-			string[] textures;
-
-			int lDelta = 8, rDelta = 8, mDelta = 8;
-			switch (Type)
-				{
-				case BarrierTypes.DefaultWall:
-				default:
-					z1 = "0";
-					z2 = (WallHeightInt + 16).ToString ();
-
-					string lTex = Texture;
-					if (neighborLeft == NeighborsTypes.Gate)
-						{
-						lTex = "BorderRub01";
-						}
-					else if (neighborLeft == NeighborsTypes.Window)
-						{
-						lTex = "Metal08";
-						lDelta = 0;
-						}
-					else if (neighborLeft == NeighborsTypes.WindowCorner)
-						{
-						lTex = "Metal08";
-						}
-					else if (neighborLeft == NeighborsTypes.Wall)
-						{
-						lDelta = 0;
-						}
-
-					string rTex = Texture;
-					if (neighborRight == NeighborsTypes.Gate)
-						{
-						rTex = "BorderRub01";
-						}
-					else if (neighborRight == NeighborsTypes.Window)
-						{
-						rTex = "Metal08";
-						rDelta = 0;
-						}
-					else if (neighborRight == NeighborsTypes.WindowCorner)
-						{
-						rTex = "Metal08";
-						}
-					else if (neighborRight == NeighborsTypes.Wall)
-						{
-						rDelta = 0;
-						}
-
-					textures = new string[] { Texture, Texture, Texture, Texture,
-						lTex, lTex, rTex, rTex };
-					break;
-
-				case BarrierTypes.Gate:
-					z1 = "0";
-					z2 = (WallHeightInt - 8).ToString ();
-					textures = new string[] { "Metal08", Texture, Texture, Texture,
-						Texture, Texture, Texture, Texture };
-					break;
-
-				case BarrierTypes.Window:
-					z1 = "8";
-					z2 = (WallHeightInt - 8).ToString ();
-					textures = new string[] { "Glass01", "Glass01", "Glass01", "Glass01",
-						"Glass01", "Glass01", "Glass01", "Glass01" };
-					rDelta = lDelta = 0;
-					mDelta = 4;
-					break;
-
-				case BarrierTypes.WindowFrameTop:
-				case BarrierTypes.GateFrameTop:
-					z1 = (WallHeightInt - 8).ToString ();
-					z2 = (WallHeightInt + 16).ToString ();
-					textures = new string[] { Texture, "Metal08", Texture, Texture,
-						Texture, Texture, Texture, Texture };
-
-					if (Type == BarrierTypes.WindowFrameTop)
-						rDelta = lDelta = 0;
-					break;
-
-				case BarrierTypes.WindowFrameBottom:
-					z1 = "0";
-					z2 = "8";
-					textures = new string[] { "Metal08", Texture, Texture, Texture,
-						Texture, Texture, Texture, Texture };
-					rDelta = lDelta = 0;
-					break;
-				}
-
-			// Запись
-			SW.Write ("{\n");
-
-			// Вертикальная
-			if (IsWallVertical (RelativePosition))
-				{
-				x1 = RelativePosition.X * WallLength / 2;
-				y1 = (RelativePosition.Y - 1) * WallLength / 2;
-				y2 = (RelativePosition.Y + 1) * WallLength / 2;
-
-				xa = (x1 - mDelta).ToString ();
-				xb = x1.ToString ();
-				xc = (x1 + mDelta).ToString ();
-				ya = y1.ToString ();
-				yb = (y1 + lDelta).ToString ();
-				yc = (y2 - rDelta).ToString ();
-				yd = y2.ToString ();
-
-				// Нижний и верхний торцы
-				SW.Write ("( " + xc + " " + yc + " " + z2 + " ) " +
-					"( " + xc + " " + yb + " " + z2 + " ) " +
-					"( " + xb + " " + ya + " " + z2 + " ) " +
-					textures[0] + " [ 1 0 0 0 ] [ 0 -1 0 0 ] 0 1 1 \n");
-				SW.Write ("( " + xa + " " + yc + " " + z1 + " ) " +
-					"( " + xa + " " + yb + " " + z1 + " ) " +
-					"( " + xb + " " + ya + " " + z1 + " ) " +
-					textures[1] + " [ 1 0 0 0 ] [ 0 -1 0 0 ] 0 1 1 \n");
-
-				// Лицевая и задняя сторона
-				SW.Write ("( " + xa + " " + yb + " " + z1 + " ) " +
-					"( " + xa + " " + yc + " " + z1 + " ) " +
-					"( " + xa + " " + yc + " " + z2 + " ) " +
-					textures[2] + " [ 0 1 0 0 ] [ 0 0 -1 0 ] 0 1 1 \n");
-				SW.Write ("( " + xc + " " + yc + " " + z1 + " ) " +
-					"( " + xc + " " + yb + " " + z1 + " ) " +
-					"( " + xc + " " + yb + " " + z2 + " ) " +
-					textures[3] + " [ 0 1 0 0 ] [ 0 0 -1 0 ] 0 1 1 \n");
-
-				// Верхний торец
-				if (lDelta == 0)
-					{
-					SW.Write ("( " + xc + " " + ya + " " + z1 + " ) " +
-						"( " + xa + " " + yb + " " + z1 + " ) " +
-						"( " + xa + " " + yb + " " + z2 + " ) " +
-						textures[4] + " [ 1 0 0 0 ] [ 0 0 -1 0 ] 0 1 1 \n");
-					}
-				else
-					{
-					SW.Write ("( " + xb + " " + ya + " " + z1 + " ) " +
-						"( " + xa + " " + yb + " " + z1 + " ) " +
-						"( " + xa + " " + yb + " " + z2 + " ) " +
-						textures[4] + " [ 0 1 0 0 ] [ 0 0 -1 0 ] 0 1 1 \n");
-					SW.Write ("( " + xc + " " + yb + " " + z1 + " ) " +
-						"( " + xb + " " + ya + " " + z1 + " ) " +
-						"( " + xb + " " + ya + " " + z2 + " ) " +
-						textures[5] + " [ 0 1 0 0 ] [ 0 0 -1 0 ] 0 1 1 \n");
-					}
-
-				// Нижний торец
-				if (rDelta == 0)
-					{
-					SW.Write ("( " + xa + " " + yd + " " + z1 + " ) " +
-						"( " + xc + " " + yc + " " + z1 + " ) " +
-						"( " + xc + " " + yc + " " + z2 + " ) " +
-						textures[6] + " [ 1 0 0 0 ] [ 0 0 -1 0 ] 0 1 1 \n");
-					}
-				else
-					{
-					SW.Write ("( " + xb + " " + yd + " " + z1 + " ) " +
-						"( " + xc + " " + yc + " " + z1 + " ) " +
-						"( " + xc + " " + yc + " " + z2 + " ) " +
-						textures[6] + " [ 0 1 0 0 ] [ 0 0 -1 0 ] 0 1 1 \n");
-					SW.Write ("( " + xa + " " + yc + " " + z1 + " ) " +
-						"( " + xb + " " + yd + " " + z1 + " ) " +
-						"( " + xb + " " + yd + " " + z2 + " ) " +
-						textures[7] + " [ 0 1 0 0 ] [ 0 0 -1 0 ] 0 1 1 \n");
-					}
-				}
-
-			// Горизонтальная
-			else
-				{
-				y1 = RelativePosition.Y * WallLength / 2;
-				x1 = (RelativePosition.X - 1) * WallLength / 2;
-				x2 = (RelativePosition.X + 1) * WallLength / 2;
-
-				xa = x1.ToString ();
-				xb = (x1 + lDelta).ToString ();
-				xc = (x2 - rDelta).ToString ();
-				xd = x2.ToString ();
-				ya = (y1 - mDelta).ToString ();
-				yb = y1.ToString ();
-				yc = (y1 + mDelta).ToString ();
-
-				// Нижний и верхний торец
-				SW.Write ("( " + xc + " " + ya + " " + z2 + " ) " +
-					"( " + xb + " " + ya + " " + z2 + " ) " +
-					"( " + xa + " " + yb + " " + z2 + " ) " +
-					textures[0] + " [ 1 0 0 0 ] [ 0 -1 0 0 ] 0 1 1 \n");
-				SW.Write ("( " + xc + " " + yc + " " + z1 + " ) " +
-					"( " + xb + " " + yc + " " + z1 + " ) " +
-					"( " + xa + " " + yb + " " + z1 + " ) " +
-					textures[1] + " [ 1 0 0 0 ] [ 0 -1 0 0 ] 0 1 1 \n");
-
-				// Лицевая и задняя сторона
-				SW.Write ("( " + xb + " " + yc + " " + z1 + " ) " +
-					"( " + xc + " " + yc + " " + z1 + " ) " +
-					"( " + xc + " " + yc + " " + z2 + " ) " +
-					textures[2] + " [ 1 0 0 0 ] [ 0 0 -1 0 ] 0 1 1 \n");
-				SW.Write ("( " + xc + " " + ya + " " + z1 + " ) " +
-					"( " + xb + " " + ya + " " + z1 + " ) " +
-					"( " + xb + " " + ya + " " + z2 + " ) " +
-					textures[3] + " [ 1 0 0 0 ] [ 0 0 -1 0 ] 0 1 1 \n");
-
-				// Левый торец
-				if (lDelta == 0)
-					{
-					SW.Write ("( " + xa + " " + ya + " " + z1 + " ) " +
-						"( " + xb + " " + yc + " " + z1 + " ) " +
-						"( " + xb + " " + yc + " " + z2 + " ) " +
-						textures[4] + " [ 0 1 0 0 ] [ 0 0 -1 0 ] 0 1 1 \n");
-					}
-				else
-					{
-					SW.Write ("( " + xa + " " + yb + " " + z1 + " ) " +
-						"( " + xb + " " + yc + " " + z1 + " ) " +
-						"( " + xb + " " + yc + " " + z2 + " ) " +
-						textures[4] + " [ 0 1 0 0 ] [ 0 0 -1 0 ] 0 1 1 \n");
-					SW.Write ("( " + xb + " " + ya + " " + z1 + " ) " +
-						"( " + xa + " " + yb + " " + z1 + " ) " +
-						"( " + xa + " " + yb + " " + z2 + " ) " +
-						textures[5] + " [ 0 1 0 0 ] [ 0 0 -1 0 ] 0 1 1 \n");
-					}
-
-				// Правый торец
-				if (rDelta == 0)
-					{
-					SW.Write ("( " + xd + " " + yc + " " + z1 + " ) " +
-						"( " + xc + " " + ya + " " + z1 + " ) " +
-						"( " + xc + " " + ya + " " + z2 + " ) " +
-						textures[6] + " [ 0 1 0 0 ] [ 0 0 -1 0 ] 0 1 1 \n");
-					}
-				else
-					{
-					SW.Write ("( " + xd + " " + yb + " " + z1 + " ) " +
-						"( " + xc + " " + ya + " " + z1 + " ) " +
-						"( " + xc + " " + ya + " " + z2 + " ) " +
-						textures[6] + " [ 0 1 0 0 ] [ 0 0 -1 0 ] 0 1 1 \n");
-					SW.Write ("( " + xc + " " + yc + " " + z1 + " ) " +
-						"( " + xd + " " + yb + " " + z1 + " ) " +
-						"( " + xd + " " + yb + " " + z2 + " ) " +
-						textures[7] + " [ 0 1 0 0 ] [ 0 0 -1 0 ] 0 1 1 \n");
-					}
-				}
-
-			SW.Write ("}\n");
-			}
-
-		/// <summary>
-		/// Метод определяет положение стены
-		/// </summary>
-		/// <param name="RelativePosition">Относительная позиция точки создания</param>
-		/// <returns>Возвращает true, если стена вертикальная</returns>
-		public static bool IsWallVertical (Point RelativePosition)
-			{
-			return (RelativePosition.X % 2 == 0);
-			}
-
-		/// <summary>
-		/// Метод записывает раму окна на карту
-		/// </summary>
-		/// <param name="SW">Дескриптор файла карты</param>
-		/// <param name="RelativePosition">Относительная позиция точки создания</param>
-		/// <param name="Texture">Текстура стены для рамы</param>
-		public static void WriteMapWindow (StreamWriter SW, Point RelativePosition, string Texture)
-			{
-			WriteMapBarrier (SW, RelativePosition, BarrierTypes.WindowFrameTop, Texture);
-			WriteMapBarrier (SW, RelativePosition, BarrierTypes.WindowFrameBottom, Texture);
-			}
-
-		/// <summary>
-		/// Метод записывает стекло окна на карту
-		/// </summary>
-		/// <param name="SW">Дескриптор файла карты</param>
-		/// <param name="RelativePosition">Относительная позиция точки создания</param>
-		public static void WriteMapWindow (StreamWriter SW, Point RelativePosition)
-			{
-			SW.Write ("{\n");
-			SW.Write ("\"classname\" \"func_breakable\"\n");
-			SW.Write ("\"rendermode\" \"2\"\n");
-			SW.Write ("\"renderamt\" \"80\"\n");
-			SW.Write ("\"health\" \"20\"\n");
-			SW.Write ("\"material\" \"0\"\n");
-
-			WriteMapBarrier (SW, RelativePosition, BarrierTypes.Window, null);
-
-			SW.Write ("}\n");
-			}
-
-		/// <summary>
-		/// Возможные типы препятствий
-		/// </summary>
-		public enum BarrierTypes
-			{
-			/// <summary>
-			/// Обычная стена
-			/// </summary>
-			DefaultWall,
-
-			/// <summary>
-			/// Шлюз
-			/// </summary>
-			Gate,
-
-			/// <summary>
-			/// Верхняя рама окна
-			/// </summary>
-			WindowFrameTop,
-
-			/// <summary>
-			/// Нижняя рама окна
-			/// </summary>
-			WindowFrameBottom,
-
-			/// <summary>
-			/// Окно
-			/// </summary>
-			Window,
-
-			/// <summary>
-			/// Верхняя рама шлюза
-			/// </summary>
-			GateFrameTop
-			}
-
-		/// <summary>
-		/// Возможные типы соседних препятствий
-		/// </summary>
-		public enum NeighborsTypes
-			{
-			/// <summary>
-			/// Обычная стена
-			/// </summary>
-			Wall,
-
-			/// <summary>
-			/// Шлюз
-			/// </summary>
-			Gate,
-
-			/// <summary>
-			/// Окно
-			/// </summary>
-			Window,
-
-			/// <summary>
-			/// Окно под углом к стене
-			/// </summary>
-			WindowCorner,
-
-			/// <summary>
-			/// Свободный проход
-			/// </summary>
-			Passage
-			}
-
-#if false
-
-		/// <summary>
-		/// Метод записывает декаль на карту
-		/// </summary>
-		/// <param name="SW">Дескриптор файла карты</param>
-		/// <param name="RelativePosition">Относительная позиция точки создания</param>
-		/// <param name="Decal">Текстура декали</param>
-		/// <param name="Top">Флаг отрисовки декали на потолке вместо пола</param>
-		public static void WriteMapDecal (StreamWriter SW, Point RelativePosition, string Decal, bool Top)
-			{
-			// Расчёт параметров
-			string x = (RelativePosition.X * WallLength / 2).ToString ();
-			string y = (RelativePosition.Y * WallLength / 2).ToString ();
-
-			// Запись
-			SW.Write ("{\n");
-			SW.Write ("\"classname\" \"infodecal\"\n");
-			SW.Write ("\"texture\" \"" + Decal + "\"\n");
-			SW.Write ("\"origin\" \"" + x + " " + y + " " + (Top ? WallHeightInt.ToString () : "0") + "\"\n");
-			SW.Write ("}\n");
-			}
-
-		/// <summary>
-		/// Метод записывает декали пути от входа к выходу на карту
-		/// </summary>
-		/// <param name="SW">Дескриптор файла карты</param>
-		/// <param name="RelativePosition">Относительная позиция точки создания</param>
-		/// <param name="StartOrFinish">Флаг указывает на начальную или конечную точку пути</param>
-		public static void WriteMapPathTrace (StreamWriter SW, Point RelativePosition, bool StartOrFinish)
-			{
-			string decal;
-			if (StartOrFinish)
-				decal = "{target";
-			else if (leftStep)
-				decal = "{foot_l";
-			else
-				decal = "{foot_r";
-
-			WriteMapDecal (SW, RelativePosition, decal, false);
-
-			leftStep = !leftStep;
-			}
-		private static bool leftStep = false;
-
-#endif
-
-		/// <summary>
 		/// Метод записывает звуковое сопровождение и эффект помещения на карту
 		/// </summary>
 		/// <param name="SW">Дескриптор файла карты</param>
 		/// <param name="RelativePosition">Относительная позиция точки создания</param>
 		/// <param name="Ambient">Тип эмбиента</param>
 		/// <param name="Sound">Звук</param>
-		public static void WriteMapSound (StreamWriter SW, Point RelativePosition, string Sound, AmbientTypes Ambient)
+		public static void WriteMapSound (StreamWriter SW, Point RelativePosition, string Sound,
+			AmbientTypes Ambient)
 			{
 			// Расчёт параметров
-			string x = (RelativePosition.X * WallLength / 2).ToString ();
-			string y = (RelativePosition.Y * WallLength / 2).ToString ();
+			/*string x = (RelativePosition.X * WallLength / 2).ToString ();
+			string y = (RelativePosition.Y * WallLength / 2).ToString ();*/
+			int xi, yi;
+			EvaluateAbsolutePosition (RelativePosition, out xi, out yi);
+			string x = xi.ToString ();
+			string y = yi.ToString ();
 
 			int h;
 			switch (Ambient)
@@ -1361,8 +817,10 @@ namespace RD_AAOW
 		public static void WriteMapPathStone (StreamWriter SW, Point RelativePosition, bool StartOrFinish)
 			{
 			// Расчёт параметров
-			int x = RelativePosition.X * WallLength / 2;
-			int y = RelativePosition.Y * WallLength / 2;
+			/*int x = RelativePosition.X * WallLength / 2;
+			int y = RelativePosition.Y * WallLength / 2;*/
+			int x, y;
+			EvaluateAbsolutePosition (RelativePosition, out x, out y);
 
 			string tex;
 			if (StartOrFinish)
@@ -1403,79 +861,30 @@ namespace RD_AAOW
 		private static int skyIndex;
 
 		/// <summary>
-		/// Метод записывает заголовок карты
-		/// </summary>
-		/// <param name="SW">Дескриптор файла карты</param>
-		/// <param name="MapNumber">Текущий номер карты</param>
-		/// <param name="Dark">Флаг указывает на низкий уровень освещения</param>
-		/// <param name="Rnd">ГПСЧ</param>
-		public static void WriteMapHeader (StreamWriter SW, uint MapNumber, Random Rnd, bool Dark)
-			{
-			SW.Write ("{\n");
-			SW.Write ("\"classname\" \"worldspawn\"\n");
-			SW.Write ("\"message\" \"ES: Randomaze map " + BuildMapName (MapNumber) + " by FDL\"\n");
-			SW.Write ("\"MaxRange\" \"3000\"\n");
-			SW.Write ("\"mapversion\" \"220\"\n");
-
-			skyIndex = Rnd.Next (skyTypes.Length / 2);
-			if (Dark)
-				skyIndex += skyTypes.Length / 2;
-			SW.Write ("\"skyname\" \"" + skyTypes[skyIndex] + "\"\n");
-
-			SW.Write ("\"light\" \"1\"\n");
-			SW.Write ("\"sounds\" \"1\"\n");
-			SW.Write ("\"WaveHeight\" \"0.1\"\n");
-			SW.Write ("\"newunit\" \"1\"\n");
-			SW.Write ("\"wad\" \"" + RandomazeForm.MainWAD + "\"\n");
-
-			if (MapNumber == 1)
-				{
-				SW.Write ("\"chaptertitle\" \"" + ProgramDescription.AssemblyTitle + "\"\n");
-				SW.Write ("\"startdark\" \"1\"\n");
-				SW.Write ("\"gametitle\" \"1\"\n");
-				}
-
-			// Создание цвета ламп
-			if (string.IsNullOrWhiteSpace (lightColor))
-				{
-				lightColor = "\"_light\" \"" + (224 + Rnd.Next (32)).ToString () + " " +
-					(224 + Rnd.Next (32)).ToString () + " " +
-					(112 + Rnd.Next (32)).ToString () + " 150\"\n";
-				}
-			}
-
-		/// <summary>
-		/// Метод записывает закрывающий элемент геометрии карты
-		/// </summary>
-		/// <param name="SW">Дескриптор файла карты</param>
-		public static void WriteMapTerminator (StreamWriter SW)
-			{
-			SW.Write ("}\n");
-			}
-
-		/// <summary>
 		/// Метод записывает пол и потолок на карту
 		/// </summary>
 		/// <param name="SW">Дескриптор файла карты</param>
 		/// <param name="Section">Секция карты</param>
 		/// <param name="FloorTexture">Текстура пола</param>
 		/// <param name="RoofTexture">Текстура потолка</param>
-		/// <param name="RealMapHeight">Реальная (в точках) ширина карты</param>
-		/// <param name="RealMapWidth">Реальная (в точках) длина карты</param>
-		public static void WriteMapCeilingAndFloor (StreamWriter SW, byte Section, int RealMapWidth, int RealMapHeight,
-			string RoofTexture, string FloorTexture)
+		/// <param name="RelativeMapHeight">Относительная ширина карты</param>
+		/// <param name="RelativeMapWidth">Относительная длина карты</param>
+		public static void WriteMapCeilingAndFloor (StreamWriter SW, byte Section, int RelativeMapWidth,
+			int RelativeMapHeight, string RoofTexture, string FloorTexture)
 			{
 			// Расчёт параметров
 			bool negX = ((Section & NegativeX) != 0);
 			bool negY = ((Section & NegativeY) != 0);
+			int realMapWidth = RelativeMapWidth * WallLength;
+			int realMapHeight = RelativeMapHeight * WallLength;
 
-			string x1 = (negX ? (-RealMapWidth / 2) : 0).ToString ();
-			string x2 = (negX ? 0 : (RealMapWidth / 2)).ToString ();
-			string y1 = (negY ? (-RealMapHeight / 2) : 0).ToString ();
-			string y2 = (negY ? 0 : (RealMapHeight / 2)).ToString ();
+			string x1 = (negX ? (-realMapWidth / 2) : 0).ToString ();
+			string x2 = (negX ? 0 : (realMapWidth / 2)).ToString ();
+			string y1 = (negY ? (-realMapHeight / 2) : 0).ToString ();
+			string y2 = (negY ? 0 : (realMapHeight / 2)).ToString ();
 
-			string h2 = (WallHeightInt + 32).ToString ();
-			string h1 = (IsSkyTexture (RoofTexture) ? WallHeightInt + 16 : WallHeightInt).ToString ();
+			string h2 = (wallHeight + 32).ToString ();
+			string h1 = (IsSkyTexture (RoofTexture) ? (wallHeight + 16) : wallHeight).ToString ();
 
 			// Запись
 			WriteBlock (SW, x1, y1, "-16", x2, y2, "0", new string[] { FloorTexture, FloorTexture, FloorTexture,
@@ -1524,20 +933,23 @@ namespace RD_AAOW
 		/// <param name="SW">Дескриптор файла карты</param>
 		/// <param name="RelativePosition">Относительная позиция точки создания</param>
 		/// <param name="RoofTexture">Текстура потолка</param>
-		/// <param name="AddBulb">Флаг указывает, что добавляется лампочка, а не источник света</param>
+		/// <param name="AddingTheBulb">Флаг указывает, что добавляется лампочка, а не источник света</param>
+		/// <param name="SubFloor">Флаг указывает, что свет добавляется к внутренней площадке</param>
+		/// <returns>Возвращает true, если добавлен действующий источник света</returns>
 		public static bool WriteMapLight (StreamWriter SW, Point RelativePosition, string RoofTexture,
-			bool AddBulb)
+			bool AddingTheBulb, bool SubFloor)
 			{
 			// Защита
-			if (MapSupport.IsSkyTexture (RoofTexture) && EnvironmentAdded)
+			if (IsSkyTexture (RoofTexture) && !SubFloor && EnvironmentAdded)
 				return false;
 
 			// Расчёт параметров
-			int x = RelativePosition.X * WallLength / 2;
-			int y = RelativePosition.Y * WallLength / 2;
+			int x, y;
+			EvaluateAbsolutePosition (RelativePosition, out x, out y);
 
 			// Добавление атмосферного освещения
-			if (!AddBulb && IsSkyTexture (RoofTexture))
+			// (флаг лампочки требуется контролировать, т.к. они добавляются раньше)
+			if (!AddingTheBulb && IsSkyTexture (RoofTexture))
 				{
 				SW.Write ("{\n");
 				SW.Write ("\"classname\" \"light_environment\"\n");
@@ -1547,7 +959,7 @@ namespace RD_AAOW
 				SW.Write ("\"_light\" \"" + sunColors[skyIndex] + "\"\n");
 
 				SW.Write ("\"origin\" \"" + x.ToString () + " " + y.ToString () + " " +
-					(WallHeightInt - 8).ToString () + "\"\n");
+					(wallHeight - 8).ToString () + "\"\n");
 				SW.Write ("}\n");
 
 				EnvironmentAdded = true;
@@ -1555,23 +967,29 @@ namespace RD_AAOW
 				}
 
 			// Добавление источника света
-			if (!AddBulb)
+			int z = wallHeight;
+			if (SubFloor)
+				z -= (DefaultWallHeight + 12);
+
+			if (!AddingTheBulb)
 				{
 				SW.Write ("{\n");
 				SW.Write ("\"classname\" \"light\"\n");
-				SW.Write (lightColor);
+				SW.Write (SubFloor ? subLightColor : lightColor);
 				SW.Write ("\"_fade\" \"1.0\"\n");
 				SW.Write ("\"origin\" \"" + x.ToString () + " " + y.ToString () + " " +
-					(WallHeightInt - 12).ToString () + "\"\n");
+					(z - 12).ToString () + "\"\n");
 				SW.Write ("}\n");
 				}
 
 			// Добавление лампы
 			else if (!IsSkyTexture (RoofTexture))
 				{
-				WriteBlock (SW, (x - 16).ToString (), (y - 16).ToString (), (WallHeightInt - 4).ToString (),
-					(x + 16).ToString (), (y + 16).ToString (), WallHeightInt.ToString (),
-					new string[] { RoofTexture, RoofTexture, RoofTexture, RoofTexture, RoofTexture, "~LAMP07" },
+				int d = SubFloor ? 8 : 16;
+				WriteBlock (SW, (x - d).ToString (), (y - d).ToString (), (z - 4).ToString (),
+					(x + d).ToString (), (y + d).ToString (), z.ToString (),
+					new string[] { RoofTexture, RoofTexture, RoofTexture, RoofTexture, RoofTexture,
+						SubFloor ? "~PATH01" : "~LAMP07" },
 					BlockTypes.Default);
 
 				return false;
@@ -1584,7 +1002,7 @@ namespace RD_AAOW
 		/// Возвращает true, если небесный свет уже был добавлен
 		/// </summary>
 		public static bool EnvironmentAdded = false;
-		private static string lightColor = "";
+		private static string lightColor = "", subLightColor = "";
 
 		/// <summary>
 		/// Метод записывает мебель на карту
@@ -1595,16 +1013,12 @@ namespace RD_AAOW
 		/// <param name="WallTexture">Текстура окружающей стены</param>
 		/// <param name="Rnd">ГПСЧ</param>
 		/// <param name="FurnitureType">Индекс мебели</param>
-		public static bool WriteMapFurniture (StreamWriter SW, Point RelativePosition, FurnitureTypes FurnitureType,
+		public static void WriteMapFurniture (StreamWriter SW, Point RelativePosition, FurnitureTypes FurnitureType,
 			List<CPResults> NearbyWalls, string WallTexture, Random Rnd)
 			{
-			// Контроль
-			if (NearbyWalls.Count < 1)
-				return false; // Нет подходящих стен
-
 			// Расчёт параметров
-			int x = RelativePosition.X * WallLength / 2;
-			int y = RelativePosition.Y * WallLength / 2;
+			int x, y;
+			EvaluateAbsolutePosition (RelativePosition, out x, out y);
 			CPResults placement = NearbyWalls[Rnd.Next (NearbyWalls.Count)];
 
 			// Расчёт координат
@@ -1628,7 +1042,134 @@ namespace RD_AAOW
 			// Запись
 			WriteBlock (SW, coords[0].ToString (), coords[1].ToString (), coords[2].ToString (),
 				coords[3].ToString (), coords[4].ToString (), coords[5].ToString (), tex, BlockTypes.Door);
-			return true;
 			}
+
+		/// <summary>
+		/// Метод записывает внутреннюю площадку на карту
+		/// </summary>
+		/// <param name="SW">Дескриптор файла карты</param>
+		/// <param name="RelativePosition">Относительная позиция точки создания</param>
+		/// <param name="SubFloorTexture">Текстура внутренней площадки</param>
+		public static void WriteMapSubFloor (StreamWriter SW, Point RelativePosition, string SubFloorTexture)
+			{
+			WriteSubFloor (SW, RelativePosition, SubFloorTexture, null);
+			}
+
+		/// <summary>
+		/// Метод записывает зацеп к внутренней площадке на карту
+		/// </summary>
+		/// <param name="SW">Дескриптор файла карты</param>
+		/// <param name="RelativePosition">Относительная позиция точки создания</param>
+		public static void WriteMapSubFloor (StreamWriter SW, Point RelativePosition, List<CPResults> SurroundingWalls)
+			{
+			WriteSubFloor (SW, RelativePosition, null, SurroundingWalls);
+			}
+
+		// Универсальный метод записи внутренней площадки
+		private static void WriteSubFloor (StreamWriter SW, Point RelativePosition, string SubFloorTexture,
+			List<CPResults> SurroundingWalls)
+			{
+			// Расчёт параметров
+			int x, y;
+			EvaluateAbsolutePosition (RelativePosition, out x, out y);
+
+			// Сборка линии текстур
+			string[] tex = new string[6];
+			for (int i = 0; i < tex.Length; i++)
+				tex[i] = (SurroundingWalls != null) ? TriggerTexture : SubFloorTexture;
+
+			// Запись площадки
+			if (SurroundingWalls == null)
+				{
+				WriteBlock (SW, (x - 56).ToString (), (y - 56).ToString (), (DefaultWallHeight - 16).ToString (),
+					(x + 56).ToString (), (y + 56).ToString (), DefaultWallHeight.ToString (),
+					tex, BlockTypes.Door);
+				return;
+				}
+
+			// Запись лестницы
+			if (!SurroundingWalls.Contains (CPResults.Left))
+				{
+				SW.Write ("{\n\"classname\" \"func_ladder\"\n");
+				WriteBlock (SW, (x - 60).ToString (), (y - 56).ToString (), (DefaultWallHeight - 16).ToString (),
+					(x - 56).ToString (), (y + 56).ToString (), DefaultWallHeight.ToString (),
+					tex, BlockTypes.Door);
+				SW.Write ("}\n");
+				}
+
+			if (!SurroundingWalls.Contains (CPResults.Right))
+				{
+				SW.Write ("{\n\"classname\" \"func_ladder\"\n");
+				WriteBlock (SW, (x + 56).ToString (), (y - 56).ToString (), (DefaultWallHeight - 16).ToString (),
+					(x + 60).ToString (), (y + 56).ToString (), DefaultWallHeight.ToString (),
+					tex, BlockTypes.Door);
+				SW.Write ("}\n");
+				}
+
+			if (!SurroundingWalls.Contains (CPResults.Down))
+				{
+				SW.Write ("{\n\"classname\" \"func_ladder\"\n");
+				WriteBlock (SW, (x - 56).ToString (), (y - 60).ToString (), (DefaultWallHeight - 16).ToString (),
+					(x + 56).ToString (), (y - 56).ToString (), DefaultWallHeight.ToString (),
+					tex, BlockTypes.Door);
+				SW.Write ("}\n");
+				}
+
+			if (!SurroundingWalls.Contains (CPResults.Up))
+				{
+				SW.Write ("{\n\"classname\" \"func_ladder\"\n");
+				WriteBlock (SW, (x - 56).ToString (), (y + 56).ToString (), (DefaultWallHeight - 16).ToString (),
+					(x + 56).ToString (), (y + 60).ToString (), DefaultWallHeight.ToString (),
+					tex, BlockTypes.Door);
+				SW.Write ("}\n");
+				}
+			}
+
+#if false
+
+		/// <summary>
+		/// Метод записывает декаль на карту
+		/// </summary>
+		/// <param name="SW">Дескриптор файла карты</param>
+		/// <param name="RelativePosition">Относительная позиция точки создания</param>
+		/// <param name="Decal">Текстура декали</param>
+		/// <param name="Top">Флаг отрисовки декали на потолке вместо пола</param>
+		public static void WriteMapDecal (StreamWriter SW, Point RelativePosition, string Decal, bool Top)
+			{
+			// Расчёт параметров
+			string x = (RelativePosition.X * WallLength / 2).ToString ();
+			string y = (RelativePosition.Y * WallLength / 2).ToString ();
+
+			// Запись
+			SW.Write ("{\n");
+			SW.Write ("\"classname\" \"infodecal\"\n");
+			SW.Write ("\"texture\" \"" + Decal + "\"\n");
+			SW.Write ("\"origin\" \"" + x + " " + y + " " + (Top ? WallHeightInt.ToString () : "0") + "\"\n");
+			SW.Write ("}\n");
+			}
+
+		/// <summary>
+		/// Метод записывает декали пути от входа к выходу на карту
+		/// </summary>
+		/// <param name="SW">Дескриптор файла карты</param>
+		/// <param name="RelativePosition">Относительная позиция точки создания</param>
+		/// <param name="StartOrFinish">Флаг указывает на начальную или конечную точку пути</param>
+		public static void WriteMapPathTrace (StreamWriter SW, Point RelativePosition, bool StartOrFinish)
+			{
+			string decal;
+			if (StartOrFinish)
+				decal = "{target";
+			else if (leftStep)
+				decal = "{foot_l";
+			else
+				decal = "{foot_r";
+
+			WriteMapDecal (SW, RelativePosition, decal, false);
+
+			leftStep = !leftStep;
+			}
+		private static bool leftStep = false;
+
+#endif
 		}
 	}

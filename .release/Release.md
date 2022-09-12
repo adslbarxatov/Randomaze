@@ -1,10 +1,12 @@
-_Changes for v 3.4.1_:
-- Some interface bugs fixed;
-- Added the new engine assembly (rebuilt for the MSVC RTL 142 / 2015 – 2022);
-- Code for furniture processing has been refactored, some new objects have been added;
-- App will now properly scroll the compilation log to its end;
-- App will now save the compilation log to the file after exiting;
-- Fixed some interface bugs;
-- Improved the furniture alignment algorithm;
-- Implemented the random sky boxes;
-- Fixed lights placement in the dark mode
+_Changes for v 3.6_:
+- Added lamps for balconies (for two-level maps);
+- Added ladders to provide the ability to climb on balconies (for two-level maps);
+- Tested the correct placement for tripmines; they are also available now;
+- Adjusted furniture types for some exteriors;
+- Sky type selector is now more flexible;
+- Implemented the two-level map generation;
+- Implemented the random “balcony” placement (for two-level maps);
+- Shooting and jumping enemies can be placed on balconies (for two-level maps);
+- Barnacles can now be enabled (for two-level maps);
+- Added some new types of furniture;
+- Some code refactoring has been applied
