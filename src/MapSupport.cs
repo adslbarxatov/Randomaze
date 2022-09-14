@@ -163,28 +163,24 @@ namespace RD_AAOW
 			}
 
 		/// <summary>
-		/// Метод формирует абсолютные координаты из относительных
+		/// Метод формирует абсолютные координаты объекта карты из относительных
 		/// </summary>
 		/// <param name="RelativePosition">Относительная точка</param>
-		/// <param name="X">Абсолютная абсцисса</param>
-		/// <param name="Y">Абсолютная ордината</param>
-		public static void EvaluateAbsolutePosition (Point RelativePosition, out int X, out int Y)
+		public static Point EvaluateAbsolutePosition (Point RelativePosition)
 			{
-			X = RelativePosition.X * WallLength / 2;
-			Y = RelativePosition.Y * WallLength / 2;
+			return new Point (RelativePosition.X * WallLength / 2, RelativePosition.Y * WallLength / 2);
 			}
 
 		// Метод записывает точку выхода с карты
 		private static void WriteMapEndPoint_Finish (StreamWriter SW, Point RelativePosition)
 			{
 			// Расчёт параметров
-			int x, y;
-			EvaluateAbsolutePosition (RelativePosition, out x, out y);
+			Point p = EvaluateAbsolutePosition (RelativePosition);
 
-			string x1 = (x - 8).ToString ();
-			string y1 = (y - 8).ToString ();
-			string x2 = (x + 8).ToString ();
-			string y2 = (y + 8).ToString ();
+			string x1 = (p.X - 8).ToString ();
+			string y1 = (p.Y - 8).ToString ();
+			string x2 = (p.X + 8).ToString ();
+			string y2 = (p.Y + 8).ToString ();
 			string z1 = "16";
 			string z2 = (wallHeight - 16).ToString ();
 			string z3 = (wallHeight - 8).ToString ();
@@ -243,27 +239,23 @@ namespace RD_AAOW
 				}
 
 			// Расчёт параметров
-			/*int x = RelativePosition.X * WallLength / 2;
-			int y = RelativePosition.Y * WallLength / 2;*/
-			int x, y;
-			EvaluateAbsolutePosition (RelativePosition, out x, out y);
-
+			Point p = EvaluateAbsolutePosition (RelativePosition);
 			string mapName = BuildMapName (MapNumber + 1);
 
 			// Запись
 			SW.Write ("{\n");
 			SW.Write ("\"classname\" \"info_landmark\"\n");
 			SW.Write ("\"targetname\" \"" + mapName + "m\"\n");
-			SW.Write ("\"origin\" \"" + x.ToString () + " " + y.ToString () + " 40\"\n");
+			SW.Write ("\"origin\" \"" + p.X.ToString () + " " + p.Y.ToString () + " 40\"\n");
 
 			SW.Write ("}\n{\n");
 			SW.Write ("\"classname\" \"trigger_changelevel\"\n");
 			SW.Write ("\"map\" \"" + mapName + "\"\n");
 			SW.Write ("\"landmark\" \"" + mapName + "m\"\n");
 
-			WriteBlock (SW, (x - 8).ToString (), (y - 8).ToString (), "16",
+			WriteBlock (SW, (p.X - 8).ToString (), (p.Y - 8).ToString (), "16",
 
-				(x + 8).ToString (), (y + 8).ToString (), (wallHeight - 16).ToString (),
+				(p.X + 8).ToString (), (p.Y + 8).ToString (), (wallHeight - 16).ToString (),
 
 				new string[] { TriggerTexture, TriggerTexture, TriggerTexture, TriggerTexture,
 					TriggerTexture, TriggerTexture },
@@ -279,8 +271,7 @@ namespace RD_AAOW
 		private static void WriteMapPortal (StreamWriter SW, Point RelativePosition, bool Exit)
 			{
 			// Расчёт параметров
-			int x, y;
-			EvaluateAbsolutePosition (RelativePosition, out x, out y);
+			Point p = EvaluateAbsolutePosition (RelativePosition);
 
 			// Запись
 			SW.Write ("{\n");
@@ -293,7 +284,8 @@ namespace RD_AAOW
 			SW.Write ("\"framerate\" \"10.0\"\n");
 			SW.Write ("\"model\" \"sprites/" + (Exit ? "exit" : "enter") + "1.spr\"\n");
 			SW.Write ("\"scale\" \"1\"\n");
-			SW.Write ("\"origin\" \"" + x.ToString () + " " + y.ToString () + " " +
+
+			SW.Write ("\"origin\" \"" + p.X.ToString () + " " + p.Y.ToString () + " " +
 				(DefaultWallHeight / 2).ToString () + "\"\n");
 			SW.Write ("}\n");
 			}
@@ -307,17 +299,14 @@ namespace RD_AAOW
 		public static void WriteMapEntryPoint (StreamWriter SW, Point RelativePosition, uint MapNumber)
 			{
 			// Расчёт параметров
-			/*int x = RelativePosition.X * WallLength / 2;
-			int y = RelativePosition.Y * WallLength / 2;*/
-			int x, y;
-			EvaluateAbsolutePosition (RelativePosition, out x, out y);
+			Point p = EvaluateAbsolutePosition (RelativePosition);
 
-			string xs = x.ToString ();
-			string ys = y.ToString ();
-			string x1 = (x - 8).ToString ();
-			string y1 = (y - 8).ToString ();
-			string x2 = (x + 8).ToString ();
-			string y2 = (y + 8).ToString ();
+			string xs = p.X.ToString ();
+			string ys = p.Y.ToString ();
+			string x1 = (p.X - 8).ToString ();
+			string y1 = (p.Y - 8).ToString ();
+			string x2 = (p.X + 8).ToString ();
+			string y2 = (p.Y + 8).ToString ();
 			string z1 = (wallHeight - 1).ToString ();
 			string z2 = wallHeight.ToString ();
 
@@ -471,13 +460,12 @@ namespace RD_AAOW
 		/// <param name="RelativePosition">Относительная позиция точки создания</param>
 		/// <param name="Rnd">ГПСЧ</param>
 		/// <param name="MapNumber">Номер текущей карты</param>
-		public static void WriteMapItem (StreamWriter SW, Point RelativePosition, Random Rnd, uint MapNumber)
+		/// <param name="AllowSecondFloor">Флаг, разрешающий размещение на внутренних площадках</param>
+		public static void WriteMapItem (StreamWriter SW, Point RelativePosition, Random Rnd, uint MapNumber,
+			bool AllowSecondFloor)
 			{
 			// Расчёт параметров
-			/*string x = (RelativePosition.X * WallLength / 2).ToString ();
-			string y = (RelativePosition.Y * WallLength / 2).ToString ();*/
-			int x, y;
-			EvaluateAbsolutePosition (RelativePosition, out x, out y);
+			Point p = EvaluateAbsolutePosition (RelativePosition);
 
 			// Запись
 			SW.Write ("{\n");
@@ -575,8 +563,13 @@ namespace RD_AAOW
 					break;
 				}
 
+			int z = 40;
+			if (AllowSecondFloor)
+				z += (Rnd.Next (2) * DefaultWallHeight);
+
 			SW.Write ("\"angles\" \"0 " + Rnd.Next (360) + " 0\"\n");
-			SW.Write ("\"origin\" \"" + x.ToString () + " " + y.ToString () + " 40\"\n");   // На некоторой высоте над полом
+			SW.Write ("\"origin\" \"" + p.X.ToString () + " " + p.Y.ToString () + " " +
+				z.ToString () + "\"\n");   // На некоторой высоте над полом
 			SW.Write ("}\n");
 			}
 
@@ -591,10 +584,7 @@ namespace RD_AAOW
 			uint MapNumber)
 			{
 			// Расчёт параметров
-			/*int x = RelativePosition.X * WallLength / 2;
-			int y = RelativePosition.Y * WallLength / 2;*/
-			int x, y;
-			EvaluateAbsolutePosition (RelativePosition, out x, out y);
+			Point p = EvaluateAbsolutePosition (RelativePosition);
 
 			// Запись
 			SW.Write ("{\n");
@@ -606,9 +596,8 @@ namespace RD_AAOW
 			SW.Write ("\"sounds\" \"11\"\n");
 			SW.Write ("\"wait\" \"-1\"\n");
 
-			WriteBlock (SW, (x - 8).ToString (), (y - 8).ToString (), "0",
-
-				(x + 8).ToString (), (y + 8).ToString (), "40",
+			WriteBlock (SW, (p.X - 8).ToString (), (p.Y - 8).ToString (), "0",
+				(p.X + 8).ToString (), (p.Y + 8).ToString (), "40",
 
 				new string[] { "+A_SWITCH01", Texture, Texture, Texture, Texture, Texture },
 
@@ -626,24 +615,23 @@ namespace RD_AAOW
 		public static void WriteMapDoor (StreamWriter SW, Point RelativePosition, string Texture)
 			{
 			// Расчёт параметров
-			int x, y;
-			EvaluateAbsolutePosition (RelativePosition, out x, out y);
+			Point p = EvaluateAbsolutePosition (RelativePosition);
 			string x1, y1, x2, y2;
 
 			// Вертикальная
 			if (WallsSupport.IsWallVertical (RelativePosition))
 				{
-				x1 = (x - 8).ToString ();
-				y1 = (y - 32).ToString ();
-				x2 = (x + 8).ToString ();
-				y2 = (y + 32).ToString ();
+				x1 = (p.X - 8).ToString ();
+				y1 = (p.Y - 32).ToString ();
+				x2 = (p.X + 8).ToString ();
+				y2 = (p.Y + 32).ToString ();
 				}
 			else
 				{
-				x1 = (x - 32).ToString ();
-				y1 = (y - 8).ToString ();
-				x2 = (x + 32).ToString ();
-				y2 = (y + 8).ToString ();
+				x1 = (p.X - 32).ToString ();
+				y1 = (p.Y - 8).ToString ();
+				x2 = (p.X + 32).ToString ();
+				y2 = (p.Y + 8).ToString ();
 				}
 
 			// Запись
@@ -660,15 +648,12 @@ namespace RD_AAOW
 		public static void WriteMapCrate (StreamWriter SW, Point RelativePosition, Random Rnd)
 			{
 			// Расчёт параметров
-			/*int x = RelativePosition.X * WallLength / 2;
-			int y = RelativePosition.Y * WallLength / 2;*/
-			int x, y;
-			EvaluateAbsolutePosition (RelativePosition, out x, out y);
+			Point p = EvaluateAbsolutePosition (RelativePosition);
 
-			string x1 = (x - 16).ToString ();
-			string y1 = (y - 16).ToString ();
-			string x2 = (x + 16).ToString ();
-			string y2 = (y + 16).ToString ();
+			string x1 = (p.X - 16).ToString ();
+			string y1 = (p.Y - 16).ToString ();
+			string x2 = (p.X + 16).ToString ();
+			string y2 = (p.Y + 16).ToString ();
 
 			bool explosive = (Rnd.Next (2) == 0);
 			string tex = "CRATE01"; // Взрывчатка по умолчанию
@@ -742,12 +727,9 @@ namespace RD_AAOW
 			AmbientTypes Ambient)
 			{
 			// Расчёт параметров
-			/*string x = (RelativePosition.X * WallLength / 2).ToString ();
-			string y = (RelativePosition.Y * WallLength / 2).ToString ();*/
-			int xi, yi;
-			EvaluateAbsolutePosition (RelativePosition, out xi, out yi);
-			string x = xi.ToString ();
-			string y = yi.ToString ();
+			Point p = EvaluateAbsolutePosition (RelativePosition);
+			string x = p.X.ToString ();
+			string y = p.Y.ToString ();
 
 			int h;
 			switch (Ambient)
@@ -817,10 +799,7 @@ namespace RD_AAOW
 		public static void WriteMapPathStone (StreamWriter SW, Point RelativePosition, bool StartOrFinish)
 			{
 			// Расчёт параметров
-			/*int x = RelativePosition.X * WallLength / 2;
-			int y = RelativePosition.Y * WallLength / 2;*/
-			int x, y;
-			EvaluateAbsolutePosition (RelativePosition, out x, out y);
+			Point p = EvaluateAbsolutePosition (RelativePosition);
 
 			string tex;
 			if (StartOrFinish)
@@ -828,8 +807,8 @@ namespace RD_AAOW
 			else
 				tex = "~Path01";
 
-			WriteBlock (SW, (x - 8).ToString (), (y - 8).ToString (), "-8",
-				(x + 8).ToString (), (y + 8).ToString (), "0",
+			WriteBlock (SW, (p.X - 8).ToString (), (p.Y - 8).ToString (), "-8",
+				(p.X + 8).ToString (), (p.Y + 8).ToString (), "0",
 				new string[] { tex, tex, tex, tex, tex, tex }, BlockTypes.Default);
 			}
 
@@ -944,8 +923,7 @@ namespace RD_AAOW
 				return false;
 
 			// Расчёт параметров
-			int x, y;
-			EvaluateAbsolutePosition (RelativePosition, out x, out y);
+			Point p = EvaluateAbsolutePosition (RelativePosition);
 
 			// Добавление атмосферного освещения
 			// (флаг лампочки требуется контролировать, т.к. они добавляются раньше)
@@ -958,7 +936,7 @@ namespace RD_AAOW
 				SW.Write ("\"angles\" \"" + sunAngles[skyIndex] + "\"\n");
 				SW.Write ("\"_light\" \"" + sunColors[skyIndex] + "\"\n");
 
-				SW.Write ("\"origin\" \"" + x.ToString () + " " + y.ToString () + " " +
+				SW.Write ("\"origin\" \"" + p.X.ToString () + " " + p.Y.ToString () + " " +
 					(wallHeight - 8).ToString () + "\"\n");
 				SW.Write ("}\n");
 
@@ -977,7 +955,7 @@ namespace RD_AAOW
 				SW.Write ("\"classname\" \"light\"\n");
 				SW.Write (SubFloor ? subLightColor : lightColor);
 				SW.Write ("\"_fade\" \"1.0\"\n");
-				SW.Write ("\"origin\" \"" + x.ToString () + " " + y.ToString () + " " +
+				SW.Write ("\"origin\" \"" + p.X.ToString () + " " + p.Y.ToString () + " " +
 					(z - 12).ToString () + "\"\n");
 				SW.Write ("}\n");
 				}
@@ -986,10 +964,13 @@ namespace RD_AAOW
 			else if (!IsSkyTexture (RoofTexture))
 				{
 				int d = SubFloor ? 8 : 16;
-				WriteBlock (SW, (x - d).ToString (), (y - d).ToString (), (z - 4).ToString (),
-					(x + d).ToString (), (y + d).ToString (), z.ToString (),
+
+				WriteBlock (SW, (p.X - d).ToString (), (p.Y - d).ToString (), (z - 4).ToString (),
+					(p.X + d).ToString (), (p.Y + d).ToString (), z.ToString (),
+
 					new string[] { RoofTexture, RoofTexture, RoofTexture, RoofTexture, RoofTexture,
 						SubFloor ? "~PATH01" : "~LAMP07" },
+
 					BlockTypes.Default);
 
 				return false;
@@ -1017,8 +998,7 @@ namespace RD_AAOW
 			List<CPResults> NearbyWalls, string WallTexture, Random Rnd)
 			{
 			// Расчёт параметров
-			int x, y;
-			EvaluateAbsolutePosition (RelativePosition, out x, out y);
+			Point p = EvaluateAbsolutePosition (RelativePosition);
 			CPResults placement = NearbyWalls[Rnd.Next (NearbyWalls.Count)];
 
 			// Расчёт координат
@@ -1026,10 +1006,10 @@ namespace RD_AAOW
 			int[] coords = f.Coordinates;
 
 			// Введение смещения
-			coords[0] += x;
-			coords[3] += x;
-			coords[1] += y;
-			coords[4] += y;
+			coords[0] += p.X;
+			coords[3] += p.X;
+			coords[1] += p.Y;
+			coords[4] += p.Y;
 
 			// Сборка линии текстур
 			string[] tex = f.Textures;
@@ -1070,8 +1050,7 @@ namespace RD_AAOW
 			List<CPResults> SurroundingWalls)
 			{
 			// Расчёт параметров
-			int x, y;
-			EvaluateAbsolutePosition (RelativePosition, out x, out y);
+			Point p = EvaluateAbsolutePosition (RelativePosition);
 
 			// Сборка линии текстур
 			string[] tex = new string[6];
@@ -1081,8 +1060,8 @@ namespace RD_AAOW
 			// Запись площадки
 			if (SurroundingWalls == null)
 				{
-				WriteBlock (SW, (x - 56).ToString (), (y - 56).ToString (), (DefaultWallHeight - 16).ToString (),
-					(x + 56).ToString (), (y + 56).ToString (), DefaultWallHeight.ToString (),
+				WriteBlock (SW, (p.X - 56).ToString (), (p.Y - 56).ToString (), (DefaultWallHeight - 16).ToString (),
+					(p.X + 56).ToString (), (p.Y + 56).ToString (), DefaultWallHeight.ToString (),
 					tex, BlockTypes.Door);
 				return;
 				}
@@ -1091,8 +1070,8 @@ namespace RD_AAOW
 			if (!SurroundingWalls.Contains (CPResults.Left))
 				{
 				SW.Write ("{\n\"classname\" \"func_ladder\"\n");
-				WriteBlock (SW, (x - 60).ToString (), (y - 56).ToString (), (DefaultWallHeight - 16).ToString (),
-					(x - 56).ToString (), (y + 56).ToString (), DefaultWallHeight.ToString (),
+				WriteBlock (SW, (p.X - 60).ToString (), (p.Y - 56).ToString (), (DefaultWallHeight - 16).ToString (),
+					(p.X - 56).ToString (), (p.Y + 56).ToString (), DefaultWallHeight.ToString (),
 					tex, BlockTypes.Door);
 				SW.Write ("}\n");
 				}
@@ -1100,8 +1079,8 @@ namespace RD_AAOW
 			if (!SurroundingWalls.Contains (CPResults.Right))
 				{
 				SW.Write ("{\n\"classname\" \"func_ladder\"\n");
-				WriteBlock (SW, (x + 56).ToString (), (y - 56).ToString (), (DefaultWallHeight - 16).ToString (),
-					(x + 60).ToString (), (y + 56).ToString (), DefaultWallHeight.ToString (),
+				WriteBlock (SW, (p.X + 56).ToString (), (p.Y - 56).ToString (), (DefaultWallHeight - 16).ToString (),
+					(p.X + 60).ToString (), (p.Y + 56).ToString (), DefaultWallHeight.ToString (),
 					tex, BlockTypes.Door);
 				SW.Write ("}\n");
 				}
@@ -1109,8 +1088,8 @@ namespace RD_AAOW
 			if (!SurroundingWalls.Contains (CPResults.Down))
 				{
 				SW.Write ("{\n\"classname\" \"func_ladder\"\n");
-				WriteBlock (SW, (x - 56).ToString (), (y - 60).ToString (), (DefaultWallHeight - 16).ToString (),
-					(x + 56).ToString (), (y - 56).ToString (), DefaultWallHeight.ToString (),
+				WriteBlock (SW, (p.X - 56).ToString (), (p.Y - 60).ToString (), (DefaultWallHeight - 16).ToString (),
+					(p.X + 56).ToString (), (p.Y - 56).ToString (), DefaultWallHeight.ToString (),
 					tex, BlockTypes.Door);
 				SW.Write ("}\n");
 				}
@@ -1118,8 +1097,8 @@ namespace RD_AAOW
 			if (!SurroundingWalls.Contains (CPResults.Up))
 				{
 				SW.Write ("{\n\"classname\" \"func_ladder\"\n");
-				WriteBlock (SW, (x - 56).ToString (), (y + 56).ToString (), (DefaultWallHeight - 16).ToString (),
-					(x + 56).ToString (), (y + 60).ToString (), DefaultWallHeight.ToString (),
+				WriteBlock (SW, (p.X - 56).ToString (), (p.Y + 56).ToString (), (DefaultWallHeight - 16).ToString (),
+					(p.X + 56).ToString (), (p.Y + 60).ToString (), DefaultWallHeight.ToString (),
 					tex, BlockTypes.Door);
 				SW.Write ("}\n");
 				}

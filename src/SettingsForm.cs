@@ -107,6 +107,7 @@ namespace RD_AAOW
 					break;
 				}
 
+			AllowItemsForSecondFloor.Checked = settings.AllowItemsForSecondFloor;
 			TwoFloorsFlag.Checked = settings.TwoFloors;
 
 			// Запуск
@@ -172,6 +173,7 @@ namespace RD_AAOW
 				settings.SectionType = MapSectionTypes.AllTypes;
 
 			settings.TwoFloors = TwoFloorsFlag.Checked;
+			settings.AllowItemsForSecondFloor = AllowItemsForSecondFloor.Checked;
 
 			// Выход
 			cancelled = false;
@@ -216,7 +218,7 @@ namespace RD_AAOW
 			}
 
 		// Ограничение суммарного коэффициента размерности лабиринта и плотности стен
-		private int sizeWallsDifferenceLimit = 6;
+		private int sizeWallsDifferenceLimit = 7;
 		private void MazeSizeTrack_Scroll (object sender, EventArgs e)
 			{
 			int coeff = (int)settings.MaximumWallsDensityCoefficient - WallsDensityTrack.Value + MazeSizeTrack.Value;
@@ -238,9 +240,10 @@ namespace RD_AAOW
 		private void TwoFloorsFlag_CheckedChanged (object sender, EventArgs e)
 			{
 			if (TwoFloorsFlag.Checked)
-				EnemyFlag11.Enabled = true;
+				EnemyFlag11.Enabled = AllowItemsForSecondFloor.Enabled = true;
 			else
-				EnemyFlag11.Enabled = EnemyFlag11.Checked = false;
+				EnemyFlag11.Enabled = EnemyFlag11.Checked = AllowItemsForSecondFloor.Enabled =
+					AllowItemsForSecondFloor.Checked = false;
 			}
 		}
 	}

@@ -1,12 +1,6 @@
-_Changes for v 3.6_:
+_Changes for v 3.6.5_:
+- Added the flag that allows you to permit the generation of collectable items at the second floor of maps (on balconies);
+- Some code refactoring has been applied;
 - Added lamps for balconies (for two-level maps);
 - Added ladders to provide the ability to climb on balconies (for two-level maps);
-- Tested the correct placement for tripmines; they are also available now;
-- Adjusted furniture types for some exteriors;
-- Sky type selector is now more flexible;
-- Implemented the two-level map generation;
-- Implemented the random “balcony” placement (for two-level maps);
-- Shooting and jumping enemies can be placed on balconies (for two-level maps);
-- Barnacles can now be enabled (for two-level maps);
-- Added some new types of furniture;
-- Some code refactoring has been applied
+- Tested the correct placement for tripmines; they are also available now

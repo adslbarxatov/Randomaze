@@ -24,8 +24,7 @@ namespace RD_AAOW
 			uint MapNumber, string Permissions, bool SecondFloor, bool UnderSky)
 			{
 			// Расчёт параметров
-			int x, y;
-			MapSupport.EvaluateAbsolutePosition (RelativePosition, out x, out y);
+			Point p = MapSupport.EvaluateAbsolutePosition (RelativePosition);
 
 			// Запись
 			SW.Write ("{\n");
@@ -207,22 +206,22 @@ namespace RD_AAOW
 							default:
 							case CPResults.Left:
 								r = 0;
-								x -= off;
+								p.X -= off;
 								break;
 
 							case CPResults.Right:
 								r = 180;
-								x += off;
+								p.X += off;
 								break;
 
 							case CPResults.Down:
 								r = 90;
-								y -= off;
+								p.Y -= off;
 								break;
 
 							case CPResults.Up:
 								r = 270;
-								y += off;
+								p.Y += off;
 								break;
 							}
 						}
@@ -234,7 +233,7 @@ namespace RD_AAOW
 				}
 
 			SW.Write ("\"angles\" \"0 " + r.ToString () + " 0\"\n");
-			SW.Write ("\"origin\" \"" + x.ToString () + " " + y.ToString () + " " + z.ToString () + "\"\n");
+			SW.Write ("\"origin\" \"" + p.X.ToString () + " " + p.Y.ToString () + " " + z.ToString () + "\"\n");
 			SW.Write ("}\n");
 			}
 

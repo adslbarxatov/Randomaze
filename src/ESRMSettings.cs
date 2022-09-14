@@ -114,6 +114,11 @@
 		/// Флаг двойной высоты карт
 		/// </summary>
 		public bool TwoFloors;
+
+		/// <summary>
+		/// Флаг разрешения размещения собираемых объектов на внутренних площадках
+		/// </summary>
+		public bool AllowItemsForSecondFloor;
 		}
 
 	/// <summary>
