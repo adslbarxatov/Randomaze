@@ -51,22 +51,25 @@ namespace RD_AAOW
 				case 12:
 				case 13:
 				case 14:
-				case 15:
 					prngRange = (int)MapNumber + 8;
 					break;
 
 				default:
-					prngRange = 24;
+					prngRange = 23;
 					break;
 				}
 
 			// Добавление
 			string rat = Rnd.Next (2) == 0 ? "\"classname\" \"monster_rat\"\n" :
 				"\"classname\" \"monster_cockroach\"\n";
+			
 			int z = SecondFloor ? MapSupport.DefaultWallHeight : 0;
 			int r = Rnd.Next (360);
+			int enemy = Rnd.Next (prngRange);
 
-			switch (Rnd.Next (prngRange))
+// Выбор врага
+retry:
+			switch (enemy)
 				{
 				// Солдаты
 				default:
@@ -77,7 +80,7 @@ namespace RD_AAOW
 						}
 					else
 						{
-						SW.Write (rat);
+						goto check;
 						}
 					break;
 
@@ -92,7 +95,7 @@ namespace RD_AAOW
 						}
 					else
 						{
-						SW.Write (rat);
+						goto check;
 						}
 					break;
 
@@ -103,7 +106,7 @@ namespace RD_AAOW
 					if (Permissions.Contains (EnemiesPermissionsKeys[5]))
 						SW.Write ("\"classname\" \"" + enemies[5] + "\"\n");
 					else
-						SW.Write (rat);
+						goto check;
 					break;
 
 				// Алиены
@@ -111,7 +114,7 @@ namespace RD_AAOW
 					if (Permissions.Contains (EnemiesPermissionsKeys[9]))
 						SW.Write ("\"classname\" \"" + enemies[9] + "\"\n");
 					else
-						SW.Write (rat);
+						goto check;
 					break;
 
 				// Куры
@@ -119,7 +122,7 @@ namespace RD_AAOW
 					if (Permissions.Contains (EnemiesPermissionsKeys[1]))
 						SW.Write ("\"classname\" \"" + enemies[1] + "\"\n");
 					else
-						SW.Write (rat);
+						goto check;
 					break;
 
 				// Ассассины
@@ -128,7 +131,7 @@ namespace RD_AAOW
 					if (Permissions.Contains (EnemiesPermissionsKeys[0]))
 						SW.Write ("\"classname\" \"" + enemies[0] + "\"\n");
 					else
-						SW.Write (rat);
+						goto check;
 					break;
 
 				// Турель
@@ -142,7 +145,7 @@ namespace RD_AAOW
 						}
 					else
 						{
-						SW.Write (rat);
+						goto check;
 						}
 					break;
 
@@ -151,7 +154,7 @@ namespace RD_AAOW
 					if (Permissions.Contains (EnemiesPermissionsKeys[8]))
 						SW.Write ("\"classname\" \"" + enemies[8] + "\"\n");
 					else
-						SW.Write (rat);
+						goto check;
 					break;
 
 				// Контроллеры
@@ -163,7 +166,7 @@ namespace RD_AAOW
 						}
 					else
 						{
-						SW.Write (rat);
+						goto check;
 						}
 					break;
 
@@ -174,7 +177,7 @@ namespace RD_AAOW
 					if (Permissions.Contains (EnemiesPermissionsKeys[3]))
 						SW.Write ("\"classname\" \"" + enemies[3] + "\"\n");
 					else
-						SW.Write (rat);
+						goto check;
 					break;
 
 				// Барнаклы
@@ -186,13 +189,13 @@ namespace RD_AAOW
 						}
 					else
 						{
-						SW.Write (rat);
+						goto check;
 						}
 					break;
 
 				// Мины
+				case 2:
 				case 22:
-				case 23:
 					List<CPResults> rWalls = RandomazeForm.GetSurroundingWalls (RelativePosition, FurnitureTypes.Computer);
 					if ((rWalls.Count > 0) && Permissions.Contains (EnemiesPermissionsKeys[6]))
 						{
@@ -227,14 +230,30 @@ namespace RD_AAOW
 						}
 					else
 						{
-						SW.Write (rat);
+						goto check;
 						}
 					break;
 				}
 
+// Завершение записи
+finish:
 			SW.Write ("\"angles\" \"0 " + r.ToString () + " 0\"\n");
 			SW.Write ("\"origin\" \"" + p.X.ToString () + " " + p.Y.ToString () + " " + z.ToString () + "\"\n");
 			SW.Write ("}\n");
+			return;
+
+// Проверка возможности выбора другого врага
+check:
+			enemy += Rnd.Next (3);
+			if (enemy >= prngRange)
+				{
+				SW.Write (rat);
+				goto finish;
+				}
+			else
+				{
+				goto retry;
+				}
 			}
 
 		// Подстановки номеров оружия для солдат

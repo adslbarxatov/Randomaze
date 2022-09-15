@@ -645,8 +645,15 @@ namespace RD_AAOW
 		/// <param name="SW">Дескриптор файла карты</param>
 		/// <param name="RelativePosition">Относительная позиция точки создания</param>
 		/// <param name="Rnd">ГПСЧ</param>
-		public static void WriteMapCrate (StreamWriter SW, Point RelativePosition, Random Rnd)
+		/// <param name="AllowExplosives">Флаг разрешения ящиков со взрывчаткой</param>
+		/// <param name="AllowItems">Флаг разрешения ящиков с жуками и собираемыми объектами</param>
+		public static void WriteMapCrate (StreamWriter SW, Point RelativePosition, Random Rnd,
+			bool AllowItems, bool AllowExplosives)
 			{
+			// Контроль
+			if (!AllowExplosives && !AllowItems)
+				return;
+
 			// Расчёт параметров
 			Point p = EvaluateAbsolutePosition (RelativePosition);
 
@@ -668,7 +675,11 @@ namespace RD_AAOW
 			SW.Write ("\"rendermode\" \"4\"\n");    // Прозрачность для врагов
 			SW.Write ("\"renderamt\" \"255\"\n");
 
-			if (explosive)
+			// Разрешение для взрывчатки будет необходимым, но недостаточным условием для её появления:
+			// решающим фактором будет ГПСЧ.
+			// Запрет на остальные ящики будет достаточным условием для появления взрывчатки.
+			// При этом предполагается, что случай обоюдного запрета до этого места не дойдёт
+			if (explosive && AllowExplosives || !AllowItems)
 				{
 				SW.Write ("\"explodemagnitude\" \"" + Rnd.Next (160, 200).ToString () + "\"\n");
 				}
@@ -1066,7 +1077,9 @@ namespace RD_AAOW
 				return;
 				}
 
-			// Запись лестницы
+			// Запись лестницы.
+			// Обработка функцией для SurroundingWalls имеет скрытое ограничение, заключающееся в том, что
+			// такая площадка может появиться над дверью в стене, только если она окружена тремя стенами
 			if (!SurroundingWalls.Contains (CPResults.Left))
 				{
 				SW.Write ("{\n\"classname\" \"func_ladder\"\n");

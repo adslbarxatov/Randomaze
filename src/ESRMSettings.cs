@@ -119,6 +119,16 @@
 		/// Флаг разрешения размещения собираемых объектов на внутренних площадках
 		/// </summary>
 		public bool AllowItemsForSecondFloor;
+
+		/// <summary>
+		/// Флаг разрешения ящиков с жуками и соибраемыми предметами
+		/// </summary>
+		public bool AllowItemsCrates;
+
+		/// <summary>
+		/// Флаг разрешения ящиков со взрывчаткой
+		/// </summary>
+		public bool AllowExplosiveCrates;
 		}
 
 	/// <summary>

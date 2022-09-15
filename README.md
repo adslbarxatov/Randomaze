@@ -1,4 +1,4 @@
-# Randomaze v 3.6.5
+# Randomaze v 3.7
 
 ES: Randomaze – The maps generator
 
@@ -51,6 +51,7 @@ The tool requires next compilation tools, directories and files for work:
 - ***Button mode flag***. Adds the button to the map. This button must be found and pressed to open the exit gate.
 - ***Two floors flag***. Adds the second floor to the map with some balconies and enemies. Also makes barnacles available.
 - ***Allow items on the second floor***. Permit the generation of items for balconies.
+- ***Allow explosive crates*** and ***Allow crates with items***. Enable or disable corresponding types of crates.
 
 &nbsp;
 

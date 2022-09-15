@@ -1,6 +1,7 @@
-_Changes for v 3.6.5_:
-- Added the flag that allows you to permit the generation of collectable items at the second floor of maps (on balconies);
-- Some code refactoring has been applied;
-- Added lamps for balconies (for two-level maps);
-- Added ladders to provide the ability to climb on balconies (for two-level maps);
-- Tested the correct placement for tripmines; they are also available now
+_Changes for v 3.7_:
+- Adjusted textures for some environment types;
+- Added the ability to filter the crate types or disable them at all;
+- Settings window has been redesigned;
+- App now saves images of generated mazes;
+- Improved the enemies generation algorithm: it will not replace all forbidden enemies with rats and roaches, but will try to find other suitable entities;
+- Added the flag that allows you to permit the generation of collectable items at the second floor of maps (on balconies)

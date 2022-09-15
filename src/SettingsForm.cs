@@ -41,6 +41,8 @@ namespace RD_AAOW
 			al = InterfaceLanguage;
 			Localization.SetControlsText (this, al);
 			Localization.SetControlsText (EnemiesContainer, al);
+			Localization.SetControlsText (SkyContainer, al);
+
 			MazeSizeFlag.Text = EnemiesDensityFlag.Text = ItemsDensityFlag.Text =
 				CratesDensityFlag.Text = WallsDensityFlag.Text = LightingFlag.Text =
 				Localization.GetText ("SettingsForm_Random", al);
@@ -73,11 +75,6 @@ namespace RD_AAOW
 			WallsDensityFlag.Checked = WallsDensityFlag.Enabled = false;    // settings.RandomWallsDensityCoefficient;
 			WallsDensityFlag_CheckedChanged (null, null);
 
-			CratesDensityTrack.Maximum = (int)settings.MaximumCratesDensityCoefficient;
-			CratesDensityTrack.Value = (int)settings.CratesDensityCoefficient;
-			CratesDensityFlag.Checked = settings.RandomCratesDensityCoefficient;
-			CratesDensityFlag_CheckedChanged (null, null);
-
 			LightingTrack.Maximum = (int)settings.MaximumLightingCoefficient;
 			LightingTrack.Value = (int)settings.LightingCoefficient;
 			LightingFlag.Checked = settings.RandomLightingCoefficient;
@@ -109,6 +106,14 @@ namespace RD_AAOW
 
 			AllowItemsForSecondFloor.Checked = settings.AllowItemsForSecondFloor;
 			TwoFloorsFlag.Checked = settings.TwoFloors;
+
+			CratesDensityTrack.Maximum = (int)settings.MaximumCratesDensityCoefficient;
+			CratesDensityTrack.Value = (int)settings.CratesDensityCoefficient;
+			CratesDensityFlag.Checked = settings.RandomCratesDensityCoefficient;
+
+			AllowExplosiveCratesFlag.Checked = settings.AllowExplosiveCrates;
+			AllowItemsCratesFlag.Checked = settings.AllowItemsCrates;
+			AllowExplosiveCratesFlag_CheckedChanged (null, null);
 
 			// Запуск
 			this.ShowDialog ();
@@ -148,9 +153,6 @@ namespace RD_AAOW
 			settings.WallsDensityCoefficient = (uint)WallsDensityTrack.Value;
 			settings.RandomWallsDensityCoefficient = WallsDensityFlag.Checked;
 
-			settings.CratesDensityCoefficient = (uint)CratesDensityTrack.Value;
-			settings.RandomCratesDensityCoefficient = CratesDensityFlag.Checked;
-
 			settings.LightingCoefficient = (uint)LightingTrack.Value;
 			settings.RandomLightingCoefficient = LightingFlag.Checked;
 
@@ -174,6 +176,11 @@ namespace RD_AAOW
 
 			settings.TwoFloors = TwoFloorsFlag.Checked;
 			settings.AllowItemsForSecondFloor = AllowItemsForSecondFloor.Checked;
+
+			settings.AllowExplosiveCrates = AllowExplosiveCratesFlag.Checked;
+			settings.AllowItemsCrates = AllowItemsCratesFlag.Checked;
+			settings.CratesDensityCoefficient = (uint)CratesDensityTrack.Value;
+			settings.RandomCratesDensityCoefficient = CratesDensityFlag.Checked;
 
 			// Выход
 			cancelled = false;
@@ -207,7 +214,8 @@ namespace RD_AAOW
 
 		private void CratesDensityFlag_CheckedChanged (object sender, EventArgs e)
 			{
-			CratesDensityTrack.Enabled = !CratesDensityFlag.Checked;
+			CratesDensityTrack.Enabled = !CratesDensityFlag.Checked && (AllowExplosiveCratesFlag.Checked ||
+				AllowItemsCratesFlag.Checked);
 			CratesDensityTrack.BackColor = CratesDensityTrack.Enabled ? enabledColor : disabledColor;
 			}
 
@@ -218,7 +226,7 @@ namespace RD_AAOW
 			}
 
 		// Ограничение суммарного коэффициента размерности лабиринта и плотности стен
-		private int sizeWallsDifferenceLimit = 7;
+		private int sizeWallsDifferenceLimit = 6;
 		private void MazeSizeTrack_Scroll (object sender, EventArgs e)
 			{
 			int coeff = (int)settings.MaximumWallsDensityCoefficient - WallsDensityTrack.Value + MazeSizeTrack.Value;
@@ -234,6 +242,14 @@ namespace RD_AAOW
 			else
 				MazeSizeTrack.Value = limit - sizeWallsDifferenceLimit -
 					((int)settings.MaximumWallsDensityCoefficient - WallsDensityTrack.Value);
+			}
+
+		// Включение / выключение ящиков
+		private void AllowExplosiveCratesFlag_CheckedChanged (object sender, EventArgs e)
+			{
+			Label05.Enabled = CratesDensityFlag.Enabled = (AllowExplosiveCratesFlag.Checked ||
+				AllowItemsCratesFlag.Checked);
+			CratesDensityFlag_CheckedChanged (null, null);
 			}
 
 		// Включение дополнительных монстров
