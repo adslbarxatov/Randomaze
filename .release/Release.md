@@ -1,4 +1,6 @@
-_Changes for v 3.7_:
+_Changes for v 3.7.8_:
+- Implemented the ability to open localized ADP, SCP and Welcome pages;
+- Required framework version updated from 4.0 to 4.8;
 - Adjusted textures for some environment types;
 - Added the ability to filter the crate types or disable them at all;
 - Settings window has been redesigned;

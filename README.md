@@ -1,4 +1,4 @@
-# Randomaze v 3.7
+# Randomaze v 3.7.8
 
 ES: Randomaze – The maps generator
 
@@ -59,9 +59,9 @@ The tool requires next compilation tools, directories and files for work:
 
 ## Requirements
 
-- Windows XP or newer;
+- Windows 7 or newer;
 - Installed [ESHQ mod](https://moddb.com/mods/eshq);
-- [Microsoft .NET Framework 4.0](https://microsoft.com/en-us/download/details.aspx?id=17718).
+- [Microsoft .NET Framework 4.8](https://go.microsoft.com/fwlink/?linkid=2088631).
 
 Interface languages: en_us.
 
