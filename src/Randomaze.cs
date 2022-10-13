@@ -20,9 +20,13 @@ namespace RD_AAOW
 			Application.EnableVisualStyles ();
 			Application.SetCompatibleTextRenderingDefault (false);
 
+			// Язык интерфейса и контроль XPR
+			if (!Localization.IsXPRClassAcceptable)
+				return -1;
+
 			// Отображение справки и запроса на принятие Политики
 			if (!ProgramDescription.AcceptEULA ())
-				return -1;
+				return -2;
 			ProgramDescription.ShowAbout (true);
 
 			// Запуск
