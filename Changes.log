@@ -1,5 +1,10 @@
 Randomaze changes log
 
+Version 3.8.5:
+• Added an axe;
+• Added autosave triggers for map entry points and button places;
+• Adjusted the startup method (according to the new engine requirements)
+
 Version 3.8:
 • XPR control has been implemented;
 • Adjusted the control of single active copy

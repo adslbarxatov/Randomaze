@@ -262,6 +262,14 @@ namespace RD_AAOW
 
 				BlockTypes.Default);
 
+			SW.Write ("}\n{\n");
+			SW.Write ("\"classname\" \"trigger_autosave\"\n");
+
+			WriteBlock (SW, (p.X - 32).ToString (), (p.Y - 32).ToString (), "12",
+				(p.X + 32).ToString (), (p.Y + 32).ToString (), "16",
+				new string[] { TriggerTexture, TriggerTexture, TriggerTexture, TriggerTexture,
+						TriggerTexture, TriggerTexture }, BlockTypes.Default);
+
 			SW.Write ("}\n");
 
 			WriteMapPortal (SW, RelativePosition, true);
@@ -303,12 +311,6 @@ namespace RD_AAOW
 
 			string xs = p.X.ToString ();
 			string ys = p.Y.ToString ();
-			string x1 = (p.X - 8).ToString ();
-			string y1 = (p.Y - 8).ToString ();
-			string x2 = (p.X + 8).ToString ();
-			string y2 = (p.Y + 8).ToString ();
-			string z1 = (wallHeight - 1).ToString ();
-			string z2 = wallHeight.ToString ();
 
 			// Первая карта
 			if (MapNumber == 1)
@@ -370,7 +372,8 @@ namespace RD_AAOW
 				SW.Write ("\"map\" \"" + BuildMapName (MapNumber - 1) + "\"\n");
 				SW.Write ("\"landmark\" \"" + BuildMapName (MapNumber) + "m\"\n");
 
-				WriteBlock (SW, x1, y1, z1, x2, y2, z2,
+				WriteBlock (SW, (p.X - 8).ToString (), (p.Y - 8).ToString (), (wallHeight - 1).ToString (),
+					(p.X + 8).ToString (), (p.Y + 8).ToString (), wallHeight.ToString (),
 					new string[] { TriggerTexture, TriggerTexture, TriggerTexture, TriggerTexture,
 						TriggerTexture, TriggerTexture }, BlockTypes.Default);
 
@@ -603,6 +606,14 @@ namespace RD_AAOW
 
 				BlockTypes.Button);
 
+			SW.Write ("}\n{\n");
+			SW.Write ("\"classname\" \"trigger_autosave\"\n");
+
+			WriteBlock (SW, (p.X - 32).ToString (), (p.Y - 32).ToString (), "12",
+				(p.X + 32).ToString (), (p.Y + 32).ToString (), "16",
+				new string[] { TriggerTexture, TriggerTexture, TriggerTexture, TriggerTexture,
+						TriggerTexture, TriggerTexture }, BlockTypes.Default);
+
 			SW.Write ("}\n");
 			}
 
@@ -690,7 +701,7 @@ namespace RD_AAOW
 				// Враги
 				if (r < 3)
 					{
-					SW.Write ("\"spawnobject\" \"" + (r + 26).ToString () + "\"\n");
+					SW.Write ("\"spawnobject\" \"" + (r + 27).ToString () + "\"\n");
 					}
 
 				// Пустые или редкие ящики
@@ -698,7 +709,7 @@ namespace RD_AAOW
 					{
 					// Иногда добавлять случайное оружие или предмет
 					if (Rnd.Next (3) == 0)
-						SW.Write ("\"spawnobject\" \"" + (Rnd.Next (25) + 1).ToString () + "\"\n");
+						SW.Write ("\"spawnobject\" \"" + (Rnd.Next (26) + 1).ToString () + "\"\n");
 
 					// Случайная текстура для ящиков без врагов
 					r = Rnd.Next (3);
