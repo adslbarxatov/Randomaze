@@ -1,15 +1,13 @@
-# Randomaze v 3.8.5
+# Randomaze v 4.0
 
 ES: Randomaze – The maps generator
 
 #
 
-**ES: Randomaze** is the maps generator for the sub-mod with the same name.
-It is the child project of the [ESHQ mod](https://moddb.com/mods/eshq) for Half-Life part 1.
+**ES: Randomaze** is the maps generator for the stand-alone mod with the same name.
+It was the child project of the [ESHQ mod](https://moddb.com/mods/eshq) for Half-Life part 1.
 
-Modification uses its own fork of [Xash3d engine](https://github.com/adslbarxatov/xash3d-for-ESHQ).
-This tool will be started by the engine automatically, every time it will need a new map.
-It may be started directly: after building of the map it will start the game.
+This tool will be started by the game engine automatically, every time it will need a new map
 
 &nbsp;
 
@@ -60,7 +58,7 @@ The tool requires next compilation tools, directories and files for work:
 ## Requirements
 
 - Windows 7 or newer;
-- Installed [ESHQ mod](https://moddb.com/mods/eshq);
+- Installed [ESRM mod](https://moddb.com/mods/esrm);
 - [Microsoft .NET Framework 4.8](https://go.microsoft.com/fwlink/?linkid=2088631).
 
 Interface languages: en_us.

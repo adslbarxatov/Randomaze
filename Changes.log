@@ -1,5 +1,10 @@
 Randomaze changes log
 
+Version 4.0:
+• ES:Randomaze is now a stand-alone mod;
+• Added support for superabilities: player will get the opportunity to enable
+  them every 10th map
+
 Version 3.8.5:
 • Added an axe;
 • Added autosave triggers for map entry points and button places;

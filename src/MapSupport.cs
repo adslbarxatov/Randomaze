@@ -499,6 +499,16 @@ namespace RD_AAOW
 					break;
 				}
 
+			// Обходной вариант с собираемым объектом
+			if (!hiddenObjectWritten && (MapNumber % 10 == 0))
+				{
+				hiddenObjectWritten = true;
+				SW.Write ("\"classname\" \"item_antidote\"\n");
+				SW.Write ("\"MinimumToTrigger\" \"1\"\n");
+				goto finishItem;
+				}
+
+			// Запись объекта
 			switch (Rnd.Next (prngRange))
 				{
 				// Аптечки
@@ -566,6 +576,7 @@ namespace RD_AAOW
 					break;
 				}
 
+finishItem:
 			int z = 40;
 			if (AllowSecondFloor)
 				z += (Rnd.Next (2) * DefaultWallHeight);
@@ -575,6 +586,7 @@ namespace RD_AAOW
 				z.ToString () + "\"\n");   // На некоторой высоте над полом
 			SW.Write ("}\n");
 			}
+		private static bool hiddenObjectWritten = false;
 
 		/// <summary>
 		/// Метод записывает точку выхода с карты
