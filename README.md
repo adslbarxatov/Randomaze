@@ -4,8 +4,9 @@ ES: Randomaze – The maps generator
 
 #
 
-**ES: Randomaze** is the maps generator for the stand-alone mod with the same name.
+**ES: Randomaze** is the maps generator for the mod with the same name.
 It was the child project of the [ESHQ mod](https://moddb.com/mods/eshq) for Half-Life part 1.
+Now it is stand-alone project
 
 This tool will be started by the game engine automatically, every time it will need a new map
 
