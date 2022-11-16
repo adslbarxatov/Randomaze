@@ -8,7 +8,7 @@ namespace RD_AAOW
 	/// <summary>
 	/// Класс описывает форму выбора параметров приложения
 	/// </summary>
-	public partial class SettingsForm:Form
+	public partial class SettingsForm: Form
 		{
 		/// <summary>
 		/// Возвращает изменённые настройки приложения
@@ -24,6 +24,7 @@ namespace RD_AAOW
 
 		// Переменные
 		private List<CheckBox> enemiesFlags = new List<CheckBox> ();
+		private List<CheckBox> itemsFlags = new List<CheckBox> ();
 		private Color enabledColor = Color.FromArgb (0, 200, 0),
 			disabledColor = Color.FromArgb (200, 200, 200);
 		private SupportedLanguages al;
@@ -40,8 +41,15 @@ namespace RD_AAOW
 
 			al = InterfaceLanguage;
 			Localization.SetControlsText (this, al);
-			Localization.SetControlsText (EnemiesContainer, al);
-			Localization.SetControlsText (SkyContainer, al);
+
+			GenericTab.Text = Localization.GetControlText (this.Name, GenericTab.Name, al);
+			Localization.SetControlsText (GenericTab, al);
+
+			EnemiesTab.Text = Localization.GetControlText (this.Name, EnemiesTab.Name, al);
+			Localization.SetControlsText (EnemiesTab, al);
+
+			ItemsTab.Text = Localization.GetControlText (this.Name, ItemsTab.Name, al);
+			Localization.SetControlsText (ItemsTab, al);
 
 			MazeSizeFlag.Text = EnemiesDensityFlag.Text = ItemsDensityFlag.Text =
 				CratesDensityFlag.Text = WallsDensityFlag.Text = LightingFlag.Text =
@@ -83,10 +91,26 @@ namespace RD_AAOW
 			ButtonModeFlag.Checked = settings.ButtonMode;
 
 			for (int i = 0; i < EnemiesSupport.EnemiesPermissionsKeys.Length; i++)
-				enemiesFlags.Insert (0, (CheckBox)EnemiesContainer.Controls[i]);
+				enemiesFlags.Add ((CheckBox)this.Controls.Find ("EnemyFlag" + (i + 1).ToString ("D2"), true)[0]);
 
 			for (int i = 0; i < EnemiesSupport.EnemiesPermissionsKeys.Length; i++)
-				enemiesFlags[i].Checked = settings.EnemiesPermissionLine.Contains (EnemiesSupport.EnemiesPermissionsKeys[i]);
+				enemiesFlags[i].Checked =
+					settings.EnemiesPermissionLine.Contains (EnemiesSupport.EnemiesPermissionsKeys[i]);
+
+			for (int i = 0; i < ItemsSupport.ItemsPermissionsKeys.Length; i++)
+				itemsFlags.Add ((CheckBox)this.Controls.Find ("ItemFlag" + (i + 1).ToString ("D2"), true)[0]);
+
+			for (int i = 0; i < ItemsSupport.ItemsPermissionsKeys.Length; i++)
+				{
+				string key = ItemsSupport.ItemsPermissionsKeys[i];
+				itemsFlags[i].Checked = settings.ItemsPermissionLine.Contains (key);
+
+				if ((key == "k") || (key == "r") || (key == "o"))
+					itemsFlags[i].Enabled = false;
+				if (key == "k")
+					itemsFlags[i].Checked = true;
+				}
+			EnemyFlag05_CheckedChanged (null, null);
 
 			switch (settings.SectionType)
 				{
@@ -106,6 +130,7 @@ namespace RD_AAOW
 
 			AllowItemsForSecondFloor.Checked = settings.AllowItemsForSecondFloor;
 			TwoFloorsFlag.Checked = settings.TwoFloors;
+			TwoFloorsFlag_CheckedChanged (null, null);
 
 			CratesDensityTrack.Maximum = (int)settings.MaximumCratesDensityCoefficient;
 			CratesDensityTrack.Value = (int)settings.CratesDensityCoefficient;
@@ -165,6 +190,15 @@ namespace RD_AAOW
 					settings.EnemiesPermissionLine += EnemiesSupport.EnemiesPermissionsKeys[i];
 				else
 					settings.EnemiesPermissionLine += "-";
+				}
+
+			settings.ItemsPermissionLine = "";
+			for (int i = 0; i < ItemsSupport.ItemsPermissionsKeys.Length; i++)
+				{
+				if (itemsFlags[i].Checked)
+					settings.ItemsPermissionLine += ItemsSupport.ItemsPermissionsKeys[i];
+				else
+					settings.ItemsPermissionLine += "-";
 				}
 
 			if (OnlyInsideRadio.Checked)
@@ -256,10 +290,16 @@ namespace RD_AAOW
 		private void TwoFloorsFlag_CheckedChanged (object sender, EventArgs e)
 			{
 			if (TwoFloorsFlag.Checked)
-				EnemyFlag11.Enabled = AllowItemsForSecondFloor.Enabled = true;
+				EnemyFlag08.Enabled = AllowItemsForSecondFloor.Enabled = true;
 			else
-				EnemyFlag11.Enabled = EnemyFlag11.Checked = AllowItemsForSecondFloor.Enabled =
+				EnemyFlag08.Enabled = EnemyFlag08.Checked = AllowItemsForSecondFloor.Enabled =
 					AllowItemsForSecondFloor.Checked = false;
+			}
+
+		// Контроль оружия, относящегося к солдатам
+		private void EnemyFlag05_CheckedChanged (object sender, EventArgs e)
+			{
+			ItemFlag11.Checked = ItemFlag12.Checked = EnemyFlag05.Checked;
 			}
 		}
 	}

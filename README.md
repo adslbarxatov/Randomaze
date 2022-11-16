@@ -1,4 +1,4 @@
-# Randomaze v 4.0
+# Randomaze v 4.1
 
 ES: Randomaze – The maps generator
 
@@ -47,6 +47,7 @@ The tool requires next compilation tools, directories and files for work:
 - ***Lighting coefficient***. Range: `1 – 5`. Affects quantity of enabled lights and the type of the sky.
 - ***Map section types***. Supports “all types”, “only under sky” and “only inside the room” variants.
 - ***Enemies permissions line***. Consists of flags of monsters that will be allowed on maps.
+- ***Items permissions line***. Consists of flags of weapons and items that will be allowed on maps (both on floors and in crates).
 - ***Button mode flag***. Adds the button to the map. This button must be found and pressed to open the exit gate.
 - ***Two floors flag***. Adds the second floor to the map with some balconies and enemies. Also makes barnacles available.
 - ***Allow items on the second floor***. Permit the generation of items for balconies.

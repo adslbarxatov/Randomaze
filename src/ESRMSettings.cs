@@ -129,6 +129,11 @@
 		/// Флаг разрешения ящиков со взрывчаткой
 		/// </summary>
 		public bool AllowExplosiveCrates;
+
+		/// <summary>
+		/// Строка разрешённых собираемых предметов
+		/// </summary>
+		public string ItemsPermissionLine;
 		}
 
 	/// <summary>

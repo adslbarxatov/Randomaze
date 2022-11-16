@@ -1,9 +1,12 @@
 Randomaze changes log
 
 Version 4.1:
+• Implemented the items permission line. It allows you to exclude some types
+  of weapons from the random generation (both from floors and crates), as well as
+  it works with types of enemies;
 • Added an adjustment to the density of enemies on the first maps: the coefficient
   will decrease when the average value is exceeded;
-• TODO: permission line for weapons
+• Settings interface has been rebuilt
 
 Version 4.0:
 • ES:Randomaze is now a stand-alone mod;

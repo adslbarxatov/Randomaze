@@ -62,7 +62,7 @@ namespace RD_AAOW
 			// Добавление
 			string rat = Rnd.Next (2) == 0 ? "\"classname\" \"monster_rat\"\n" :
 				"\"classname\" \"monster_cockroach\"\n";
-			
+
 			int z = SecondFloor ? MapSupport.DefaultWallHeight : 0;
 			int r = Rnd.Next (360);
 			int enemy = Rnd.Next (prngRange);
@@ -196,7 +196,8 @@ retry:
 				// Мины
 				case 2:
 				case 22:
-					List<CPResults> rWalls = RandomazeForm.GetSurroundingWalls (RelativePosition, FurnitureTypes.Computer);
+					List<CPResults> rWalls = RandomazeForm.GetSurroundingWalls (RelativePosition,
+						FurnitureTypes.Computer);
 					if ((rWalls.Count > 0) && Permissions.Contains (EnemiesPermissionsKeys[6]))
 						{
 						SW.Write ("\"classname\" \"" + enemies[6] + "\"\n");

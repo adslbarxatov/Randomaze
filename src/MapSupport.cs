@@ -457,138 +457,6 @@ namespace RD_AAOW
 		private const string TriggerTexture = "AAATRIGGER";
 
 		/// <summary>
-		/// Метод добавляет собираемые объекты на карту
-		/// </summary>
-		/// <param name="SW">Дескриптор файла карты</param>
-		/// <param name="RelativePosition">Относительная позиция точки создания</param>
-		/// <param name="Rnd">ГПСЧ</param>
-		/// <param name="MapNumber">Номер текущей карты</param>
-		/// <param name="AllowSecondFloor">Флаг, разрешающий размещение на внутренних площадках</param>
-		public static void WriteMapItem (StreamWriter SW, Point RelativePosition, Random Rnd, uint MapNumber,
-			bool AllowSecondFloor)
-			{
-			// Расчёт параметров
-			Point p = EvaluateAbsolutePosition (RelativePosition);
-
-			// Запись
-			SW.Write ("{\n");
-
-			// Диапазон противников задаётся ограничением на верхнюю границу диапазона ГПСЧ
-			int prngRange;
-			switch (MapNumber)
-				{
-				case 0:
-				case 1:
-					prngRange = 15;
-					break;
-
-				case 2:
-				case 3:
-				case 4:
-				case 5:
-				case 6:
-				case 7:
-				case 8:
-				case 9:
-				case 10:
-					prngRange = (int)MapNumber + 14;
-					break;
-
-				default:
-					prngRange = 25;
-					break;
-				}
-
-			// Обходной вариант с собираемым объектом
-			if (!hiddenObjectWritten && (MapNumber % 10 == 0))
-				{
-				hiddenObjectWritten = true;
-				SW.Write ("\"classname\" \"item_antidote\"\n");
-				SW.Write ("\"MinimumToTrigger\" \"1\"\n");
-				goto finishItem;
-				}
-
-			// Запись объекта
-			switch (Rnd.Next (prngRange))
-				{
-				// Аптечки
-				default:
-					SW.Write ("\"classname\" \"item_healthkit\"\n");
-					break;
-
-				// Броня
-				case 0:
-				case 1:
-				case 2:
-				case 3:
-				case 4:
-					SW.Write ("\"classname\" \"item_battery\"\n");
-					break;
-
-				// Гранаты
-				case 6:
-				case 17:
-					SW.Write ("\"classname\" \"weapon_handgrenade\"\n");
-					break;
-
-				// Пистолет
-				case 15:
-					SW.Write ("\"classname\" \"weapon_9mmhandgun\"\n");
-					break;
-
-				// Гранаты с радиоуправлением
-				case 16:
-					SW.Write ("\"classname\" \"weapon_satchel\"\n");
-					break;
-
-				// .357
-				case 5:
-				case 18:
-					SW.Write ("\"classname\" \"weapon_357\"\n");
-					break;
-
-				// Арбалет
-				case 19:
-				case 20:
-					SW.Write ("\"classname\" \"weapon_crossbow\"\n");
-					break;
-
-				// Гаусс
-				case 21:
-				case 22:
-					SW.Write ("\"classname\" \"weapon_gauss\"\n");
-					break;
-
-				// Монтировка или радиограната
-				case 23:
-					if (Rnd.Next (5) > 3)
-						SW.Write ("\"classname\" \"weapon_crowbar\"\n");
-					else
-						SW.Write ("\"classname\" \"weapon_satchel\"\n");
-					break;
-
-				// Улей или граната
-				case 24:
-					if (Rnd.Next (5) > 3)
-						SW.Write ("\"classname\" \"weapon_hornetgun\"\n");
-					else
-						SW.Write ("\"classname\" \"weapon_handgrenade\"\n");
-					break;
-				}
-
-finishItem:
-			int z = 40;
-			if (AllowSecondFloor)
-				z += (Rnd.Next (2) * DefaultWallHeight);
-
-			SW.Write ("\"angles\" \"0 " + Rnd.Next (360) + " 0\"\n");
-			SW.Write ("\"origin\" \"" + p.X.ToString () + " " + p.Y.ToString () + " " +
-				z.ToString () + "\"\n");   // На некоторой высоте над полом
-			SW.Write ("}\n");
-			}
-		private static bool hiddenObjectWritten = false;
-
-		/// <summary>
 		/// Метод записывает точку выхода с карты
 		/// </summary>
 		/// <param name="SW">Дескриптор файла карты</param>
@@ -670,8 +538,9 @@ finishItem:
 		/// <param name="Rnd">ГПСЧ</param>
 		/// <param name="AllowExplosives">Флаг разрешения ящиков со взрывчаткой</param>
 		/// <param name="AllowItems">Флаг разрешения ящиков с жуками и собираемыми объектами</param>
+		/// <param name="ItemPermissions">Строка разрешений для объектов в ящиках</param>
 		public static void WriteMapCrate (StreamWriter SW, Point RelativePosition, Random Rnd,
-			bool AllowItems, bool AllowExplosives)
+			bool AllowItems, bool AllowExplosives, string ItemPermissions)
 			{
 			// Контроль
 			if (!AllowExplosives && !AllowItems)
@@ -721,7 +590,14 @@ finishItem:
 					{
 					// Иногда добавлять случайное оружие или предмет
 					if (Rnd.Next (3) == 0)
-						SW.Write ("\"spawnobject\" \"" + (Rnd.Next (26) + 1).ToString () + "\"\n");
+						{
+						int idx = Rnd.Next (26) + 1;
+						while ((idx <= 26) && !ItemsSupport.IsCrateItemAllowed (ItemPermissions, idx))
+							idx += Rnd.Next (3);
+
+						if (idx <= 26)
+							SW.Write ("\"spawnobject\" \"" + idx.ToString () + "\"\n");
+						}
 
 					// Случайная текстура для ящиков без врагов
 					r = Rnd.Next (3);
