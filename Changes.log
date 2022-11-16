@@ -1,8 +1,9 @@
 Randomaze changes log
 
-Version 4.0.5:
+Version 4.1:
 • Added an adjustment to the density of enemies on the first maps: the coefficient
   will decrease when the average value is exceeded;
+• TODO: permission line for weapons
 
 Version 4.0:
 • ES:Randomaze is now a stand-alone mod;
