@@ -1,5 +1,11 @@
 Randomaze changes log
 
+Version 4.2:
+• Added the ability to cleanup old maps (to save the space on your drive);
+• Fixed bug with the crowbar skipping;
+• Engine: fixed the long timeout for death of controller;
+• Engine: probably, fixed the double reloading sound of the revolver
+
 Version 4.1:
 • Implemented the items permission line. It allows you to exclude some types
   of weapons from the random generation (both from floors and crates), as well as

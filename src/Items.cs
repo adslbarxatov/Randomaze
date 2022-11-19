@@ -213,7 +213,7 @@ check:
 		/// </summary>
 		public static string[] ItemsPermissionsKeys = new string[] {
 			// Прямая генерация
-			"k", "b", "g", "9", "s", "3", "c", "u", "b", "h", 
+			"k", "b", "g", "9", "s", "3", "c", "u", "w", "h", 
 			// Ящики
 			"r", "o", "p", "t", "n", "e", "a"
 			};
