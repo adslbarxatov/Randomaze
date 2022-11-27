@@ -1,5 +1,10 @@
 Randomaze changes log
 
+ToDo:
+- Gravity control;
+- Map info at the maze print;
+- Tabstops
+
 Version 4.2:
 • Added the ability to cleanup old maps (to save the space on your drive);
 • Fixed bug with the crowbar skipping;
