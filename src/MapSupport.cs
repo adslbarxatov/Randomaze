@@ -304,7 +304,9 @@ namespace RD_AAOW
 		/// <param name="SW">Дескриптор файла карты</param>
 		/// <param name="RelativePosition">Относительная позиция точки входа</param>
 		/// <param name="MapNumber">Номер текущей карты</param>
-		public static void WriteMapEntryPoint (StreamWriter SW, Point RelativePosition, uint MapNumber)
+		/// <param name="GravityLevel">Уровень гравитации на карте (10 = 100%)</param>
+		public static void WriteMapEntryPoint (StreamWriter SW, Point RelativePosition, uint MapNumber,
+			uint GravityLevel)
 			{
 			// Расчёт параметров
 			Point p = EvaluateAbsolutePosition (RelativePosition);
@@ -380,6 +382,19 @@ namespace RD_AAOW
 				SW.Write ("}\n");
 				}
 
+			// Гравитационный триггер
+			SW.Write ("{\n");
+			SW.Write ("\"classname\" \"trigger_gravity\"\n");
+			SW.Write ("\"gravity\" \"" + (GravityLevel * 80).ToString () + "\"\n");	// Новая возможность движка
+
+			WriteBlock (SW, (p.X - 32).ToString (), (p.Y - 32).ToString (), "24",
+				(p.X + 32).ToString (), (p.Y + 32).ToString (), "28",
+				new string[] { TriggerTexture, TriggerTexture, TriggerTexture, TriggerTexture,
+						TriggerTexture, TriggerTexture }, BlockTypes.Default);
+
+			SW.Write ("}\n");
+
+			// Остальное
 			WriteMapPortal (SW, RelativePosition, false);
 			WriteMapSound (SW, RelativePosition, "Teleport1", AmbientTypes.None);
 			}

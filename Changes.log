@@ -1,9 +1,12 @@
 Randomaze changes log
 
 ToDo:
-- Gravity control;
 - Map info at the maze print;
-- Tabstops
+
+Version 4.3:
+• Fixed the tabstop order for the settings window;
+• Implemented the gravity coefficient (100% is the default value; range from 10% to 200%
+  is available; engine update is required)
 
 Version 4.2:
 • Added the ability to cleanup old maps (to save the space on your drive);

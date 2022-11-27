@@ -53,7 +53,7 @@ namespace RD_AAOW
 
 			MazeSizeFlag.Text = EnemiesDensityFlag.Text = ItemsDensityFlag.Text =
 				CratesDensityFlag.Text = WallsDensityFlag.Text = LightingFlag.Text =
-				Localization.GetText ("SettingsForm_Random", al);
+				GravityFlag.Text = Localization.GetText ("SettingsForm_Random", al);
 
 			this.TopMost = true;
 			this.Text = ProgramDescription.AssemblyTitle + ": " + Localization.GetText ("SettingsForm_T", al);
@@ -87,6 +87,11 @@ namespace RD_AAOW
 			LightingTrack.Value = (int)settings.LightingCoefficient;
 			LightingFlag.Checked = settings.RandomLightingCoefficient;
 			LightingFlag_CheckedChanged (null, null);
+
+			GravityTrack.Maximum = (int)settings.MaximumGravityCoefficient;
+			GravityTrack.Value = (int)settings.GravityCoefficient;
+			GravityFlag.Checked = settings.RandomGravityCoefficient;
+			GravityFlag_CheckedChanged (null, null);
 
 			ButtonModeFlag.Checked = settings.ButtonMode;
 
@@ -181,6 +186,9 @@ namespace RD_AAOW
 			settings.LightingCoefficient = (uint)LightingTrack.Value;
 			settings.RandomLightingCoefficient = LightingFlag.Checked;
 
+			settings.GravityCoefficient = (uint)GravityTrack.Value;
+			settings.RandomGravityCoefficient = GravityFlag.Checked;
+
 			settings.ButtonMode = ButtonModeFlag.Checked;
 
 			settings.EnemiesPermissionLine = "";
@@ -259,6 +267,12 @@ namespace RD_AAOW
 			LightingTrack.BackColor = LightingTrack.Enabled ? enabledColor : disabledColor;
 			}
 
+		private void GravityFlag_CheckedChanged (object sender, EventArgs e)
+			{
+			GravityTrack.Enabled = ResetGravityButton.Enabled = !GravityFlag.Checked;
+			GravityTrack.BackColor = GravityTrack.Enabled ? enabledColor : disabledColor;
+			}
+
 		// Ограничение суммарного коэффициента размерности лабиринта и плотности стен
 		private int sizeWallsDifferenceLimit = 6;
 		private void MazeSizeTrack_Scroll (object sender, EventArgs e)
@@ -294,6 +308,12 @@ namespace RD_AAOW
 			else
 				EnemyFlag08.Enabled = EnemyFlag08.Checked = AllowItemsForSecondFloor.Enabled =
 					AllowItemsForSecondFloor.Checked = false;
+			}
+
+		// Сброс гравитации до нормального значения
+		private void ResetGravityButton_Click (object sender, EventArgs e)
+			{
+			GravityTrack.Value = GravityTrack.Maximum / 2;
 			}
 
 		// Контроль оружия, относящегося к солдатам

@@ -1,4 +1,4 @@
-# Randomaze v 4.2
+# Randomaze v 4.3
 
 ES: Randomaze – The maps generator
 
@@ -45,6 +45,7 @@ The tool requires next compilation tools, directories and files for work:
   `12` means almost a snake-shaped corridor, `1` is for a hangar with a few walls.
 - ***Crates density coefficient***. Range: `1 – 5`. Describes, how much enemies will be replaced with crates with bugs or explosives.
 - ***Lighting coefficient***. Range: `1 – 5`. Affects quantity of enabled lights and the type of the sky.
+- ***Gravity coefficient***. Range: `10 – 200%`. Affects the gravity percentage for all objects on the map.
 - ***Map section types***. Supports “all types”, “only under sky” and “only inside the room” variants.
 - ***Enemies permissions line***. Consists of flags of monsters that will be allowed on maps.
 - ***Items permissions line***. Consists of flags of weapons and items that will be allowed on maps (both on floors and in crates).

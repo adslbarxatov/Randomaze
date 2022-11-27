@@ -134,6 +134,21 @@
 		/// Строка разрешённых собираемых предметов
 		/// </summary>
 		public string ItemsPermissionLine;
+
+		/// <summary>
+		/// Коэффициент гравитации
+		/// </summary>
+		public uint GravityCoefficient;
+
+		/// <summary>
+		/// Случайный коэффициент гравитации
+		/// </summary>
+		public bool RandomGravityCoefficient;
+
+		/// <summary>
+		/// Ограничение коэффициента гравитации
+		/// </summary>
+		public uint MaximumGravityCoefficient;
 		}
 
 	/// <summary>
