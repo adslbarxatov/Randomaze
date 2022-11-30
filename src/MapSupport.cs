@@ -385,7 +385,7 @@ namespace RD_AAOW
 			// Гравитационный триггер
 			SW.Write ("{\n");
 			SW.Write ("\"classname\" \"trigger_gravity\"\n");
-			SW.Write ("\"gravity\" \"" + (GravityLevel * 80).ToString () + "\"\n");	// Новая возможность движка
+			SW.Write ("\"gravity\" \"" + (GravityLevel * 80).ToString () + "\"\n"); // Новая возможность движка
 
 			WriteBlock (SW, (p.X - 32).ToString (), (p.Y - 32).ToString (), "24",
 				(p.X + 32).ToString (), (p.Y + 32).ToString (), "28",
@@ -608,7 +608,7 @@ namespace RD_AAOW
 						{
 						int idx = Rnd.Next (26) + 1;
 						while ((idx <= 26) && !ItemsSupport.IsCrateItemAllowed (ItemPermissions, idx))
-							idx += Rnd.Next (3);
+							idx += (Rnd.Next (3) + 1);
 
 						if (idx <= 26)
 							SW.Write ("\"spawnobject\" \"" + idx.ToString () + "\"\n");

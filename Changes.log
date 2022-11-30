@@ -1,7 +1,13 @@
 Randomaze changes log
 
 ToDo:
-- Map info at the maze print;
+- Improve the SFX triggering?
+
+Version 4.3.5:
+• Fixed some tips;
+• Adjusted the objects generation algorithm;
+• Adjusted the presentation of the current settings list in the console;
+• App will now save the generation log (with settings and PRNG results) for every map
 
 Version 4.3:
 • Fixed the tabstop order for the settings window;
