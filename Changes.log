@@ -3,6 +3,10 @@ Randomaze changes log
 ToDo:
 - Improve the SFX triggering?
 
+Version 4.3.10:
+• Implemented the new messages style;
+• Upgraded the app about interface
+
 Version 4.3.5:
 • Fixed some tips;
 • Adjusted the objects generation algorithm;
