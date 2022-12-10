@@ -1,7 +1,8 @@
 Randomaze changes log
 
 ToDo:
-- Improve the SFX triggering?
+- Improve the SFX triggering - using special form of trigger_sound that can detect its orientation and switch between two room types
+- Flip the maze image horizontally
 
 Version 4.3.10:
 • Implemented the new messages style;
