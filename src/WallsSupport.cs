@@ -75,8 +75,10 @@ namespace RD_AAOW
 		/// </summary>
 		/// <param name="SW">Дескриптор файла карты</param>
 		/// <param name="RelativePosition">Относительная позиция точки создания</param>
-		public static void WriteMapWindow (StreamWriter SW, Point RelativePosition)
+		/// <param name="Sections">Инициализированные секции карты</param>
+		public static void WriteMapWindow (StreamWriter SW, Point RelativePosition, Section[] Sections)
 			{
+			// Запись стекла
 			SW.Write ("{\n");
 			SW.Write ("\"classname\" \"func_breakable\"\n");
 			SW.Write ("\"rendermode\" \"2\"\n");
@@ -87,6 +89,30 @@ namespace RD_AAOW
 			WriteMapBarrier (SW, RelativePosition, BarrierTypes.Window, null);
 
 			SW.Write ("}\n");
+
+			// Определение необходимости установки звукового триггера
+			bool leftSideIsUnderSky, rightSideIsUnderSky;
+			if (IsWallVertical (RelativePosition))
+				{
+				leftSideIsUnderSky = Sections[MapSupport.GetSection
+					(new Point (RelativePosition.X - 1, RelativePosition.Y))].IsUnderTheSky;
+				rightSideIsUnderSky = Sections[MapSupport.GetSection
+					(new Point (RelativePosition.X + 1, RelativePosition.Y))].IsUnderTheSky;
+				}
+			else
+				{
+				leftSideIsUnderSky = Sections[MapSupport.GetSection
+					(new Point (RelativePosition.X, RelativePosition.Y - 1))].IsUnderTheSky;
+				rightSideIsUnderSky = Sections[MapSupport.GetSection
+					(new Point (RelativePosition.X, RelativePosition.Y + 1))].IsUnderTheSky;
+				}
+
+			if (leftSideIsUnderSky == rightSideIsUnderSky)
+				return;
+
+			// Запись звукового триггера
+			MapSupport.WriteMapSoundTrigger (SW, RelativePosition, true, (byte)(leftSideIsUnderSky ? 0 : 18),
+				(byte)(rightSideIsUnderSky ? 0 : 18));
 			}
 
 		// Универсальный метод формирования шлюза

@@ -135,6 +135,10 @@ namespace RD_AAOW
 				SW.Write ("\"startdark\" \"1\"\n");
 				SW.Write ("\"gametitle\" \"1\"\n");
 				}
+			else
+				{
+				SW.Write ("\"chaptertitle\" \"Map #" + MapNumber.ToString ("D3") + "\"\n");
+				}
 
 			// Создание цвета ламп
 			if (string.IsNullOrWhiteSpace (lightColor))
@@ -305,8 +309,9 @@ namespace RD_AAOW
 		/// <param name="RelativePosition">Относительная позиция точки входа</param>
 		/// <param name="MapNumber">Номер текущей карты</param>
 		/// <param name="GravityLevel">Уровень гравитации на карте (10 = 100%)</param>
+		/// <param name="IsUnderSky">Флаг указывает, расположена ли точка входа под небом</param>
 		public static void WriteMapEntryPoint (StreamWriter SW, Point RelativePosition, uint MapNumber,
-			uint GravityLevel)
+			uint GravityLevel, bool IsUnderSky)
 			{
 			// Расчёт параметров
 			Point p = EvaluateAbsolutePosition (RelativePosition);
@@ -394,6 +399,9 @@ namespace RD_AAOW
 
 			SW.Write ("}\n");
 
+			// Звуковой триггер
+			WriteMapSoundTrigger (SW, RelativePosition, false, (byte)(IsUnderSky ? 0 : 18), 0);
+
 			// Остальное
 			WriteMapPortal (SW, RelativePosition, false);
 			WriteMapSound (SW, RelativePosition, "Teleport1", AmbientTypes.None);
@@ -470,6 +478,66 @@ namespace RD_AAOW
 
 		// Стандартная текстура триггера
 		private const string TriggerTexture = "AAATRIGGER";
+
+		/// <summary>
+		/// Метод записывает звуковой триггер на карту
+		/// </summary>
+		/// <param name="SW">Дескриптор файла карты</param>
+		/// <param name="RelativePosition">Относительная позиция точки входа</param>
+		/// <param name="ForWindow">Флаг двунаправленного триггера для окон</param>
+		/// <param name="RoomTypeLeft">Тип окружения слева (для всех)</param>
+		/// <param name="RoomTypeRight">Тип окружения справа (для оконных)</param>
+		public static void WriteMapSoundTrigger (StreamWriter SW, Point RelativePosition, bool ForWindow,
+			byte RoomTypeLeft, byte RoomTypeRight)
+			{
+			// Расчёт параметров
+			Point p = EvaluateAbsolutePosition (RelativePosition);
+			string x1, y1, x2, y2, z1, z2;
+
+			// Запись
+			SW.Write ("{\n");
+			SW.Write ("\"classname\" \"trigger_sound\"\n");
+			SW.Write ("\"roomtype\" \"" + RoomTypeLeft.ToString () + "\"\n");
+			SW.Write ("\"roomtype2\" \"" + RoomTypeRight.ToString () + "\"\n");
+			SW.Write ("\"spawnflags\" \"" + (ForWindow ? "1" : "0") + "\"\n");
+
+			// Вертикальная
+			if (ForWindow)
+				{
+				z1 = "16";
+				z2 = "112";
+
+				if (WallsSupport.IsWallVertical (RelativePosition))
+					{
+					x1 = (p.X - 4).ToString ();
+					y1 = (p.Y - 48).ToString ();
+					x2 = (p.X + 4).ToString ();
+					y2 = (p.Y + 48).ToString ();
+					}
+				else
+					{
+					x1 = (p.X - 48).ToString ();
+					y1 = (p.Y - 4).ToString ();
+					x2 = (p.X + 48).ToString ();
+					y2 = (p.Y + 4).ToString ();
+					}
+				}
+			else
+				{
+				x1 = (p.X - 32).ToString ();
+				y1 = (p.Y - 32).ToString ();
+				x2 = (p.X + 32).ToString ();
+				y2 = (p.Y + 32).ToString ();
+				z1 = "16";
+				z2 = "20";
+				}
+
+			// Запись
+			WriteBlock (SW, x1, y1, z1, x2, y2, z2, new string[] { TriggerTexture, TriggerTexture,
+				TriggerTexture, TriggerTexture, TriggerTexture, TriggerTexture }, BlockTypes.Default);
+
+			SW.Write ("}\n");
+			}
 
 		/// <summary>
 		/// Метод записывает точку выхода с карты
@@ -682,14 +750,14 @@ namespace RD_AAOW
 			SW.Write ("\"pitchstart\" \"100\"\n");
 			SW.Write ("\"origin\" \"" + x + " " + y + " 88\"\n");
 
-			if (Ambient != AmbientTypes.None)
+			/*if (Ambient != AmbientTypes.None)
 				{
 				SW.Write ("}\n{\n");
 				SW.Write ("\"classname\" \"env_sound\"\n");
 				SW.Write ("\"radius\" \"192\"\n");
 				SW.Write ("\"roomtype\" \"" + ((Ambient == AmbientTypes.Sky) ? "0" : "18") + "\"\n");
 				SW.Write ("\"origin\" \"" + x + " " + y + " 64\"\n");
-				}
+				}*/
 
 			SW.Write ("}\n");
 			}
@@ -965,7 +1033,8 @@ namespace RD_AAOW
 		/// </summary>
 		/// <param name="SW">Дескриптор файла карты</param>
 		/// <param name="RelativePosition">Относительная позиция точки создания</param>
-		public static void WriteMapSubFloor (StreamWriter SW, Point RelativePosition, List<CPResults> SurroundingWalls)
+		public static void WriteMapSubFloor (StreamWriter SW, Point RelativePosition,
+			List<CPResults> SurroundingWalls)
 			{
 			WriteSubFloor (SW, RelativePosition, null, SurroundingWalls);
 			}
