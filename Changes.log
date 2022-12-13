@@ -1,5 +1,10 @@
 Randomaze changes log
 
+ToDo:
+- Fix trigger_sound gaps;
+- Add items counter;
+- Try to fix the window focus
+
 Version 4.4:
 • The SFX triggering has been rebuilt. Now it uses special form of trigger_sound that can detect
   its orientation and switch between two room types. It allowed us to make the triggering more
