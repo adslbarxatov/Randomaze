@@ -3,7 +3,8 @@ Randomaze changes log
 ToDo:
 - Fix trigger_sound gaps;
 - Add items counter;
-- Try to fix the window focus
+- Try to fix the window focus;
+- Fix the height of two-level maps
 
 Version 4.4:
 • The SFX triggering has been rebuilt. Now it uses special form of trigger_sound that can detect
