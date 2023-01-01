@@ -60,6 +60,11 @@ namespace RD_AAOW
 		public const int DefaultWallHeight = 128;
 
 		/// <summary>
+		/// Возвращает двойную высоту стен лабиринта
+		/// </summary>
+		public const int DoubleWallHeight = 224;
+
+		/// <summary>
 		/// Возвращает флаг двухэтажного режима
 		/// </summary>
 		public static bool TwoFloors
@@ -79,6 +84,27 @@ namespace RD_AAOW
 		/// Возвращает максимально допустимое количество карт
 		/// </summary>
 		public const int MapsLimit = 999;
+
+		/// <summary>
+		/// Возвращает общее количество активных сущностей на карте
+		/// </summary>
+		public static uint EntitiesQuantity
+			{
+			get
+				{
+				return entitiesQuantity;
+				}
+			}
+		private static uint entitiesQuantity = 0;
+
+		/// <summary>
+		/// Метод добавляет одну сущность в счётчик
+		/// </summary>
+		public static void AddEntity (StreamWriter SW, string ClassName)
+			{
+			SW.Write ("\"classname\" \"" + ClassName + "\"\n");
+			entitiesQuantity++;
+			}
 
 		/// <summary>
 		/// Метод формирует каноничное имя карты по её номеру
@@ -152,9 +178,10 @@ namespace RD_AAOW
 				}
 
 			// Выбор высоты карты
-			wallHeight = DefaultWallHeight;
 			if (TwoFloors)
-				wallHeight *= 2;
+				wallHeight = DoubleWallHeight;
+			else
+				wallHeight = DefaultWallHeight;
 			}
 
 		/// <summary>
@@ -191,12 +218,14 @@ namespace RD_AAOW
 
 			// Запись
 			SW.Write ("{\n");
-			SW.Write ("\"classname\" \"game_end\"\n");
+			/*SW.Write ("\"classname\" \"game_end\"\n");*/
+			AddEntity (SW, "game_end");
 			SW.Write ("\"targetname\" \"DevEnd02\"\n");
 			SW.Write ("\"origin\" \"" + x1 + " " + y1 + " " + z3 + "\"\n");
 
 			SW.Write ("}\n{\n");
-			SW.Write ("\"classname\" \"player_loadsaved\"\n");
+			/*SW.Write ("\"classname\" \"player_loadsaved\"\n");*/
+			AddEntity (SW, "player_loadsaved");
 			SW.Write ("\"targetname\" \"DevEnd01\"\n");
 			SW.Write ("\"holdtime\" \"6\"\n");
 			SW.Write ("\"message\" \"DEV_END\"\n");
@@ -208,14 +237,16 @@ namespace RD_AAOW
 			SW.Write ("\"origin\" \"" + x1 + " " + y2 + " " + z3 + "\"\n");
 
 			SW.Write ("}\n{\n");
-			SW.Write ("\"classname\" \"multi_manager\"\n");
+			/*SW.Write ("\"classname\" \"multi_manager\"\n");*/
+			AddEntity (SW, "multi_manager");
 			SW.Write ("\"targetname\" \"DevM\"\n");
 			SW.Write ("\"DevEnd01\" \"0\"\n");
 			SW.Write ("\"DevEnd02\" \"5.5\"\n");
 			SW.Write ("\"origin\" \"" + x2 + " " + y1 + " " + z3 + "\"\n");
 
 			SW.Write ("}\n{\n");
-			SW.Write ("\"classname\" \"trigger_once\"\n");
+			/*SW.Write ("\"classname\" \"trigger_once\"\n");*/
+			AddEntity (SW, "trigger_once");
 			SW.Write ("\"target\" \"DevM\"\n");
 
 			WriteBlock (SW, x1, y1, z1, x2, y2, z2,
@@ -248,17 +279,18 @@ namespace RD_AAOW
 
 			// Запись
 			SW.Write ("{\n");
-			SW.Write ("\"classname\" \"info_landmark\"\n");
+			/*SW.Write ("\"classname\" \"info_landmark\"\n");*/
+			AddEntity (SW, "info_landmark");
 			SW.Write ("\"targetname\" \"" + mapName + "m\"\n");
 			SW.Write ("\"origin\" \"" + p.X.ToString () + " " + p.Y.ToString () + " 40\"\n");
 
 			SW.Write ("}\n{\n");
-			SW.Write ("\"classname\" \"trigger_changelevel\"\n");
+			/*SW.Write ("\"classname\" \"trigger_changelevel\"\n");*/
+			AddEntity (SW, "trigger_changelevel");
 			SW.Write ("\"map\" \"" + mapName + "\"\n");
 			SW.Write ("\"landmark\" \"" + mapName + "m\"\n");
 
 			WriteBlock (SW, (p.X - 8).ToString (), (p.Y - 8).ToString (), "16",
-
 				(p.X + 8).ToString (), (p.Y + 8).ToString (), (wallHeight - 16).ToString (),
 
 				new string[] { TriggerTexture, TriggerTexture, TriggerTexture, TriggerTexture,
@@ -267,7 +299,8 @@ namespace RD_AAOW
 				BlockTypes.Default);
 
 			SW.Write ("}\n{\n");
-			SW.Write ("\"classname\" \"trigger_autosave\"\n");
+			/*SW.Write ("\"classname\" \"trigger_autosave\"\n");*/
+			AddEntity (SW, "trigger_autosave");
 
 			WriteBlock (SW, (p.X - 32).ToString (), (p.Y - 32).ToString (), "12",
 				(p.X + 32).ToString (), (p.Y + 32).ToString (), "16",
@@ -287,7 +320,8 @@ namespace RD_AAOW
 
 			// Запись
 			SW.Write ("{\n");
-			SW.Write ("\"classname\" \"env_sprite\"\n");
+			/*SW.Write ("\"classname\" \"env_sprite\"\n");*/
+			AddEntity (SW, "env_sprite");
 			SW.Write ("\"spawnflags\" \"1\"\n");
 			SW.Write ("\"angles\" \"0 0 0\"\n");
 			SW.Write ("\"rendermode\" \"5\"\n");
@@ -323,43 +357,52 @@ namespace RD_AAOW
 			if (MapNumber == 1)
 				{
 				SW.Write ("{\n");
-				SW.Write ("\"classname\" \"info_player_start\"\n");
+				/*SW.Write ("\"classname\" \"info_player_start\"\n");*/
+				AddEntity (SW, "info_player_start");
 				SW.Write ("\"angles\" \"0 0 0\"\n");
 				SW.Write ("\"origin\" \"" + xs + " " + ys + " 40\"\n");
 				SW.Write ("}\n{\n");
 
-				SW.Write ("\"classname\" \"item_suit\"\n");
+				/*SW.Write ("\"classname\" \"item_suit\"\n");*/
+				AddEntity (SW, "item_suit");
 				SW.Write ("\"spawnflags\" \"1\"\n");
 				SW.Write ("\"angles\" \"0 0 0\"\n");
 				SW.Write ("\"target\" \"Preset\"\n");
 				SW.Write ("\"origin\" \"" + xs + " " + ys + " 32\"\n");
 				SW.Write ("}\n{\n");
 
-				SW.Write ("\"classname\" \"weapon_9mmAR\"\n");
+				/*SW.Write ("\"classname\" \"weapon_9mmAR\"\n");*/
+				AddEntity (SW, "weapon_9mmAR");
 				SW.Write ("\"origin\" \"" + xs + " " + ys + " 36\"\n");
 				SW.Write ("}\n{\n");
 
-				SW.Write ("\"classname\" \"weapon_shotgun\"\n");
+				/*SW.Write ("\"classname\" \"weapon_shotgun\"\n");*/
+				AddEntity (SW, "weapon_shotgun");
 				SW.Write ("\"origin\" \"" + xs + " " + ys + " 40\"\n");
 				SW.Write ("}\n{\n");
 
-				SW.Write ("\"classname\" \"weapon_handgrenade\"\n");
+				/*SW.Write ("\"classname\" \"weapon_handgrenade\"\n");*/
+				AddEntity (SW, "weapon_handgrenade");
 				SW.Write ("\"origin\" \"" + xs + " " + ys + " 44\"\n");
 				SW.Write ("}\n{\n");
 
-				SW.Write ("\"classname\" \"weapon_handgrenade\"\n");
+				/*SW.Write ("\"classname\" \"weapon_handgrenade\"\n");*/
+				AddEntity (SW, "weapon_handgrenade");
 				SW.Write ("\"origin\" \"" + xs + " " + ys + " 48\"\n");
 				SW.Write ("}\n{\n");
 
-				SW.Write ("\"classname\" \"ammo_9mmbox\"\n");
+				/*SW.Write ("\"classname\" \"ammo_9mmbox\"\n");*/
+				AddEntity (SW, "ammo_9mmbox");
 				SW.Write ("\"origin\" \"" + xs + " " + ys + " 52\"\n");
 				SW.Write ("}\n{\n");
 
-				SW.Write ("\"classname\" \"ammo_buckshot\"\n");
+				/*SW.Write ("\"classname\" \"ammo_buckshot\"\n");*/
+				AddEntity (SW, "ammo_buckshot");
 				SW.Write ("\"origin\" \"" + xs + " " + ys + " 56\"\n");
 				SW.Write ("}\n{\n");
 
-				SW.Write ("\"classname\" \"game_player_set_health\"\n");
+				/*SW.Write ("\"classname\" \"game_player_set_health\"\n");*/
+				AddEntity (SW, "game_player_set_health");
 				SW.Write ("\"targetname\" \"Preset\"\n");
 				SW.Write ("\"dmg\" \"200\"\n");
 				SW.Write ("\"origin\" \"" + xs + " " + ys + " 64\"\n");
@@ -370,17 +413,19 @@ namespace RD_AAOW
 			else
 				{
 				SW.Write ("{\n");
-				SW.Write ("\"classname\" \"info_landmark\"\n");
+				/*SW.Write ("\"classname\" \"info_landmark\"\n");*/
+				AddEntity (SW, "info_landmark");
 				SW.Write ("\"targetname\" \"" + BuildMapName (MapNumber) + "m\"\n");
 				SW.Write ("\"origin\" \"" + xs + " " + ys + " 40\"\n");
 
 				SW.Write ("}\n{\n");
-				SW.Write ("\"classname\" \"trigger_changelevel\"\n");
+				/*SW.Write ("\"classname\" \"trigger_changelevel\"\n");*/
+				AddEntity (SW, "trigger_changelevel");
 				SW.Write ("\"map\" \"" + BuildMapName (MapNumber - 1) + "\"\n");
 				SW.Write ("\"landmark\" \"" + BuildMapName (MapNumber) + "m\"\n");
 
-				WriteBlock (SW, (p.X - 8).ToString (), (p.Y - 8).ToString (), (wallHeight - 1).ToString (),
-					(p.X + 8).ToString (), (p.Y + 8).ToString (), wallHeight.ToString (),
+				WriteBlock (SW, (p.X - 8).ToString (), (p.Y - 8).ToString (), (wallHeight + 0).ToString (),
+					(p.X + 8).ToString (), (p.Y + 8).ToString (), (wallHeight + 1).ToString (),
 					new string[] { TriggerTexture, TriggerTexture, TriggerTexture, TriggerTexture,
 						TriggerTexture, TriggerTexture }, BlockTypes.Default);
 
@@ -389,7 +434,8 @@ namespace RD_AAOW
 
 			// Гравитационный триггер
 			SW.Write ("{\n");
-			SW.Write ("\"classname\" \"trigger_gravity\"\n");
+			/*SW.Write ("\"classname\" \"trigger_gravity\"\n");*/
+			AddEntity (SW, "trigger_gravity");
 			SW.Write ("\"gravity\" \"" + (GravityLevel * 80).ToString () + "\"\n"); // Новая возможность движка
 
 			WriteBlock (SW, (p.X - 32).ToString (), (p.Y - 32).ToString (), "24",
@@ -496,7 +542,8 @@ namespace RD_AAOW
 
 			// Запись
 			SW.Write ("{\n");
-			SW.Write ("\"classname\" \"trigger_sound\"\n");
+			/*SW.Write ("\"classname\" \"trigger_sound\"\n");*/
+			AddEntity (SW, "trigger_sound");
 			SW.Write ("\"roomtype\" \"" + RoomTypeLeft.ToString () + "\"\n");
 			SW.Write ("\"roomtype2\" \"" + RoomTypeRight.ToString () + "\"\n");
 			SW.Write ("\"spawnflags\" \"" + (ForWindow ? "1" : "0") + "\"\n");
@@ -510,15 +557,15 @@ namespace RD_AAOW
 				if (WallsSupport.IsWallVertical (RelativePosition))
 					{
 					x1 = (p.X - 4).ToString ();
-					y1 = (p.Y - 48).ToString ();
+					y1 = (p.Y - 56).ToString ();
 					x2 = (p.X + 4).ToString ();
-					y2 = (p.Y + 48).ToString ();
+					y2 = (p.Y + 56).ToString ();
 					}
 				else
 					{
-					x1 = (p.X - 48).ToString ();
+					x1 = (p.X - 56).ToString ();
 					y1 = (p.Y - 4).ToString ();
-					x2 = (p.X + 48).ToString ();
+					x2 = (p.X + 56).ToString ();
 					y2 = (p.Y + 4).ToString ();
 					}
 				}
@@ -554,7 +601,8 @@ namespace RD_AAOW
 
 			// Запись
 			SW.Write ("{\n");
-			SW.Write ("\"classname\" \"func_button\"\n");
+			/*SW.Write ("\"classname\" \"func_button\"\n");*/
+			AddEntity (SW, "func_button");
 			SW.Write ("\"target\" \"Gate" + BuildMapName (MapNumber) + "\"\n");
 			SW.Write ("\"spawnflags\" \"1\"\n");
 			SW.Write ("\"delay\" \"1\"\n");
@@ -570,7 +618,8 @@ namespace RD_AAOW
 				BlockTypes.Button);
 
 			SW.Write ("}\n{\n");
-			SW.Write ("\"classname\" \"trigger_autosave\"\n");
+			/*SW.Write ("\"classname\" \"trigger_autosave\"\n");*/
+			AddEntity (SW, "trigger_autosave");
 
 			WriteBlock (SW, (p.X - 32).ToString (), (p.Y - 32).ToString (), "12",
 				(p.X + 32).ToString (), (p.Y + 32).ToString (), "16",
@@ -641,7 +690,8 @@ namespace RD_AAOW
 			string tex = "CRATE01"; // Взрывчатка по умолчанию
 
 			SW.Write ("{\n");
-			SW.Write ("\"classname\" \"func_pushable\"\n");
+			/*SW.Write ("\"classname\" \"func_pushable\"\n");*/
+			AddEntity (SW, "func_pushable");
 			SW.Write ("\"health\" \"20\"\n");
 			SW.Write ("\"material\" \"1\"\n");
 			SW.Write ("\"spawnflags\" \"128\"\n");
@@ -742,23 +792,14 @@ namespace RD_AAOW
 
 			// Запись
 			SW.Write ("{\n");
-			SW.Write ("\"classname\" \"ambient_generic\"\n");
+			/*SW.Write ("\"classname\" \"ambient_generic\"\n");*/
+			AddEntity (SW, "ambient_generic");
 			SW.Write ("\"spawnflags\" \"2\"\n");
 			SW.Write ("\"message\" \"ambience/" + Sound + ".wav\"\n");
 			SW.Write ("\"health\" \"" + h.ToString () + "\"\n");
 			SW.Write ("\"pitch\" \"100\"\n");
 			SW.Write ("\"pitchstart\" \"100\"\n");
 			SW.Write ("\"origin\" \"" + x + " " + y + " 88\"\n");
-
-			/*if (Ambient != AmbientTypes.None)
-				{
-				SW.Write ("}\n{\n");
-				SW.Write ("\"classname\" \"env_sound\"\n");
-				SW.Write ("\"radius\" \"192\"\n");
-				SW.Write ("\"roomtype\" \"" + ((Ambient == AmbientTypes.Sky) ? "0" : "18") + "\"\n");
-				SW.Write ("\"origin\" \"" + x + " " + y + " 64\"\n");
-				}*/
-
 			SW.Write ("}\n");
 			}
 
@@ -923,7 +964,8 @@ namespace RD_AAOW
 			if (!AddingTheBulb && IsSkyTexture (RoofTexture))
 				{
 				SW.Write ("{\n");
-				SW.Write ("\"classname\" \"light_environment\"\n");
+				/*SW.Write ("\"classname\" \"light_environment\"\n");*/
+				AddEntity (SW, "light_environment");
 				SW.Write ("\"_fade\" \"1.0\"\n");
 
 				SW.Write ("\"angles\" \"" + sunAngles[skyIndex] + "\"\n");
@@ -933,23 +975,26 @@ namespace RD_AAOW
 					(wallHeight - 8).ToString () + "\"\n");
 				SW.Write ("}\n");
 
-				EnvironmentAdded = true;
+				environmentAdded = true;
 				return true;
 				}
 
 			// Добавление источника света
-			int z = wallHeight;
+			int z;
 			if (SubFloor)
-				z -= (DefaultWallHeight + 12);
+				z = DefaultWallHeight - 32;
+			else
+				z = wallHeight;
 
 			if (!AddingTheBulb)
 				{
 				SW.Write ("{\n");
-				SW.Write ("\"classname\" \"light\"\n");
+				/*SW.Write ("\"classname\" \"light\"\n");*/
+				AddEntity (SW, "light");
 				SW.Write (SubFloor ? subLightColor : lightColor);
 				SW.Write ("\"_fade\" \"1.0\"\n");
 				SW.Write ("\"origin\" \"" + p.X.ToString () + " " + p.Y.ToString () + " " +
-					(z - 12).ToString () + "\"\n");
+					(z - 8).ToString () + "\"\n");
 				SW.Write ("}\n");
 				}
 
@@ -958,8 +1003,8 @@ namespace RD_AAOW
 				{
 				int d = SubFloor ? 8 : 16;
 
-				WriteBlock (SW, (p.X - d).ToString (), (p.Y - d).ToString (), (z - 4).ToString (),
-					(p.X + d).ToString (), (p.Y + d).ToString (), z.ToString (),
+				WriteBlock (SW, (p.X - d).ToString (), (p.Y - d).ToString (), (z - 0).ToString (),
+					(p.X + d).ToString (), (p.Y + d).ToString (), (z + 4).ToString (),
 
 					new string[] { RoofTexture, RoofTexture, RoofTexture, RoofTexture, RoofTexture,
 						SubFloor ? "~PATH01" : "~LAMP07" },
@@ -975,7 +1020,14 @@ namespace RD_AAOW
 		/// <summary>
 		/// Возвращает true, если небесный свет уже был добавлен
 		/// </summary>
-		public static bool EnvironmentAdded = false;
+		public static bool EnvironmentAdded
+			{
+			get
+				{
+				return environmentAdded;
+				}
+			}
+		private static bool environmentAdded = false;
 		private static string lightColor = "", subLightColor = "";
 
 		/// <summary>
@@ -1054,8 +1106,8 @@ namespace RD_AAOW
 			// Запись площадки
 			if (SurroundingWalls == null)
 				{
-				WriteBlock (SW, (p.X - 56).ToString (), (p.Y - 56).ToString (), (DefaultWallHeight - 16).ToString (),
-					(p.X + 56).ToString (), (p.Y + 56).ToString (), DefaultWallHeight.ToString (),
+				WriteBlock (SW, (p.X - 56).ToString (), (p.Y - 56).ToString (), (DefaultWallHeight - 32).ToString (),
+					(p.X + 56).ToString (), (p.Y + 56).ToString (), (DefaultWallHeight - 16).ToString (),
 					tex, BlockTypes.Door);
 				return;
 				}
@@ -1065,36 +1117,44 @@ namespace RD_AAOW
 			// такая площадка может появиться над дверью в стене, только если она окружена тремя стенами
 			if (!SurroundingWalls.Contains (CPResults.Left))
 				{
-				SW.Write ("{\n\"classname\" \"func_ladder\"\n");
-				WriteBlock (SW, (p.X - 60).ToString (), (p.Y - 56).ToString (), (DefaultWallHeight - 16).ToString (),
-					(p.X - 56).ToString (), (p.Y + 56).ToString (), DefaultWallHeight.ToString (),
+				/*SW.Write ("{\n\"classname\" \"func_ladder\"\n");*/
+				SW.Write ("{\n");
+				AddEntity (SW, "func_ladder");
+				WriteBlock (SW, (p.X - 60).ToString (), (p.Y - 56).ToString (), (DefaultWallHeight - 32).ToString (),
+					(p.X - 56).ToString (), (p.Y + 56).ToString (), (DefaultWallHeight - 16).ToString (),
 					tex, BlockTypes.Door);
 				SW.Write ("}\n");
 				}
 
 			if (!SurroundingWalls.Contains (CPResults.Right))
 				{
-				SW.Write ("{\n\"classname\" \"func_ladder\"\n");
-				WriteBlock (SW, (p.X + 56).ToString (), (p.Y - 56).ToString (), (DefaultWallHeight - 16).ToString (),
-					(p.X + 60).ToString (), (p.Y + 56).ToString (), DefaultWallHeight.ToString (),
+				/*SW.Write ("{\n\"classname\" \"func_ladder\"\n");*/
+				SW.Write ("{\n");
+				AddEntity (SW, "func_ladder");
+				WriteBlock (SW, (p.X + 56).ToString (), (p.Y - 56).ToString (), (DefaultWallHeight - 32).ToString (),
+					(p.X + 60).ToString (), (p.Y + 56).ToString (), (DefaultWallHeight - 16).ToString (),
 					tex, BlockTypes.Door);
 				SW.Write ("}\n");
 				}
 
 			if (!SurroundingWalls.Contains (CPResults.Down))
 				{
-				SW.Write ("{\n\"classname\" \"func_ladder\"\n");
-				WriteBlock (SW, (p.X - 56).ToString (), (p.Y - 60).ToString (), (DefaultWallHeight - 16).ToString (),
-					(p.X + 56).ToString (), (p.Y - 56).ToString (), DefaultWallHeight.ToString (),
+				/*SW.Write ("{\n\"classname\" \"func_ladder\"\n");*/
+				SW.Write ("{\n");
+				AddEntity (SW, "func_ladder");
+				WriteBlock (SW, (p.X - 56).ToString (), (p.Y - 60).ToString (), (DefaultWallHeight - 32).ToString (),
+					(p.X + 56).ToString (), (p.Y - 56).ToString (), (DefaultWallHeight - 16).ToString (),
 					tex, BlockTypes.Door);
 				SW.Write ("}\n");
 				}
 
 			if (!SurroundingWalls.Contains (CPResults.Up))
 				{
-				SW.Write ("{\n\"classname\" \"func_ladder\"\n");
-				WriteBlock (SW, (p.X - 56).ToString (), (p.Y + 56).ToString (), (DefaultWallHeight - 16).ToString (),
-					(p.X + 56).ToString (), (p.Y + 60).ToString (), DefaultWallHeight.ToString (),
+				/*SW.Write ("{\n\"classname\" \"func_ladder\"\n");*/
+				SW.Write ("{\n");
+				AddEntity (SW, "func_ladder");
+				WriteBlock (SW, (p.X - 56).ToString (), (p.Y + 56).ToString (), (DefaultWallHeight - 32).ToString (),
+					(p.X + 56).ToString (), (p.Y + 60).ToString (), (DefaultWallHeight - 16).ToString (),
 					tex, BlockTypes.Door);
 				SW.Write ("}\n");
 				}

@@ -116,6 +116,11 @@
 		public bool TwoFloors;
 
 		/// <summary>
+		/// Флаг рандомизации двойной высоты карт
+		/// </summary>
+		public bool RandomizeFloorsQuantity;
+
+		/// <summary>
 		/// Флаг разрешения размещения собираемых объектов на внутренних площадках
 		/// </summary>
 		public bool AllowItemsForSecondFloor;

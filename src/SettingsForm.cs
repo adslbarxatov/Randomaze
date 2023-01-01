@@ -53,7 +53,7 @@ namespace RD_AAOW
 
 			MazeSizeFlag.Text = EnemiesDensityFlag.Text = ItemsDensityFlag.Text =
 				CratesDensityFlag.Text = WallsDensityFlag.Text = LightingFlag.Text =
-				GravityFlag.Text = Localization.GetText ("SettingsForm_Random", al);
+				GravityFlag.Text = RandomizeFloorsFlag.Text = Localization.GetText ("SettingsForm_Random", al);
 
 			this.TopMost = true;
 			this.Text = ProgramDescription.AssemblyTitle + ": " + Localization.GetText ("SettingsForm_T", al);
@@ -135,6 +135,7 @@ namespace RD_AAOW
 
 			AllowItemsForSecondFloor.Checked = settings.AllowItemsForSecondFloor;
 			TwoFloorsFlag.Checked = settings.TwoFloors;
+			RandomizeFloorsFlag.Checked = settings.RandomizeFloorsQuantity;
 			TwoFloorsFlag_CheckedChanged (null, null);
 
 			CratesDensityTrack.Maximum = (int)settings.MaximumCratesDensityCoefficient;
@@ -218,6 +219,7 @@ namespace RD_AAOW
 
 			settings.TwoFloors = TwoFloorsFlag.Checked;
 			settings.AllowItemsForSecondFloor = AllowItemsForSecondFloor.Checked;
+			settings.RandomizeFloorsQuantity = RandomizeFloorsFlag.Checked;
 
 			settings.AllowExplosiveCrates = AllowExplosiveCratesFlag.Checked;
 			settings.AllowItemsCrates = AllowItemsCratesFlag.Checked;
@@ -274,7 +276,7 @@ namespace RD_AAOW
 			}
 
 		// Ограничение суммарного коэффициента размерности лабиринта и плотности стен
-		private int sizeWallsDifferenceLimit = 6;
+		private int sizeWallsDifferenceLimit = 5;
 		private void MazeSizeTrack_Scroll (object sender, EventArgs e)
 			{
 			int coeff = (int)settings.MaximumWallsDensityCoefficient - WallsDensityTrack.Value + MazeSizeTrack.Value;
@@ -303,11 +305,13 @@ namespace RD_AAOW
 		// Включение дополнительных монстров
 		private void TwoFloorsFlag_CheckedChanged (object sender, EventArgs e)
 			{
-			if (TwoFloorsFlag.Checked)
+			if (TwoFloorsFlag.Checked && !RandomizeFloorsFlag.Checked)
 				EnemyFlag08.Enabled = AllowItemsForSecondFloor.Enabled = true;
 			else
 				EnemyFlag08.Enabled = EnemyFlag08.Checked = AllowItemsForSecondFloor.Enabled =
 					AllowItemsForSecondFloor.Checked = false;
+
+			TwoFloorsFlag.Enabled = !RandomizeFloorsFlag.Checked;
 			}
 
 		// Сброс гравитации до нормального значения

@@ -58,13 +58,14 @@ namespace RD_AAOW
 			if (!hiddenObjectWritten && (MapNumber % 10 == 0))
 				{
 				hiddenObjectWritten = true;
-				SW.Write ("\"classname\" \"item_antidote\"\n");
+				/*SW.Write ("\"classname\" \"item_antidote\"\n");*/
+				MapSupport.AddEntity (SW, "item_antidote");
 				SW.Write ("\"MinimumToTrigger\" \"1\"\n");
 				goto finishItem;
 				}
 
 			// Запись объекта
-			string doc = "\"classname\" \"item_security\"\n";
+			string doc2 = "item_security";
 			int item = Rnd.Next (prngRange);
 
 // Выбор предмета
@@ -74,7 +75,8 @@ retry:
 				// Аптечки
 				default:
 					if (Permissions.Contains (ItemsPermissionsKeys[0]))
-						SW.Write ("\"classname\" \"" + items[0] + "\"\n");
+						/*SW.Write ("\"classname\" \"" + items[0] + "\"\n");*/
+						MapSupport.AddEntity (SW, items[0]);
 					else
 						goto check;
 					break;
@@ -86,7 +88,8 @@ retry:
 				case 3:
 				case 4:
 					if (Permissions.Contains (ItemsPermissionsKeys[1]))
-						SW.Write ("\"classname\" \"" + items[1] + "\"\n");
+						/*SW.Write ("\"classname\" \"" + items[1] + "\"\n");*/
+						MapSupport.AddEntity (SW, items[1]);
 					else
 						goto check;
 					break;
@@ -95,7 +98,8 @@ retry:
 				case 6:
 				case 17:
 					if (Permissions.Contains (ItemsPermissionsKeys[2]))
-						SW.Write ("\"classname\" \"" + items[2] + "\"\n");
+						/*SW.Write ("\"classname\" \"" + items[2] + "\"\n");*/
+						MapSupport.AddEntity (SW, items[2]);
 					else
 						goto check;
 					break;
@@ -103,7 +107,8 @@ retry:
 				// Пистолет
 				case 15:
 					if (Permissions.Contains (ItemsPermissionsKeys[3]))
-						SW.Write ("\"classname\" \"" + items[3] + "\"\n");
+						/*SW.Write ("\"classname\" \"" + items[3] + "\"\n");*/
+						MapSupport.AddEntity (SW, items[3]);
 					else
 						goto check;
 					break;
@@ -111,7 +116,8 @@ retry:
 				// Гранаты с радиоуправлением
 				case 16:
 					if (Permissions.Contains (ItemsPermissionsKeys[4]))
-						SW.Write ("\"classname\" \"" + items[4] + "\"\n");
+						/*SW.Write ("\"classname\" \"" + items[4] + "\"\n");*/
+						MapSupport.AddEntity (SW, items[4]);
 					else
 						goto check;
 					break;
@@ -120,7 +126,8 @@ retry:
 				case 5:
 				case 18:
 					if (Permissions.Contains (ItemsPermissionsKeys[5]))
-						SW.Write ("\"classname\" \"" + items[5] + "\"\n");
+						/*SW.Write ("\"classname\" \"" + items[5] + "\"\n");*/
+						MapSupport.AddEntity (SW, items[5]);
 					else
 						goto check;
 					break;
@@ -129,7 +136,8 @@ retry:
 				case 19:
 				case 20:
 					if (Permissions.Contains (ItemsPermissionsKeys[6]))
-						SW.Write ("\"classname\" \"" + items[6] + "\"\n");
+						/*SW.Write ("\"classname\" \"" + items[6] + "\"\n");*/
+						MapSupport.AddEntity (SW, items[6]);
 					else
 						goto check;
 					break;
@@ -138,7 +146,8 @@ retry:
 				case 21:
 				case 22:
 					if (Permissions.Contains (ItemsPermissionsKeys[7]))
-						SW.Write ("\"classname\" \"" + items[7] + "\"\n");
+						/*SW.Write ("\"classname\" \"" + items[7] + "\"\n");*/
+						MapSupport.AddEntity (SW, items[7]);
 					else
 						goto check;
 					break;
@@ -148,14 +157,16 @@ retry:
 					if (Rnd.Next (5) > 3)
 						{
 						if (Permissions.Contains (ItemsPermissionsKeys[8]))
-							SW.Write ("\"classname\" \"" + items[8] + "\"\n");
+							/*SW.Write ("\"classname\" \"" + items[8] + "\"\n");*/
+							MapSupport.AddEntity (SW, items[8]);
 						else
 							goto check;
 						}
 					else
 						{
 						if (Permissions.Contains (ItemsPermissionsKeys[4]))
-							SW.Write ("\"classname\" \"" + items[4] + "\"\n");
+							/*SW.Write ("\"classname\" \"" + items[4] + "\"\n");*/
+							MapSupport.AddEntity (SW, items[4]);
 						else
 							goto check;
 						}
@@ -166,14 +177,16 @@ retry:
 					if (Rnd.Next (5) > 3)
 						{
 						if (Permissions.Contains (ItemsPermissionsKeys[9]))
-							SW.Write ("\"classname\" \"" + items[9] + "\"\n");
+							/*SW.Write ("\"classname\" \"" + items[9] + "\"\n");*/
+							MapSupport.AddEntity (SW, items[9]);
 						else
 							goto check;
 						}
 					else
 						{
 						if (Permissions.Contains (ItemsPermissionsKeys[2]))
-							SW.Write ("\"classname\" \"" + items[2] + "\"\n");
+							/*SW.Write ("\"classname\" \"" + items[2] + "\"\n");*/
+							MapSupport.AddEntity (SW, items[2]);
 						else
 							goto check;
 						}
@@ -196,7 +209,8 @@ check:
 			item += Rnd.Next (3);
 			if (item >= prngRange)
 				{
-				SW.Write (doc);
+				/*SW.Write (doc);*/
+				MapSupport.AddEntity (SW, doc2);
 				goto finishItem;
 				}
 			else
@@ -218,6 +232,7 @@ check:
 			"r", "o", "p", "t", "n", "e", "a"
 			};
 
+		// Набор имён классов предметов
 		private static string[] items = new string[] {
 			// Прямая генерация
 			"item_healthkit",

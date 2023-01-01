@@ -80,7 +80,8 @@ namespace RD_AAOW
 			{
 			// Запись стекла
 			SW.Write ("{\n");
-			SW.Write ("\"classname\" \"func_breakable\"\n");
+			/*SW.Write ("\"classname\" \"func_breakable\"\n");*/
+			MapSupport.AddEntity (SW, "func_breakable");
 			SW.Write ("\"rendermode\" \"2\"\n");
 			SW.Write ("\"renderamt\" \"80\"\n");
 			SW.Write ("\"health\" \"20\"\n");
@@ -130,7 +131,8 @@ namespace RD_AAOW
 
 			// Запись шлюза
 			SW.Write ("{\n");
-			SW.Write ("\"classname\" \"func_door\"\n");
+			/*SW.Write ("\"classname\" \"func_door\"\n");*/
+			MapSupport.AddEntity (SW, "func_door");
 			SW.Write ("\"angles\" \"90 0 0\"\n");
 			SW.Write ("\"speed\" \"100\"\n");
 			SW.Write ("\"movesnd\" \"3\"\n");
@@ -236,7 +238,7 @@ namespace RD_AAOW
 
 				case BarrierTypes.Window:
 					z1 = "8";
-					z2 = (MapSupport.WallHeight - (MapSupport.TwoFloors ? 72 : 8)).ToString ();
+					z2 = (MapSupport.WallHeight - 8/*(MapSupport.TwoFloors ? 72 : 8)*/).ToString ();
 					textures = new string[] { "Glass01", "Glass01", "Glass01", "Glass01",
 						"Glass01", "Glass01", "Glass01", "Glass01" };
 					rDelta = lDelta = 0;
@@ -246,7 +248,7 @@ namespace RD_AAOW
 				case BarrierTypes.WindowFrameTop:
 				case BarrierTypes.GateFrameTop:
 					if (Type == BarrierTypes.WindowFrameTop)
-						z1 = (MapSupport.WallHeight - (MapSupport.TwoFloors ? 72 : 8)).ToString ();
+						z1 = (MapSupport.WallHeight - 8/*(MapSupport.TwoFloors ? 72 : 8)*/).ToString ();
 					else
 						z1 = "120";
 					z2 = (MapSupport.WallHeight + 16).ToString ();

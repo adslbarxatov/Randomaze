@@ -1,10 +1,12 @@
 Randomaze changes log
 
-ToDo:
-- Fix trigger_sound gaps;
-- Add items counter;
-- Try to fix the window focus;
-- Fix the height of two-level maps
+Version 4.5:
+• Implemented the ability to randomize the “two floors” and “allow items for balconies” flags;
+• Fixed the backward teleportation bug;
+• Light bulbs have been “sunk” into the ceiling (for better experience with low gravity coefficients);
+• The height of the second floor has been decreased; climbing on balconies is more comfortable now;
+• Implemented the entities counter: it will allow us to avoid the MAX_ENTITIES errors;
+• Adjusted SFX triggers placement
 
 Version 4.4:
 • The SFX triggering has been rebuilt. Now it uses special form of trigger_sound that can detect

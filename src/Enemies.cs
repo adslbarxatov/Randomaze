@@ -60,10 +60,8 @@ namespace RD_AAOW
 				}
 
 			// Добавление
-			string rat = Rnd.Next (2) == 0 ? "\"classname\" \"monster_rat\"\n" :
-				"\"classname\" \"monster_cockroach\"\n";
-
-			int z = SecondFloor ? MapSupport.DefaultWallHeight : 0;
+			string rat2 = Rnd.Next (2) == 0 ? "monster_rat" : "monster_cockroach";
+			int z = SecondFloor ? (MapSupport.DefaultWallHeight - 16) : 0;
 			int r = Rnd.Next (360);
 			int enemy = Rnd.Next (prngRange);
 
@@ -75,7 +73,8 @@ retry:
 				default:
 					if (Permissions.Contains (EnemiesPermissionsKeys[4]))
 						{
-						SW.Write ("\"classname\" \"" + enemies[4] + "\"\n");
+						/*SW.Write ("\"classname\" \"" + enemies[4] + "\"\n");*/
+						MapSupport.AddEntity (SW, enemies[4]);
 						SW.Write ("\"weapons\" \"" + gruntWeapons[Rnd.Next (gruntWeapons.Length)] + "\"\n");
 						}
 					else
@@ -90,7 +89,8 @@ retry:
 					z = 0;  // Только на полу
 					if (Permissions.Contains (EnemiesPermissionsKeys[11]))
 						{
-						SW.Write ("\"classname\" \"" + enemies[11] + "\"\n");
+						/*SW.Write ("\"classname\" \"" + enemies[11] + "\"\n");*/
+						MapSupport.AddEntity (SW, enemies[11]);
 						SW.Write ("\"skin\" \"" + Rnd.Next (2).ToString () + "\"\n");
 						}
 					else
@@ -104,7 +104,8 @@ retry:
 				case 17:
 					z = 0;  // Только на полу
 					if (Permissions.Contains (EnemiesPermissionsKeys[5]))
-						SW.Write ("\"classname\" \"" + enemies[5] + "\"\n");
+						/*SW.Write ("\"classname\" \"" + enemies[5] + "\"\n");*/
+						MapSupport.AddEntity (SW, enemies[5]);
 					else
 						goto check;
 					break;
@@ -112,7 +113,8 @@ retry:
 				// Алиены
 				case 10:
 					if (Permissions.Contains (EnemiesPermissionsKeys[9]))
-						SW.Write ("\"classname\" \"" + enemies[9] + "\"\n");
+						/*SW.Write ("\"classname\" \"" + enemies[9] + "\"\n");*/
+						MapSupport.AddEntity (SW, enemies[9]);
 					else
 						goto check;
 					break;
@@ -120,7 +122,8 @@ retry:
 				// Куры
 				case 19:
 					if (Permissions.Contains (EnemiesPermissionsKeys[1]))
-						SW.Write ("\"classname\" \"" + enemies[1] + "\"\n");
+						/*SW.Write ("\"classname\" \"" + enemies[1] + "\"\n");*/
+						MapSupport.AddEntity (SW, enemies[1]);
 					else
 						goto check;
 					break;
@@ -129,7 +132,8 @@ retry:
 				case 12:
 				case 13:
 					if (Permissions.Contains (EnemiesPermissionsKeys[0]))
-						SW.Write ("\"classname\" \"" + enemies[0] + "\"\n");
+						/*SW.Write ("\"classname\" \"" + enemies[0] + "\"\n");*/
+						MapSupport.AddEntity (SW, enemies[0]);
 					else
 						goto check;
 					break;
@@ -139,7 +143,8 @@ retry:
 					z = 0;  // Только на полу
 					if (Permissions.Contains (EnemiesPermissionsKeys[10]))
 						{
-						SW.Write ("\"classname\" \"" + enemies[10] + "\"\n");
+						/*SW.Write ("\"classname\" \"" + enemies[10] + "\"\n");*/
+						MapSupport.AddEntity (SW, enemies[10]);
 						SW.Write ("\"spawnflags\" \"32\"\n");
 						SW.Write ("\"orientation\" \"0\"\n");
 						}
@@ -152,7 +157,8 @@ retry:
 				// Солдаты алиенов
 				case 18:
 					if (Permissions.Contains (EnemiesPermissionsKeys[8]))
-						SW.Write ("\"classname\" \"" + enemies[8] + "\"\n");
+						/*SW.Write ("\"classname\" \"" + enemies[8] + "\"\n");*/
+						MapSupport.AddEntity (SW, enemies[8]);
 					else
 						goto check;
 					break;
@@ -161,7 +167,8 @@ retry:
 				case 15:
 					if (Permissions.Contains (EnemiesPermissionsKeys[2]))
 						{
-						SW.Write ("\"classname\" \"" + enemies[2] + "\"\n");
+						/*SW.Write ("\"classname\" \"" + enemies[2] + "\"\n");*/
+						MapSupport.AddEntity (SW, enemies[2]);
 						z = MapSupport.WallHeight - 96;    // Ближе к потолку
 						}
 					else
@@ -175,7 +182,8 @@ retry:
 				case 20:
 					z = 0;  // Только на полу
 					if (Permissions.Contains (EnemiesPermissionsKeys[3]))
-						SW.Write ("\"classname\" \"" + enemies[3] + "\"\n");
+						/*SW.Write ("\"classname\" \"" + enemies[3] + "\"\n");*/
+						MapSupport.AddEntity (SW, enemies[3]);
 					else
 						goto check;
 					break;
@@ -184,7 +192,8 @@ retry:
 				case 21:
 					if (MapSupport.TwoFloors && Permissions.Contains (EnemiesPermissionsKeys[7]) && !UnderSky)
 						{
-						SW.Write ("\"classname\" \"" + enemies[7] + "\"\n");
+						/*SW.Write ("\"classname\" \"" + enemies[7] + "\"\n");*/
+						MapSupport.AddEntity (SW, enemies[7]);
 						z = MapSupport.WallHeight;  // Только на потолке
 						}
 					else
@@ -200,7 +209,8 @@ retry:
 						FurnitureTypes.Computer);
 					if ((rWalls.Count > 0) && Permissions.Contains (EnemiesPermissionsKeys[6]))
 						{
-						SW.Write ("\"classname\" \"" + enemies[6] + "\"\n");
+						/*SW.Write ("\"classname\" \"" + enemies[6] + "\"\n");*/
+						MapSupport.AddEntity (SW, enemies[6]);
 						SW.Write ("\"spawnflags\" \"1\"\n");
 						z = 16 + Rnd.Next (2) * 48;
 						int off = MapSupport.WallLength / 2 - 16;
@@ -248,7 +258,8 @@ check:
 			enemy += Rnd.Next (3);
 			if (enemy >= prngRange)
 				{
-				SW.Write (rat);
+				/*SW.Write (rat);*/
+				MapSupport.AddEntity (SW, rat2);
 				goto finish;
 				}
 			else
@@ -267,6 +278,7 @@ check:
 			"a", "b", "c", "e", "g", "h", "m", "n", "r", "s", "t", "z"
 			};
 
+		// Набор названий классов для врагов
 		private static string[] enemies = new string[] {
 			"monster_human_assassin",
 			"monster_bullchicken",
