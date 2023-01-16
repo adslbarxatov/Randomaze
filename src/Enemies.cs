@@ -73,7 +73,6 @@ retry:
 				default:
 					if (Permissions.Contains (EnemiesPermissionsKeys[4]))
 						{
-						/*SW.Write ("\"classname\" \"" + enemies[4] + "\"\n");*/
 						MapSupport.AddEntity (SW, enemies[4]);
 						SW.Write ("\"weapons\" \"" + gruntWeapons[Rnd.Next (gruntWeapons.Length)] + "\"\n");
 						}
@@ -89,7 +88,6 @@ retry:
 					z = 0;  // Только на полу
 					if (Permissions.Contains (EnemiesPermissionsKeys[11]))
 						{
-						/*SW.Write ("\"classname\" \"" + enemies[11] + "\"\n");*/
 						MapSupport.AddEntity (SW, enemies[11]);
 						SW.Write ("\"skin\" \"" + Rnd.Next (2).ToString () + "\"\n");
 						}
@@ -104,7 +102,6 @@ retry:
 				case 17:
 					z = 0;  // Только на полу
 					if (Permissions.Contains (EnemiesPermissionsKeys[5]))
-						/*SW.Write ("\"classname\" \"" + enemies[5] + "\"\n");*/
 						MapSupport.AddEntity (SW, enemies[5]);
 					else
 						goto check;
@@ -113,7 +110,6 @@ retry:
 				// Алиены
 				case 10:
 					if (Permissions.Contains (EnemiesPermissionsKeys[9]))
-						/*SW.Write ("\"classname\" \"" + enemies[9] + "\"\n");*/
 						MapSupport.AddEntity (SW, enemies[9]);
 					else
 						goto check;
@@ -122,7 +118,6 @@ retry:
 				// Куры
 				case 19:
 					if (Permissions.Contains (EnemiesPermissionsKeys[1]))
-						/*SW.Write ("\"classname\" \"" + enemies[1] + "\"\n");*/
 						MapSupport.AddEntity (SW, enemies[1]);
 					else
 						goto check;
@@ -132,7 +127,6 @@ retry:
 				case 12:
 				case 13:
 					if (Permissions.Contains (EnemiesPermissionsKeys[0]))
-						/*SW.Write ("\"classname\" \"" + enemies[0] + "\"\n");*/
 						MapSupport.AddEntity (SW, enemies[0]);
 					else
 						goto check;
@@ -143,8 +137,21 @@ retry:
 					z = 0;  // Только на полу
 					if (Permissions.Contains (EnemiesPermissionsKeys[10]))
 						{
-						/*SW.Write ("\"classname\" \"" + enemies[10] + "\"\n");*/
-						MapSupport.AddEntity (SW, enemies[10]);
+						switch (Rnd.Next (3))
+							{
+							case 0:
+								MapSupport.AddEntity (SW, "monster_turret");
+								break;
+
+							case 1:
+								MapSupport.AddEntity (SW, "monster_miniturret");
+								break;
+
+							case 2:
+								MapSupport.AddEntity (SW, "monster_sentry");
+								break;
+							}
+
 						SW.Write ("\"spawnflags\" \"32\"\n");
 						SW.Write ("\"orientation\" \"0\"\n");
 						}
@@ -157,7 +164,6 @@ retry:
 				// Солдаты алиенов
 				case 18:
 					if (Permissions.Contains (EnemiesPermissionsKeys[8]))
-						/*SW.Write ("\"classname\" \"" + enemies[8] + "\"\n");*/
 						MapSupport.AddEntity (SW, enemies[8]);
 					else
 						goto check;
@@ -167,7 +173,6 @@ retry:
 				case 15:
 					if (Permissions.Contains (EnemiesPermissionsKeys[2]))
 						{
-						/*SW.Write ("\"classname\" \"" + enemies[2] + "\"\n");*/
 						MapSupport.AddEntity (SW, enemies[2]);
 						z = MapSupport.WallHeight - 96;    // Ближе к потолку
 						}
@@ -182,7 +187,6 @@ retry:
 				case 20:
 					z = 0;  // Только на полу
 					if (Permissions.Contains (EnemiesPermissionsKeys[3]))
-						/*SW.Write ("\"classname\" \"" + enemies[3] + "\"\n");*/
 						MapSupport.AddEntity (SW, enemies[3]);
 					else
 						goto check;
@@ -192,7 +196,6 @@ retry:
 				case 21:
 					if (MapSupport.TwoFloors && Permissions.Contains (EnemiesPermissionsKeys[7]) && !UnderSky)
 						{
-						/*SW.Write ("\"classname\" \"" + enemies[7] + "\"\n");*/
 						MapSupport.AddEntity (SW, enemies[7]);
 						z = MapSupport.WallHeight;  // Только на потолке
 						}
@@ -209,7 +212,6 @@ retry:
 						FurnitureTypes.Computer);
 					if ((rWalls.Count > 0) && Permissions.Contains (EnemiesPermissionsKeys[6]))
 						{
-						/*SW.Write ("\"classname\" \"" + enemies[6] + "\"\n");*/
 						MapSupport.AddEntity (SW, enemies[6]);
 						SW.Write ("\"spawnflags\" \"1\"\n");
 						z = 16 + Rnd.Next (2) * 48;
@@ -258,7 +260,6 @@ check:
 			enemy += Rnd.Next (3);
 			if (enemy >= prngRange)
 				{
-				/*SW.Write (rat);*/
 				MapSupport.AddEntity (SW, rat2);
 				goto finish;
 				}
@@ -290,7 +291,7 @@ check:
 			"monster_barnacle",
 			"monster_alien_grunt",
 			"monster_alien_slave",
-			"monster_miniturret",
+			"",	// Ручная подстановка
 			"monster_zombie"
 			};
 		}

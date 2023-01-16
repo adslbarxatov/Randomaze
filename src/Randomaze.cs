@@ -20,6 +20,10 @@ namespace RD_AAOW
 			Application.EnableVisualStyles ();
 			Application.SetCompatibleTextRenderingDefault (false);
 
+			// Проверка запуска единственной копии
+			if (!RDGenerics.IsThisInstanceUnique ())
+				return -3;
+
 			// Язык интерфейса и контроль XPR
 			if (!Localization.IsXPRClassAcceptable)
 				return -1;
@@ -30,6 +34,9 @@ namespace RD_AAOW
 			RDGenerics.ShowAbout (true);
 
 			// Запуск
+			if (Localization.CurrentLanguage != SupportedLanguages.en_us)
+				Localization.CurrentLanguage = SupportedLanguages.en_us;    // Защита от других языков
+
 			Application.Run (new RandomazeForm (args));
 			return 0;
 			}

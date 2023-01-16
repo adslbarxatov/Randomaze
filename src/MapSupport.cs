@@ -98,12 +98,47 @@ namespace RD_AAOW
 		private static uint entitiesQuantity = 0;
 
 		/// <summary>
+		/// Метод сбрасывает счётчик сущностей
+		/// </summary>
+		public static void ResetEntitiesCounter ()
+			{
+			entitiesQuantity = 0;
+			environmentAdded = false;
+			}
+
+		/// <summary>
 		/// Метод добавляет одну сущность в счётчик
 		/// </summary>
+		/// <param name="ClassName">Название класса сущности</param>
+		/// <param name="SW">Дескриптор записи в файл</param>
 		public static void AddEntity (StreamWriter SW, string ClassName)
 			{
+			AddEntity (SW, ClassName, true);
+			}
+
+		/// <summary>
+		/// Метод добавляет одну сущность в счётчик
+		/// </summary>
+		/// <param name="ClassName">Название класса сущности</param>
+		/// <param name="SW">Дескриптор записи в файл</param>
+		/// <param name="Count">Флаг указывает на необходимость нарастить счётчик сущностей
+		/// при создании этого экземпляра</param>
+		public static void AddEntity (StreamWriter SW, string ClassName, bool Count)
+			{
 			SW.Write ("\"classname\" \"" + ClassName + "\"\n");
-			entitiesQuantity++;
+			if (Count)
+				entitiesQuantity++;
+			}
+
+		/// <summary>
+		/// Возвращает true, если максимально допустимое число сущностей было превышено
+		/// </summary>
+		public static bool IsEntitiesLimitExceeded
+			{
+			get
+				{
+				return (entitiesQuantity > 1024);
+				}
 			}
 
 		/// <summary>
@@ -218,13 +253,11 @@ namespace RD_AAOW
 
 			// Запись
 			SW.Write ("{\n");
-			/*SW.Write ("\"classname\" \"game_end\"\n");*/
 			AddEntity (SW, "game_end");
 			SW.Write ("\"targetname\" \"DevEnd02\"\n");
 			SW.Write ("\"origin\" \"" + x1 + " " + y1 + " " + z3 + "\"\n");
 
 			SW.Write ("}\n{\n");
-			/*SW.Write ("\"classname\" \"player_loadsaved\"\n");*/
 			AddEntity (SW, "player_loadsaved");
 			SW.Write ("\"targetname\" \"DevEnd01\"\n");
 			SW.Write ("\"holdtime\" \"6\"\n");
@@ -237,7 +270,6 @@ namespace RD_AAOW
 			SW.Write ("\"origin\" \"" + x1 + " " + y2 + " " + z3 + "\"\n");
 
 			SW.Write ("}\n{\n");
-			/*SW.Write ("\"classname\" \"multi_manager\"\n");*/
 			AddEntity (SW, "multi_manager");
 			SW.Write ("\"targetname\" \"DevM\"\n");
 			SW.Write ("\"DevEnd01\" \"0\"\n");
@@ -245,7 +277,6 @@ namespace RD_AAOW
 			SW.Write ("\"origin\" \"" + x2 + " " + y1 + " " + z3 + "\"\n");
 
 			SW.Write ("}\n{\n");
-			/*SW.Write ("\"classname\" \"trigger_once\"\n");*/
 			AddEntity (SW, "trigger_once");
 			SW.Write ("\"target\" \"DevM\"\n");
 
@@ -279,13 +310,11 @@ namespace RD_AAOW
 
 			// Запись
 			SW.Write ("{\n");
-			/*SW.Write ("\"classname\" \"info_landmark\"\n");*/
 			AddEntity (SW, "info_landmark");
 			SW.Write ("\"targetname\" \"" + mapName + "m\"\n");
 			SW.Write ("\"origin\" \"" + p.X.ToString () + " " + p.Y.ToString () + " 40\"\n");
 
 			SW.Write ("}\n{\n");
-			/*SW.Write ("\"classname\" \"trigger_changelevel\"\n");*/
 			AddEntity (SW, "trigger_changelevel");
 			SW.Write ("\"map\" \"" + mapName + "\"\n");
 			SW.Write ("\"landmark\" \"" + mapName + "m\"\n");
@@ -299,7 +328,6 @@ namespace RD_AAOW
 				BlockTypes.Default);
 
 			SW.Write ("}\n{\n");
-			/*SW.Write ("\"classname\" \"trigger_autosave\"\n");*/
 			AddEntity (SW, "trigger_autosave");
 
 			WriteBlock (SW, (p.X - 32).ToString (), (p.Y - 32).ToString (), "12",
@@ -320,7 +348,6 @@ namespace RD_AAOW
 
 			// Запись
 			SW.Write ("{\n");
-			/*SW.Write ("\"classname\" \"env_sprite\"\n");*/
 			AddEntity (SW, "env_sprite");
 			SW.Write ("\"spawnflags\" \"1\"\n");
 			SW.Write ("\"angles\" \"0 0 0\"\n");
@@ -357,13 +384,11 @@ namespace RD_AAOW
 			if (MapNumber == 1)
 				{
 				SW.Write ("{\n");
-				/*SW.Write ("\"classname\" \"info_player_start\"\n");*/
 				AddEntity (SW, "info_player_start");
 				SW.Write ("\"angles\" \"0 0 0\"\n");
 				SW.Write ("\"origin\" \"" + xs + " " + ys + " 40\"\n");
 				SW.Write ("}\n{\n");
 
-				/*SW.Write ("\"classname\" \"item_suit\"\n");*/
 				AddEntity (SW, "item_suit");
 				SW.Write ("\"spawnflags\" \"1\"\n");
 				SW.Write ("\"angles\" \"0 0 0\"\n");
@@ -371,37 +396,30 @@ namespace RD_AAOW
 				SW.Write ("\"origin\" \"" + xs + " " + ys + " 32\"\n");
 				SW.Write ("}\n{\n");
 
-				/*SW.Write ("\"classname\" \"weapon_9mmAR\"\n");*/
 				AddEntity (SW, "weapon_9mmAR");
 				SW.Write ("\"origin\" \"" + xs + " " + ys + " 36\"\n");
 				SW.Write ("}\n{\n");
 
-				/*SW.Write ("\"classname\" \"weapon_shotgun\"\n");*/
 				AddEntity (SW, "weapon_shotgun");
 				SW.Write ("\"origin\" \"" + xs + " " + ys + " 40\"\n");
 				SW.Write ("}\n{\n");
 
-				/*SW.Write ("\"classname\" \"weapon_handgrenade\"\n");*/
 				AddEntity (SW, "weapon_handgrenade");
 				SW.Write ("\"origin\" \"" + xs + " " + ys + " 44\"\n");
 				SW.Write ("}\n{\n");
 
-				/*SW.Write ("\"classname\" \"weapon_handgrenade\"\n");*/
 				AddEntity (SW, "weapon_handgrenade");
 				SW.Write ("\"origin\" \"" + xs + " " + ys + " 48\"\n");
 				SW.Write ("}\n{\n");
 
-				/*SW.Write ("\"classname\" \"ammo_9mmbox\"\n");*/
 				AddEntity (SW, "ammo_9mmbox");
 				SW.Write ("\"origin\" \"" + xs + " " + ys + " 52\"\n");
 				SW.Write ("}\n{\n");
 
-				/*SW.Write ("\"classname\" \"ammo_buckshot\"\n");*/
 				AddEntity (SW, "ammo_buckshot");
 				SW.Write ("\"origin\" \"" + xs + " " + ys + " 56\"\n");
 				SW.Write ("}\n{\n");
 
-				/*SW.Write ("\"classname\" \"game_player_set_health\"\n");*/
 				AddEntity (SW, "game_player_set_health");
 				SW.Write ("\"targetname\" \"Preset\"\n");
 				SW.Write ("\"dmg\" \"200\"\n");
@@ -413,13 +431,11 @@ namespace RD_AAOW
 			else
 				{
 				SW.Write ("{\n");
-				/*SW.Write ("\"classname\" \"info_landmark\"\n");*/
 				AddEntity (SW, "info_landmark");
 				SW.Write ("\"targetname\" \"" + BuildMapName (MapNumber) + "m\"\n");
 				SW.Write ("\"origin\" \"" + xs + " " + ys + " 40\"\n");
 
 				SW.Write ("}\n{\n");
-				/*SW.Write ("\"classname\" \"trigger_changelevel\"\n");*/
 				AddEntity (SW, "trigger_changelevel");
 				SW.Write ("\"map\" \"" + BuildMapName (MapNumber - 1) + "\"\n");
 				SW.Write ("\"landmark\" \"" + BuildMapName (MapNumber) + "m\"\n");
@@ -434,7 +450,6 @@ namespace RD_AAOW
 
 			// Гравитационный триггер
 			SW.Write ("{\n");
-			/*SW.Write ("\"classname\" \"trigger_gravity\"\n");*/
 			AddEntity (SW, "trigger_gravity");
 			SW.Write ("\"gravity\" \"" + (GravityLevel * 80).ToString () + "\"\n"); // Новая возможность движка
 
@@ -542,7 +557,6 @@ namespace RD_AAOW
 
 			// Запись
 			SW.Write ("{\n");
-			/*SW.Write ("\"classname\" \"trigger_sound\"\n");*/
 			AddEntity (SW, "trigger_sound");
 			SW.Write ("\"roomtype\" \"" + RoomTypeLeft.ToString () + "\"\n");
 			SW.Write ("\"roomtype2\" \"" + RoomTypeRight.ToString () + "\"\n");
@@ -552,7 +566,10 @@ namespace RD_AAOW
 			if (ForWindow)
 				{
 				z1 = "16";
-				z2 = "112";
+				/*if (TwoFloors)*/
+				z2 = (WallHeight - 16).ToString ();
+				/*else
+					z2 = "112";*/
 
 				if (WallsSupport.IsWallVertical (RelativePosition))
 					{
@@ -601,7 +618,6 @@ namespace RD_AAOW
 
 			// Запись
 			SW.Write ("{\n");
-			/*SW.Write ("\"classname\" \"func_button\"\n");*/
 			AddEntity (SW, "func_button");
 			SW.Write ("\"target\" \"Gate" + BuildMapName (MapNumber) + "\"\n");
 			SW.Write ("\"spawnflags\" \"1\"\n");
@@ -618,7 +634,6 @@ namespace RD_AAOW
 				BlockTypes.Button);
 
 			SW.Write ("}\n{\n");
-			/*SW.Write ("\"classname\" \"trigger_autosave\"\n");*/
 			AddEntity (SW, "trigger_autosave");
 
 			WriteBlock (SW, (p.X - 32).ToString (), (p.Y - 32).ToString (), "12",
@@ -690,7 +705,6 @@ namespace RD_AAOW
 			string tex = "CRATE01"; // Взрывчатка по умолчанию
 
 			SW.Write ("{\n");
-			/*SW.Write ("\"classname\" \"func_pushable\"\n");*/
 			AddEntity (SW, "func_pushable");
 			SW.Write ("\"health\" \"20\"\n");
 			SW.Write ("\"material\" \"1\"\n");
@@ -792,7 +806,6 @@ namespace RD_AAOW
 
 			// Запись
 			SW.Write ("{\n");
-			/*SW.Write ("\"classname\" \"ambient_generic\"\n");*/
 			AddEntity (SW, "ambient_generic");
 			SW.Write ("\"spawnflags\" \"2\"\n");
 			SW.Write ("\"message\" \"ambience/" + Sound + ".wav\"\n");
@@ -964,8 +977,7 @@ namespace RD_AAOW
 			if (!AddingTheBulb && IsSkyTexture (RoofTexture))
 				{
 				SW.Write ("{\n");
-				/*SW.Write ("\"classname\" \"light_environment\"\n");*/
-				AddEntity (SW, "light_environment");
+				AddEntity (SW, "light_environment", false);
 				SW.Write ("\"_fade\" \"1.0\"\n");
 
 				SW.Write ("\"angles\" \"" + sunAngles[skyIndex] + "\"\n");
@@ -989,8 +1001,7 @@ namespace RD_AAOW
 			if (!AddingTheBulb)
 				{
 				SW.Write ("{\n");
-				/*SW.Write ("\"classname\" \"light\"\n");*/
-				AddEntity (SW, "light");
+				AddEntity (SW, "light", false);
 				SW.Write (SubFloor ? subLightColor : lightColor);
 				SW.Write ("\"_fade\" \"1.0\"\n");
 				SW.Write ("\"origin\" \"" + p.X.ToString () + " " + p.Y.ToString () + " " +
@@ -1117,7 +1128,6 @@ namespace RD_AAOW
 			// такая площадка может появиться над дверью в стене, только если она окружена тремя стенами
 			if (!SurroundingWalls.Contains (CPResults.Left))
 				{
-				/*SW.Write ("{\n\"classname\" \"func_ladder\"\n");*/
 				SW.Write ("{\n");
 				AddEntity (SW, "func_ladder");
 				WriteBlock (SW, (p.X - 60).ToString (), (p.Y - 56).ToString (), (DefaultWallHeight - 32).ToString (),
@@ -1128,7 +1138,6 @@ namespace RD_AAOW
 
 			if (!SurroundingWalls.Contains (CPResults.Right))
 				{
-				/*SW.Write ("{\n\"classname\" \"func_ladder\"\n");*/
 				SW.Write ("{\n");
 				AddEntity (SW, "func_ladder");
 				WriteBlock (SW, (p.X + 56).ToString (), (p.Y - 56).ToString (), (DefaultWallHeight - 32).ToString (),
@@ -1139,7 +1148,6 @@ namespace RD_AAOW
 
 			if (!SurroundingWalls.Contains (CPResults.Down))
 				{
-				/*SW.Write ("{\n\"classname\" \"func_ladder\"\n");*/
 				SW.Write ("{\n");
 				AddEntity (SW, "func_ladder");
 				WriteBlock (SW, (p.X - 56).ToString (), (p.Y - 60).ToString (), (DefaultWallHeight - 32).ToString (),
@@ -1150,7 +1158,6 @@ namespace RD_AAOW
 
 			if (!SurroundingWalls.Contains (CPResults.Up))
 				{
-				/*SW.Write ("{\n\"classname\" \"func_ladder\"\n");*/
 				SW.Write ("{\n");
 				AddEntity (SW, "func_ladder");
 				WriteBlock (SW, (p.X - 56).ToString (), (p.Y + 56).ToString (), (DefaultWallHeight - 32).ToString (),
