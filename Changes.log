@@ -1,5 +1,8 @@
 Randomaze changes log
 
+ToDo:
+- Achievements counter for the map
+
 Version 4.6:
 • If turret enemy is enabled, app will randomly select the entity between turret, miniturret and
   sentry for its location;
