@@ -609,10 +609,10 @@ namespace RD_AAOW
 		/// <param name="SW">Дескриптор файла карты</param>
 		/// <param name="RelativePosition">Относительная позиция точки выхода</param>
 		/// <param name="MapNumber">Номер текущей карты, используемый для создания уникального имени кнопки</param>
-		/// <param name="Texture">Текстура секции</param>
-		public static void WriteMapButton (StreamWriter SW, Point RelativePosition, string Texture,
+		public static void WriteMapButton (StreamWriter SW, Point RelativePosition,/* string Texture,*/
 			uint MapNumber)
 			{
+			/*/// <param name="Texture">Текстура секции</param>*/
 			// Расчёт параметров
 			Point p = EvaluateAbsolutePosition (RelativePosition);
 
@@ -629,7 +629,7 @@ namespace RD_AAOW
 			WriteBlock (SW, (p.X - 8).ToString (), (p.Y - 8).ToString (), "0",
 				(p.X + 8).ToString (), (p.Y + 8).ToString (), "40",
 
-				new string[] { "+A_SWITCH01", Texture, Texture, Texture, Texture, Texture },
+				new string[] { "+A_SWITCH01", "Pipe04", "Pipe04", "Pipe04", "Pipe04", "Pipe04" },
 
 				BlockTypes.Button);
 

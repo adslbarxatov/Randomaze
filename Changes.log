@@ -1,7 +1,11 @@
 Randomaze changes log
 
-ToDo:
-- Achievements counter for the map
+Version 4.7:
+• Maps now support achievements. If you eliminate all enemies (except for rats, roaches and tripmines)
+  you will get full armor and health levels. Also there is an achievement for squashing all rats and
+  roaches. But it is difficult to get. So, it does nothing for now;
+• Some new textures have been applied;
+• The video presentation has been updated
 
 Version 4.6:
 • If turret enemy is enabled, app will randomly select the entity between turret, miniturret and
