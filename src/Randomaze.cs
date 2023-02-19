@@ -25,7 +25,7 @@ namespace RD_AAOW
 				return -3;
 
 			// Язык интерфейса и контроль XPR
-			if (!Localization.IsXPRClassAcceptable)
+			if (!Localization.IsXPUNClassAcceptable)
 				return -1;
 
 			// Отображение справки и запроса на принятие Политики

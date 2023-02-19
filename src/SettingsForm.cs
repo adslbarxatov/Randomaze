@@ -27,36 +27,34 @@ namespace RD_AAOW
 		private List<CheckBox> itemsFlags = new List<CheckBox> ();
 		private Color enabledColor = Color.FromArgb (0, 200, 0),
 			disabledColor = Color.FromArgb (200, 200, 200);
-		private SupportedLanguages al;
+		/*private SupportedLanguages al;*/
 
 		/// <summary>
 		/// Конструктор. Запускает форму
 		/// </summary>
 		/// <param name="OldSettings">Параметры, полученные из файла настроек</param>
-		/// <param name="InterfaceLanguage">Язык интерфейса</param>
-		public SettingsForm (ESRMSettings OldSettings, SupportedLanguages InterfaceLanguage)
+		public SettingsForm (ESRMSettings OldSettings/*, SupportedLanguages InterfaceLanguage*/)
 			{
 			// Инициализация и локализация формы
 			InitializeComponent ();
 
-			al = InterfaceLanguage;
-			Localization.SetControlsText (this, al);
+			Localization.SetControlsText (this);
 
-			GenericTab.Text = Localization.GetControlText (this.Name, GenericTab.Name, al);
-			Localization.SetControlsText (GenericTab, al);
+			GenericTab.Text = Localization.GetControlText (this.Name, GenericTab.Name);
+			Localization.SetControlsText (GenericTab);
 
-			EnemiesTab.Text = Localization.GetControlText (this.Name, EnemiesTab.Name, al);
-			Localization.SetControlsText (EnemiesTab, al);
+			EnemiesTab.Text = Localization.GetControlText (this.Name, EnemiesTab.Name);
+			Localization.SetControlsText (EnemiesTab);
 
-			ItemsTab.Text = Localization.GetControlText (this.Name, ItemsTab.Name, al);
-			Localization.SetControlsText (ItemsTab, al);
+			ItemsTab.Text = Localization.GetControlText (this.Name, ItemsTab.Name);
+			Localization.SetControlsText (ItemsTab);
 
 			MazeSizeFlag.Text = EnemiesDensityFlag.Text = ItemsDensityFlag.Text =
 				CratesDensityFlag.Text = WallsDensityFlag.Text = LightingFlag.Text =
-				GravityFlag.Text = RandomizeFloorsFlag.Text = Localization.GetText ("SettingsForm_Random", al);
+				GravityFlag.Text = RandomizeFloorsFlag.Text = Localization.GetText ("SettingsForm_Random");
 
 			this.TopMost = true;
-			this.Text = ProgramDescription.AssemblyTitle + ": " + Localization.GetText ("SettingsForm_T", al);
+			this.Text = ProgramDescription.AssemblyTitle + ": " + Localization.GetText ("SettingsForm_T");
 			this.CancelButton = AbortButton;
 			this.AcceptButton = ApplyButton;
 
