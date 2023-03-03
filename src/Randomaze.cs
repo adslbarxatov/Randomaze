@@ -24,7 +24,7 @@ namespace RD_AAOW
 			if (!RDGenerics.IsThisInstanceUnique ())
 				return -3;
 
-			// Язык интерфейса и контроль XPR
+			// Язык интерфейса и контроль XPUN
 			if (!Localization.IsXPUNClassAcceptable)
 				return -1;
 

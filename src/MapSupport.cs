@@ -440,8 +440,8 @@ namespace RD_AAOW
 				SW.Write ("\"map\" \"" + BuildMapName (MapNumber - 1) + "\"\n");
 				SW.Write ("\"landmark\" \"" + BuildMapName (MapNumber) + "m\"\n");
 
-				WriteBlock (SW, (p.X - 8).ToString (), (p.Y - 8).ToString (), (wallHeight + 0).ToString (),
-					(p.X + 8).ToString (), (p.Y + 8).ToString (), (wallHeight + 1).ToString (),
+				WriteBlock (SW, (p.X - 8).ToString (), (p.Y - 8).ToString (), "-2",
+					(p.X + 8).ToString (), (p.Y + 8).ToString (), "-1",
 					new string[] { TriggerTexture, TriggerTexture, TriggerTexture, TriggerTexture,
 						TriggerTexture, TriggerTexture }, BlockTypes.Default);
 
@@ -566,10 +566,7 @@ namespace RD_AAOW
 			if (ForWindow)
 				{
 				z1 = "16";
-				/*if (TwoFloors)*/
 				z2 = (WallHeight - 16).ToString ();
-				/*else
-					z2 = "112";*/
 
 				if (WallsSupport.IsWallVertical (RelativePosition))
 					{
@@ -609,10 +606,8 @@ namespace RD_AAOW
 		/// <param name="SW">Дескриптор файла карты</param>
 		/// <param name="RelativePosition">Относительная позиция точки выхода</param>
 		/// <param name="MapNumber">Номер текущей карты, используемый для создания уникального имени кнопки</param>
-		public static void WriteMapButton (StreamWriter SW, Point RelativePosition,/* string Texture,*/
-			uint MapNumber)
+		public static void WriteMapButton (StreamWriter SW, Point RelativePosition, uint MapNumber)
 			{
-			/*/// <param name="Texture">Текстура секции</param>*/
 			// Расчёт параметров
 			Point p = EvaluateAbsolutePosition (RelativePosition);
 
@@ -792,10 +787,14 @@ namespace RD_AAOW
 			switch (Ambient)
 				{
 				case AmbientTypes.Echo:
-					h = 2;
+					h = 1;
 					break;
 
 				case AmbientTypes.Sky:
+					h = 3;
+					break;
+
+				case AmbientTypes.Target:
 					h = 4;
 					break;
 
@@ -807,7 +806,17 @@ namespace RD_AAOW
 			// Запись
 			SW.Write ("{\n");
 			AddEntity (SW, "ambient_generic");
-			SW.Write ("\"spawnflags\" \"2\"\n");
+
+			if (Ambient == AmbientTypes.Target)
+				{
+				SW.Write ("\"spawnflags\" \"49\"\n");
+				SW.Write ("\"targetname\" \"" + Sound + "\"\n");
+				}
+			else
+				{
+				SW.Write ("\"spawnflags\" \"2\"\n");
+				}
+
 			SW.Write ("\"message\" \"ambience/" + Sound + ".wav\"\n");
 			SW.Write ("\"health\" \"" + h.ToString () + "\"\n");
 			SW.Write ("\"pitch\" \"100\"\n");
@@ -834,7 +843,12 @@ namespace RD_AAOW
 			/// <summary>
 			/// Отключён
 			/// </summary>
-			None
+			None,
+
+			/// <summary>
+			/// Звук, запускаемый событием
+			/// </summary>
+			Target
 			}
 
 		/// <summary>

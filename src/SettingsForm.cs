@@ -27,13 +27,12 @@ namespace RD_AAOW
 		private List<CheckBox> itemsFlags = new List<CheckBox> ();
 		private Color enabledColor = Color.FromArgb (0, 200, 0),
 			disabledColor = Color.FromArgb (200, 200, 200);
-		/*private SupportedLanguages al;*/
 
 		/// <summary>
 		/// Конструктор. Запускает форму
 		/// </summary>
 		/// <param name="OldSettings">Параметры, полученные из файла настроек</param>
-		public SettingsForm (ESRMSettings OldSettings/*, SupportedLanguages InterfaceLanguage*/)
+		public SettingsForm (ESRMSettings OldSettings)
 			{
 			// Инициализация и локализация формы
 			InitializeComponent ();
@@ -92,6 +91,7 @@ namespace RD_AAOW
 			GravityFlag_CheckedChanged (null, null);
 
 			ButtonModeFlag.Checked = settings.ButtonMode;
+			MonsterMakerFlag.Checked = settings.MonsterMakers;
 
 			for (int i = 0; i < EnemiesSupport.EnemiesPermissionsKeys.Length; i++)
 				enemiesFlags.Add ((CheckBox)this.Controls.Find ("EnemyFlag" + (i + 1).ToString ("D2"), true)[0]);
@@ -189,6 +189,7 @@ namespace RD_AAOW
 			settings.RandomGravityCoefficient = GravityFlag.Checked;
 
 			settings.ButtonMode = ButtonModeFlag.Checked;
+			settings.MonsterMakers = MonsterMakerFlag.Checked;
 
 			settings.EnemiesPermissionLine = "";
 			for (int i = 0; i < EnemiesSupport.EnemiesPermissionsKeys.Length; i++)

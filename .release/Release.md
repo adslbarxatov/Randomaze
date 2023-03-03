@@ -1,5 +1,7 @@
-_Changes for v 4.7.7_:
-- Updated the HypeHelp mechanics;
-- Maps now support achievements. If you eliminate all enemies (except for rats, roaches and tripmines) you will get full armor and health levels. Also there is an achievement for squashing all rats and roaches. But it is difficult to get. So, it does nothing for now;
-- Some new textures have been applied;
-- The video presentation has been updated
+_Changes for v 4.8.3_:
+- Fixed an achievements miscounting when map size auto-adjustment applies;
+- Achievements counter now works with monster makers (only for “original” enemies);
+- Fixed rats and cockroaches miscounting;
+- ***Monstermakers*** have been implemented. When this option is enabled, some monsters will be replaced with monstermakers (using the same permission settings for their “children”). Each monstermaker can be triggered only once by the death of one of existing monsters. They can be triggered even by smashing rats and cockroaches (so, it can be unexpected some time). Every trigger event will be accompanied with the teleport sound;
+- Loudness of ambient sounds has been rebalanced;
+- Some other fixes have been applied

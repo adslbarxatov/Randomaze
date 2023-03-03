@@ -154,6 +154,11 @@
 		/// Ограничение коэффициента гравитации
 		/// </summary>
 		public uint MaximumGravityCoefficient;
+
+		/// <summary>
+		/// Флаг разрешения монстр-мейкеров
+		/// </summary>
+		public bool MonsterMakers;
 		}
 
 	/// <summary>

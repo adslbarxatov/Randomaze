@@ -1,4 +1,4 @@
-# Randomaze v 4.7.7
+# Randomaze v 4.8.3
 
 ES: Randomaze – The maps generator
 
@@ -50,6 +50,7 @@ The tool requires next compilation tools, directories and files for work:
 - ***Enemies permissions line***. Consists of flags of monsters that will be allowed on maps.
 - ***Items permissions line***. Consists of flags of weapons and items that will be allowed on maps (both on floors and in crates).
 - ***Button mode flag***. Adds the button to the map. This button must be found and pressed to open the exit gate.
+- ***Allow monster makers flag***. Allows replacement of some monsters with monster makers on the map. Their triggering and spreading will also be random.
 - ***Two floors flag***. Adds the second floor to the map with some balconies and enemies. Also makes barnacles available.
 - ***Allow items on the second floor***. Permit the generation of items for balconies.
 - ***Allow explosive crates*** and ***Allow crates with items***. Enable or disable corresponding types of crates.
