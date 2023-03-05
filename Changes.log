@@ -1,5 +1,10 @@
 Randomaze: changes log
 
+Version 4.9:
+• Monster makers now properly emit sounds and show teleportation sprites;
+• Fixes some achievements accounting issues;
+• Fixed some textures and geometry issues
+
 Version 4.8.3:
 • Fixed an achievements miscounting when map size auto-adjustment applies;
 • Achievements counter now works with monster makers (only for “original” enemies);

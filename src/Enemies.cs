@@ -167,6 +167,9 @@ retry:
 					z = 0;  // Только на полу
 					if (Permissions.Contains (EnemiesPermissionsKeys[10]))
 						{
+						if (mm)
+							goto check; // Недопустим для монстрмейкера
+
 						switch (Rnd.Next (3))
 							{
 							case 0:
@@ -181,10 +184,10 @@ retry:
 								MapSupport.AddEntity (SW, "monster_sentry");
 								break;
 							}
-						//realEnemiesQuantity++;
 
 						SW.Write ("\"spawnflags\" \"32\"\n");
 						SW.Write ("\"orientation\" \"0\"\n");
+						// Не учитывается ачивкой
 						}
 					else
 						{
@@ -239,6 +242,9 @@ retry:
 				case 21:
 					if (MapSupport.TwoFloors && Permissions.Contains (EnemiesPermissionsKeys[7]) && !UnderSky)
 						{
+						if (mm)
+							goto check; // Недопустим для монстрмейкера
+
 						MapSupport.AddEntity (SW, enemies[7]);
 						countEnemy = true;
 
@@ -257,8 +263,10 @@ retry:
 						FurnitureTypes.Computer);
 					if ((rWalls.Count > 0) && Permissions.Contains (EnemiesPermissionsKeys[6]))
 						{
+						if (mm)
+							goto check; // Недопустим для монстрмейкера
+
 						MapSupport.AddEntity (SW, enemies[6]);
-						//realEnemiesQuantity++;
 
 						SW.Write ("\"spawnflags\" \"1\"\n");
 						z = 16 + Rnd.Next (2) * 48;
@@ -287,6 +295,8 @@ retry:
 								p.Y += off;
 								break;
 							}
+
+						// Не учитывается ачивкой
 						}
 					else
 						{
@@ -330,8 +340,8 @@ finishM:
 			// Финализация монстр-мейкера (имя было сброшено методом записи)
 			if (mm && string.IsNullOrWhiteSpace (nextMMName))
 				{
-				if (availableMMNumber == 1)
-					MapSupport.WriteMapSound (SW, RelativePosition, "Teleport1", MapSupport.AmbientTypes.Target);
+				/*if (availableMMNumber == 1)
+					MapSupport.WriteMapSound (SW, RelativePosition, "Teleport1", MapSupport.AmbientTypes.Target);*/
 
 				awaitingNextMM = false;
 				}
@@ -362,23 +372,25 @@ check:
 		// Метод обрабоатывает вилку между монстром и монст-мейкером
 		private static void InitMonster (StreamWriter SW, bool AsMonsterMaker, string MonsterType)
 			{
-			// Как монстрмейкер
-			if (AsMonsterMaker)
+			// Как реальный NPC
+			if (!AsMonsterMaker)
 				{
-				MapSupport.AddEntity (SW, "monstermaker");
-				SW.Write ("\"targetname\" \"" + nextMMName + "\"\n");
-				SW.Write ("\"monstercount\" \"1\"\n");
-				SW.Write ("\"delay\" \"-1\"\n");
-				SW.Write ("\"m_imaxlivechildren\" \"1\"\n");
-				SW.Write ("\"monstertype\" \"" + MonsterType + "\"\n");
-				SW.Write ("\"target\" \"Teleport1\"\n");
-
-				nextMMName = "";    // Имя использовано
+				MapSupport.AddEntity (SW, MonsterType);
 				return;
 				}
 
-			// Как реальный NPC
-			MapSupport.AddEntity (SW, MonsterType);
+			// Как монстрмейкер
+			MapSupport.AddEntity (SW, "monstermaker");
+			SW.Write ("\"targetname\" \"" + nextMMName + "\"\n");
+			SW.Write ("\"monstercount\" \"1\"\n");
+			SW.Write ("\"delay\" \"-1\"\n");
+			SW.Write ("\"m_imaxlivechildren\" \"1\"\n");
+			SW.Write ("\"monstertype\" \"" + MonsterType + "\"\n");
+			/*SW.Write ("\"target\" \"Teleport1\"\n");*/
+			SW.Write ("\"teleport_sound\" \"ambience/teleport1.wav\"\n");
+			SW.Write ("\"teleport_sprite\" \"sprites/portal1.spr\"\n");
+
+			nextMMName = "";    // Имя использовано
 			}
 
 		/// <summary>

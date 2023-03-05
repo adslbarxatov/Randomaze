@@ -223,7 +223,7 @@ namespace RD_AAOW
 						rDelta = 0;
 						}
 
-					textures = new string[] { Texture, Texture, Texture, Texture,
+					textures = new string[] { MapSupport.SkyTexture, Texture, Texture, Texture,
 						lTex, lTex, rTex, rTex };
 					break;
 
@@ -251,7 +251,7 @@ namespace RD_AAOW
 						z1 = "120";
 					z2 = (MapSupport.WallHeight + 16).ToString ();
 
-					textures = new string[] { Texture, "Metal08", Texture, Texture,
+					textures = new string[] { MapSupport.SkyTexture, "Metal08", Texture, Texture,
 						Texture, Texture, Texture, Texture };
 
 					if (Type == BarrierTypes.WindowFrameTop)
