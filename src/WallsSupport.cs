@@ -71,12 +71,11 @@ namespace RD_AAOW
 			}
 
 		/// <summary>
-		/// Метод записывает стекло окна на карту
+		/// Метод записывает стекло окна и звуковой эффект перехода между секциями на карту
 		/// </summary>
 		/// <param name="SW">Дескриптор файла карты</param>
 		/// <param name="RelativePosition">Относительная позиция точки создания</param>
-		/// <param name="Sections">Инициализированные секции карты</param>
-		public static void WriteMapWindow (StreamWriter SW, Point RelativePosition, Section[] Sections)
+		public static void WriteMapWindow (StreamWriter SW, Point RelativePosition)
 			{
 			// Запись стекла
 			SW.Write ("{\n");
@@ -89,7 +88,16 @@ namespace RD_AAOW
 			WriteMapBarrier (SW, RelativePosition, BarrierTypes.Window, null);
 
 			SW.Write ("}\n");
+			}
 
+		/// <summary>
+		/// Метод записывает звуковой эффект перехода между секциями на карту
+		/// </summary>
+		/// <param name="SW">Дескриптор файла карты</param>
+		/// <param name="RelativePosition">Относительная позиция точки создания</param>
+		/// <param name="Sections">Инициализированные секции карты</param>
+		public static void WriteMapTransitSFX (StreamWriter SW, Point RelativePosition, Section[] Sections)
+			{
 			// Определение необходимости установки звукового триггера
 			bool leftSideIsUnderSky, rightSideIsUnderSky;
 			if (IsWallVertical (RelativePosition))

@@ -21,7 +21,7 @@ namespace RD_AAOW
 			Application.SetCompatibleTextRenderingDefault (false);
 
 			// Проверка запуска единственной копии
-			if (!RDGenerics.IsThisInstanceUnique ())
+			if (!RDGenerics.IsAppInstanceUnique (false))
 				return -3;
 
 			// Язык интерфейса и контроль XPUN

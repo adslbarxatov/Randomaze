@@ -339,12 +339,7 @@ finishM:
 
 			// Финализация монстр-мейкера (имя было сброшено методом записи)
 			if (mm && string.IsNullOrWhiteSpace (nextMMName))
-				{
-				/*if (availableMMNumber == 1)
-					MapSupport.WriteMapSound (SW, RelativePosition, "Teleport1", MapSupport.AmbientTypes.Target);*/
-
 				awaitingNextMM = false;
-				}
 
 			return;
 
@@ -386,7 +381,6 @@ check:
 			SW.Write ("\"delay\" \"-1\"\n");
 			SW.Write ("\"m_imaxlivechildren\" \"1\"\n");
 			SW.Write ("\"monstertype\" \"" + MonsterType + "\"\n");
-			/*SW.Write ("\"target\" \"Teleport1\"\n");*/
 			SW.Write ("\"teleport_sound\" \"ambience/teleport1.wav\"\n");
 			SW.Write ("\"teleport_sprite\" \"sprites/portal1.spr\"\n");
 
@@ -399,10 +393,15 @@ check:
 		/// <param name="SW">Дескриптор файла карты</param>
 		/// <param name="RelativePosition">Относительная позиция точки создания</param>
 		/// <param name="MapNumber">Номер карты, позволяющий выполнять наполнение с прогрессом</param>
-		public static void WriteMapAchievement (StreamWriter SW, Point RelativePosition, uint MapNumber)
+		/// <param name="Rnd">ГПСЧ</param>
+		public static void WriteMapAchievement (StreamWriter SW, Point RelativePosition, Random Rnd,
+			uint MapNumber)
 			{
 			// Расчёт параметров
 			Point p = MapSupport.EvaluateAbsolutePosition (RelativePosition);
+			p.X += 16;
+			p.Y += 16;
+
 			string mn = MapSupport.BuildMapName (MapNumber);
 
 			if (realEnemiesQuantity > 0)
@@ -446,6 +445,18 @@ check:
 				SW.Write ("\"target\" \"Achi" + mn + "R2\"\n");
 				SW.Write ("\"health\" \"" + realRatsQuantity.ToString () + "\"\n");
 				SW.Write ("\"origin\" \"" + p.X.ToString () + " " + p.Y.ToString () + " 80\"\n");
+
+				SW.Write ("}\n{\n");
+				MapSupport.AddEntity (SW, "monstermaker");
+				SW.Write ("\"targetname\" \"Achi" + mn + "R2\"\n");
+				SW.Write ("\"monstercount\" \"1\"\n");
+				SW.Write ("\"delay\" \"-1\"\n");
+				SW.Write ("\"m_imaxlivechildren\" \"1\"\n");
+				SW.Write ("\"monstertype\" \"monster_barney\"\n");
+				SW.Write ("\"teleport_sound\" \"ambience/teleport1.wav\"\n");
+				SW.Write ("\"teleport_sprite\" \"sprites/portal1.spr\"\n");
+				SW.Write ("\"angles\" \"0 " + Rnd.Next (360).ToString () + " 0\"\n");
+				SW.Write ("\"origin\" \"" + p.X.ToString () + " " + p.Y.ToString () + " 0\"\n");
 
 				SW.Write ("}\n{\n");
 				MapSupport.AddEntity (SW, "env_message");
