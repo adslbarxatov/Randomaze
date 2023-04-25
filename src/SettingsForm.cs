@@ -38,6 +38,8 @@ namespace RD_AAOW
 			InitializeComponent ();
 
 			Localization.SetControlsText (this);
+			AbortButton.Text = Localization.GetDefaultText (LzDefaultTextValues.Button_Cancel);
+			ApplyButton.Text = Localization.GetDefaultText (LzDefaultTextValues.Button_OK);
 
 			GenericTab.Text = Localization.GetControlText (this.Name, GenericTab.Name);
 			Localization.SetControlsText (GenericTab);
