@@ -1,8 +1,7 @@
 Randomaze: changes log
 
-ToDo:
-- Fix missing SFX om maps where entrance or exit gates intersect sections edges;
-- Barney model?
+Version 4.10.4:
+• Fixed missing SFX om maps where entrance or exit gates intersect sections edges
 
 Version 4.10.2:
 • App about form has been upgraded;
