@@ -1,5 +1,10 @@
 Randomaze: changes log
 
+Version 4.11:
+• App now able to generate complex furniture (like door frames or benches);
+• Added new furniture types: door frames and crossed pipes;
+• App will not spawn ammo for disallowed weapons
+
 Version 4.10.4:
 • Fixed missing SFX om maps where entrance or exit gates intersect sections edges
 

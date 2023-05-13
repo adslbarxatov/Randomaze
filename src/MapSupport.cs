@@ -1073,25 +1073,28 @@ namespace RD_AAOW
 
 			// Расчёт координат
 			Furniture f = Furniture.GetFurniture (FurnitureType, placement, Rnd);
-			int[] coords = f.Coordinates;
-
-			// Введение смещения
-			coords[0] += p.X;
-			coords[3] += p.X;
-			coords[1] += p.Y;
-			coords[4] += p.Y;
-
-			// Сборка линии текстур
-			string[] tex = f.Textures;
-			for (int i = 0; i < tex.Length; i++)
+			for (uint b = 0; b < f.BlocksCount; b++)
 				{
-				if (string.IsNullOrWhiteSpace (tex[i]))
-					tex[i] = WallTexture;
-				}
+				int[] coords = f.GetCoordinates (b);
 
-			// Запись
-			WriteBlock (SW, coords[0].ToString (), coords[1].ToString (), coords[2].ToString (),
-				coords[3].ToString (), coords[4].ToString (), coords[5].ToString (), tex, BlockTypes.Door);
+				// Введение смещения
+				coords[0] += p.X;
+				coords[3] += p.X;
+				coords[1] += p.Y;
+				coords[4] += p.Y;
+
+				// Сборка линии текстур
+				string[] tex = f.GetTextures (b);
+				for (int i = 0; i < tex.Length; i++)
+					{
+					if (string.IsNullOrWhiteSpace (tex[i]))
+						tex[i] = WallTexture;
+					}
+
+				// Запись
+				WriteBlock (SW, coords[0].ToString (), coords[1].ToString (), coords[2].ToString (),
+					coords[3].ToString (), coords[4].ToString (), coords[5].ToString (), tex, BlockTypes.Door);
+				}
 			}
 
 		/// <summary>

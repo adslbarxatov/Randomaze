@@ -251,19 +251,30 @@ check:
 		public static bool IsCrateItemAllowed (string Permissions, int ItemIndex)
 			{
 			// Контроль
-			int idx = crateEquivalents.IndexOf (ItemIndex);
+			int idx = weaponEquivalents.IndexOf (ItemIndex);
 			if (idx < 0)
-				return true;
+				{
+				idx = ammoEquivalents.IndexOf (ItemIndex);
+				if (idx < 0)
+					return true;
+				}
 
 			return Permissions.Contains (ItemsPermissionsKeys[idx]);
 			}
 
 		// Набор сопоставлений для собираемых объектов при генерации из ящиков
-		private static List<int> crateEquivalents = new List<int> {
+		private static List<int> weaponEquivalents = new List<int> {
 			// Прямая генерация
 			2, 1, 17, 3, 19, 12, 10, 23, 22, 21, 
 			// Ящики
 			5, 8, 14, 18, 20, 24, 26
+			};
+
+		private static List<int> ammoEquivalents = new List<int> {
+			// Прямая генерация
+			-1, -1, -1, 4, -1, 13, 11, 16, -1, -1, 
+			// Ящики
+			6, 9, 15, -1, -1, -1, -1
 			};
 		}
 	}
