@@ -1,5 +1,11 @@
 Randomaze: changes log
 
+Version 4.12:
+• XPUN control conditions have been updated;
+• Door frames for two floors mode have been adjusted;
+• App will not add ladders for balconies on low gravity levels;
+• The button has been rebuilt due to the possibility of getting stuck on the map in the old version
+
 Version 4.11:
 • App now able to generate complex furniture (like door frames or benches);
 • Added new furniture types: door frames and crossed pipes;
