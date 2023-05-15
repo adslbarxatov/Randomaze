@@ -493,10 +493,10 @@ namespace RD_AAOW
 					texScale = "1 1";
 					break;
 
-				case BlockTypes.Button:
-					texOffsetX = texOffsetY = "16";
-					texScale = "0.5 0.5";
-					break;
+					/*case BlockTypes.Button:
+						texOffsetX = texOffsetY = "16";
+						texScale = "0.5 0.5";
+						break;*/
 				}
 
 			// Запись
@@ -534,7 +534,7 @@ namespace RD_AAOW
 			Default = 0,
 			Crate = 1,
 			Door = 2,
-			Button = 3
+			/*Button = 3*/
 			}
 
 		// Стандартная текстура триггера
@@ -604,9 +604,12 @@ namespace RD_AAOW
 		/// Метод записывает точку выхода с карты
 		/// </summary>
 		/// <param name="SW">Дескриптор файла карты</param>
+		/// <param name="NearbyWalls">Список окружающих стен</param>
 		/// <param name="RelativePosition">Относительная позиция точки выхода</param>
 		/// <param name="MapNumber">Номер текущей карты, используемый для создания уникального имени кнопки</param>
-		public static void WriteMapButton (StreamWriter SW, Point RelativePosition, uint MapNumber)
+		/// <param name="Rnd">ГПСЧ</param>
+		public static void WriteMapButton (StreamWriter SW, Point RelativePosition, List<CPResults> NearbyWalls,
+			uint MapNumber, Random Rnd)
 			{
 			// Расчёт параметров
 			Point p = EvaluateAbsolutePosition (RelativePosition);
@@ -621,12 +624,20 @@ namespace RD_AAOW
 			SW.Write ("\"sounds\" \"11\"\n");
 			SW.Write ("\"wait\" \"-1\"\n");
 
-			WriteBlock (SW, (p.X - 8).ToString (), (p.Y - 8).ToString (), "0",
-				(p.X + 8).ToString (), (p.Y + 8).ToString (), "40",
+			/*WriteBlock (SW, (p.X - 56).ToString (), (p.Y - 8).ToString (), "0",
+				(p.X - 52).ToString (), (p.Y + 8).ToString (), "32",
 
-				new string[] { "+A_SWITCH01", "Pipe04", "Pipe04", "Pipe04", "Pipe04", "Pipe04" },
+				new string[] { "Metal06", "Metal06", "Metal06", "Metal06", "Metal06", "Metal06" },
 
-				BlockTypes.Button);
+				BlockTypes.Crate);
+
+			WriteBlock (SW, (p.X - 56).ToString (), (p.Y - 32).ToString (), "32",
+				(p.X - 48).ToString (), (p.Y + 32).ToString (), "64",
+
+				new string[] { "Metal06", "+a_Switch08", "Metal06", "Metal06", "Metal06", "Metal06" },
+
+				BlockTypes.Door);*/
+			WriteMapFurniture (SW, RelativePosition, FurnitureTypes.ExitButton, NearbyWalls, "Metal06", Rnd);
 
 			SW.Write ("}\n{\n");
 			AddEntity (SW, "trigger_autosave");

@@ -1,7 +1,8 @@
-_Changes for v 4.11_:
+_Changes for v 4.12_:
+- XPUN control conditions have been updated;
+- Door frames for two floors mode have been adjusted;
+- App will not add ladders for balconies on low gravity levels;
+- The button has been rebuilt due to possibility of getting stuck on the map with its old version;
 - App now able to generate complex furniture (like door frames or benches);
 - Added new furniture types: door frames and crossed pipes;
-- App will not spawn ammo for disallowed weapons;
-- Fixed missing SFX om maps where entrance or exit gates intersect sections edges;
-- App about form has been upgraded;
-- Links list for HypeHelp has been updated
+- App will not spawn ammo for disallowed weapons
