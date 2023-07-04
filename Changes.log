@@ -3,6 +3,10 @@ Randomaze: changes log
 ToDo:
 - Добавить свободный режим
 
+Version 4.13.7:
+• Added UTF32 encoding;
+• The interface was adapted to Windows 10, incorrect window borders were fixed
+
 Version 4.13.5:
 • Cumulative updates have been applied
 
