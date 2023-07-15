@@ -492,11 +492,6 @@ namespace RD_AAOW
 					texOffsetY = "0";
 					texScale = "1 1";
 					break;
-
-					/*case BlockTypes.Button:
-						texOffsetX = texOffsetY = "16";
-						texScale = "0.5 0.5";
-						break;*/
 				}
 
 			// Запись
@@ -534,7 +529,6 @@ namespace RD_AAOW
 			Default = 0,
 			Crate = 1,
 			Door = 2,
-			/*Button = 3*/
 			}
 
 		// Стандартная текстура триггера
@@ -624,19 +618,6 @@ namespace RD_AAOW
 			SW.Write ("\"sounds\" \"11\"\n");
 			SW.Write ("\"wait\" \"-1\"\n");
 
-			/*WriteBlock (SW, (p.X - 56).ToString (), (p.Y - 8).ToString (), "0",
-				(p.X - 52).ToString (), (p.Y + 8).ToString (), "32",
-
-				new string[] { "Metal06", "Metal06", "Metal06", "Metal06", "Metal06", "Metal06" },
-
-				BlockTypes.Crate);
-
-			WriteBlock (SW, (p.X - 56).ToString (), (p.Y - 32).ToString (), "32",
-				(p.X - 48).ToString (), (p.Y + 32).ToString (), "64",
-
-				new string[] { "Metal06", "+a_Switch08", "Metal06", "Metal06", "Metal06", "Metal06" },
-
-				BlockTypes.Door);*/
 			WriteMapFurniture (SW, RelativePosition, FurnitureTypes.ExitButton, NearbyWalls, "Metal06", Rnd);
 
 			SW.Write ("}\n{\n");
