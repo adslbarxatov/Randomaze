@@ -1,4 +1,4 @@
-# Randomaze v 4.14.5
+# Randomaze v 4.14.6
 
 ES: Randomaze – The maps generator
 
