@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using System.Runtime.InteropServices;
 
 namespace RD_AAOW
 	{
@@ -1222,5 +1223,80 @@ namespace RD_AAOW
 		private static bool leftStep = false;
 
 #endif
+
+		/// <summary>
+		/// Метод формирует файл скрипта-описателя мода
+		/// </summary>
+		/// <param name="MapName">Название первой карты мода</param>
+		/// <returns>Возвращает true в случае успеха</returns>
+		public static bool WriteGameScript (string MapName)
+			{
+			// Создание файла
+			FileStream FS = null;
+			try
+				{
+				FS = new FileStream (RDGenerics.AppStartupPath + "liblist.gam", FileMode.Create);
+				}
+			catch
+				{
+				return false;
+				}
+			StreamWriter SW = new StreamWriter (FS, RDGenerics.GetEncoding (SupportedEncodings.UTF8));
+
+			SW.Write ("game \"" + ProgramDescription.AssemblyTitle + "\"\n");
+			SW.Write ("type \"singleplayer_only\"\n");
+			SW.Write ("version \"" + ProgramDescription.AssemblyVersion + "\"\n");
+
+			SW.Write ("startmap \"" + MapName + "\"\n");
+			SW.Write ("creditsmap \"" + MapName + "\"\n");
+			SW.Write ("edicts \"1500\"\n");
+
+			SW.Write ("cldll \"1\"\n");
+			SW.Write ("gamedll \"dlls\\hl.dll\"\n");
+			SW.Write ("spentity \"info_landmark\"\n");
+
+			SW.Write ("developer_url \"" + RDGenerics.DPArrayStorageLink + "\"\n");
+			SW.Write ("url_info \"http://moddb.com/mods/esrm\"\n");
+
+			SW.Close ();
+			FS.Close ();
+			return true;
+			}
+
+		/// <summary>
+		/// Метод ограничивает указанное значение
+		/// </summary>
+		/// <param name="Value">Исходное значение</param>
+		/// <param name="Minimum">Требуемый минимум</param>
+		/// <param name="Maximum">Требуемый максимум</param>
+		/// <returns>Возвращает значение, входящее в требуемый диапазон</returns>
+		public static uint InboundValue (int Value, uint Minimum, uint Maximum)
+			{
+			uint v = (uint)Value;
+
+			if (v < Minimum)
+				v = Minimum;
+			if (v > Maximum)
+				v = Maximum;
+
+			return v;
+			}
+
+		// Код, обеспечивающий блокировку кнопки закрытия окна
+		[DllImport ("user32.dll")]
+		private static extern IntPtr GetSystemMenu (IntPtr Hwnd, bool Revert);
+
+		[DllImport ("user32.dll")]
+		private static extern int EnableMenuItem (IntPtr tMenu, int targetItem, int targetStatus);
+
+		/// <summary>
+		/// Метод отключает кнопку закрытия окна
+		/// </summary>
+		/// <param name="WindowHandle">Дескриптор окна</param>
+		public static void DisableClosingButton (IntPtr WindowHandle)
+			{
+			// SC_CLOSE, MF_GRAYED
+			EnableMenuItem (GetSystemMenu (WindowHandle, false), 0xF060, 0x0001);
+			}
 		}
 	}
