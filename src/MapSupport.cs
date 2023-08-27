@@ -1246,6 +1246,7 @@ namespace RD_AAOW
 			SW.Write ("game \"" + ProgramDescription.AssemblyTitle + "\"\n");
 			SW.Write ("type \"singleplayer_only\"\n");
 			SW.Write ("version \"" + ProgramDescription.AssemblyVersion + "\"\n");
+			SW.Write ("noskills \"1\"\n");
 
 			SW.Write ("startmap \"" + MapName + "\"\n");
 			SW.Write ("creditsmap \"" + MapName + "\"\n");
