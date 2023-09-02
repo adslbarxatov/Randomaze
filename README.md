@@ -57,7 +57,7 @@ The tool requires next compilation tools, directories and files for work:
 | Button mode flag | Adds the button that should be found and pressed to open the exit gate | 0 / 1 | No | `BM` | `esrm_button` |
 | Allow monster makers flag | Allows replacement of some monsters with monster makers | 0 / 1 | No | `MM` | `esrm_makers` |
 | Two floors flag | Adds the second floor to the map with some balconies and enemies | 0 / 1 | Yes | `TF` | `esrm_two_floors` |
-| Allow items on the second floor | Permit the generation of items for balconies | 0 / 1 | Yes | `TF` | `esrm_two_floors` |
+| Allow items on the second floor | Permits the generation of items for balconies | 0 / 1 | Yes | `TF` | `esrm_two_floors` |
 | Allow explosive crates | Enables explosive crates | 0 / 1 | No | `XC` | `esrm_expl_crates` |
 | Allow crates with items | Enables crates with items and bugs | 0 / 1 | No | `IC` | `esrm_item_crates` |
 
