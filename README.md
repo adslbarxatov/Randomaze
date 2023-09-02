@@ -42,15 +42,14 @@ The tool requires next compilation tools, directories and files for work:
 
 *Random flag* (here and below) initiates the random selection.
 
-Property | Description | Range | Supports random flag | Alias | Game console command
----
-Maze size coefficient | Sets the size of the map | 1 – 8 | Yes | MS | esrm_size
+| Property | Description | Range | Supports random flag | Alias | Game console command |
+|-|-|-|-|-|-|
+| Maze size coefficient | Sets the size of the map | 1 – 8 | No | MS | esrm_size |
+| Enemies density coefficient | Sets the enemies density | 1 – 8 | Yes | DF | esrm_enemies |
+| Items density coefficient | Affects quantity of collectable items / weapons | 1 – 8 | Yes | ID | esrm_items |
+| Walls density coefficient | The larger the value, the fewer “branches” the maze will have | 1 – 12 | No | WD | esrm_walls |
+| Crates density coefficient | Describes, how much enemies will be replaced with crates with bugs or explosives | 1 – 5 | Yes | CD | esrm_crates |
 
-- ***Enemies density coefficient***. Range: `1 – 8`. Affects quantity of enemies and crates on the map.
-- ***Items density coefficient***. Range: `1 – 8`. Affects quantity of collectable items / weapons on the map.
-- ***Walls density coefficient***. Range: `1 – 12`. The larger the value, the fewer “branches” the maze will have.
-  `12` means almost a snake-shaped corridor, `1` is for a hangar with a few walls.
-- ***Crates density coefficient***. Range: `1 – 5`. Describes, how much enemies will be replaced with crates with bugs or explosives.
 - ***Lighting coefficient***. Range: `1 – 5`. Affects quantity of enabled lights and the type of the sky.
 - ***Gravity coefficient***. Range: `10 – 200%`. Affects the gravity percentage for all objects on the map.
 - ***Map section types***. Supports “all types”, “only under sky” and “only inside the room” variants.
