@@ -1,10 +1,10 @@
-# Randomaze v 4.14.8
+# Randomaze v 5.0
 
 ES: Randomaze – The maps generator
 
 #
 
-**ES: Randomaze** is the maps generator for the mod with the same name.
+**ES: Randomaze** is the maps generator for the [mod with the same name](https://moddb.com/mods/esrm).
 It was the child project of the [ESHQ mod](https://moddb.com/mods/eshq) for Half-Life part 1.
 Now it is stand-alone project
 
@@ -32,13 +32,20 @@ The tool requires next compilation tools, directories and files for work:
 
 ### From the command line
 
-- `-go` [*legacy*]: aborts start of the game (only map building will be performed).
-- `-n` [*legacy*]: forces the app to generate the next map even if the required map already exists.
+- `-go` (*legacy*): aborts start of the game (only map building will be performed).
+- `-n` (*legacy*): forces the app to generate the next map even if the required map already exists.
 - `-x <map_name>`: compares specified map (currently saved map expected) with the last created one. Also enables `-go` and `-n` keys.
+- `-s <property_alias> <property_value>`: sets the specified property to the value without starting the interface.
+- `-r`: requests the immediate recompilation of the next map (after the saved one).
 
-### From the settings window
+### From the settings window and game console
 
-- ***Maze size coefficient***. Range: `1 – 8`. `Random` flag (here and below) initiates the random selection.
+*Random flag* (here and below) initiates the random selection.
+
+Property | Description | Range | Supports random flag | Alias | Game console command
+---
+Maze size coefficient | Sets the size of the map | 1 – 8 | Yes | MS | esrm_size
+
 - ***Enemies density coefficient***. Range: `1 – 8`. Affects quantity of enemies and crates on the map.
 - ***Items density coefficient***. Range: `1 – 8`. Affects quantity of collectable items / weapons on the map.
 - ***Walls density coefficient***. Range: `1 – 12`. The larger the value, the fewer “branches” the maze will have.

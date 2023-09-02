@@ -1,5 +1,7 @@
-_Changes for v 4.14.8_:
+_Changes for v 5.0_:
+- Implemented the ability to pass generator settings through the game engine. You can now use the game console to apply generation settings for the next map;
+- The game console is now enabled by default;
+- *The free mode cannot be implemented due to significant difference in textures, properties of entities and other required conditions*;
+- Removed some redundant code and functions;
 - Fixed the floating skills level;
-- Added the obvious URLs for videoguide and for text guide;
-- Fixed some issues with the Policy loader where it would sometimes ask for multiple confirmations;
-- Implemented the access rights checker: it will test the availability of the Windows registry and the application placement for writing and notify user about possible problems
+- Added the obvious URLs for videoguide and for text guide

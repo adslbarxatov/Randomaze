@@ -502,6 +502,24 @@ check:
 			"monster_zombie"
 			};
 
+		/// <summary>
+		/// Метод добавляет барнакла в разрешающую строку при включении режима двух этажей
+		/// </summary>
+		/// <param name="EnemiesPermissionLine">Имеющаяся строка разрешений для врагов</param>
+		public static string AddBarnacle (string EnemiesPermissionLine)
+			{
+			return EnemiesPermissionLine += "n";
+			}
+
+		/// <summary>
+		/// Метод удаляет барнакла из разрешающей строки при выключении режима двух этажей
+		/// </summary>
+		/// <param name="EnemiesPermissionLine">Имеющаяся строка разрешений для врагов</param>
+		public static string RemoveBarnacle (string EnemiesPermissionLine)
+			{
+			return EnemiesPermissionLine.Replace ("n", "");
+			}
+
 		// Счётчики реально добавленных сущностей
 		private static uint realEnemiesQuantity = 0;
 		private static uint realRatsQuantity = 0;
