@@ -1,4 +1,4 @@
-# Randomaze v 5.0
+# Randomaze v 5.0.5
 
 ES: Randomaze – The maps generator
 
@@ -32,8 +32,6 @@ The tool requires next compilation tools, directories and files for work:
 
 ### From the command line
 
-- `-go` (*legacy*): aborts start of the game (only map building will be performed).
-- `-n` (*legacy*): forces the app to generate the next map even if the required map already exists.
 - `-x <map_name>`: compares specified map (currently saved map expected) with the last created one. Also enables `-go` and `-n` keys.
 - `-s <property_alias> <property_value>`: sets the specified property to the value without starting the interface.
 - `-r`: requests the immediate recompilation of the next map (after the saved one). Corresponds to `esrm_rebuild` command in the game console.
