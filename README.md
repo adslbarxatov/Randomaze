@@ -50,11 +50,8 @@ The tool requires next compilation tools, directories and files for work:
 | Lighting coefficient | Affects quantity of enabled lights and the type of the sky | 1 – 6 | Yes | `LG` | `esrm_light` |
 | Gravity coefficient | Affects the gravity percentage for all objects on the map | 1 – 20 (10 = 100%) | Yes | `GR` | `esrm_gravity` |
 | Map section types | Sets allowed types of map sections (*all*, *only under sky* or *only inside*) | 0 / 1 / 2 | No | `ST` | `esrm_sections` |
-
-| Enemies permissions line | Consists of flags of monsters that will be allowed on maps | (the line of letters for<br />`a`ssassins<br />`b`ullchickens<br />`c`ontrollers<br />hound`e`yes<br />human `g`runts<br />`h`eadcrabs<br />trip`m`ines<br />bar`n`acles<br />alien g`r`unts<br />alien `s`laves<br />`t`urrets<br />`z`ombies) | No | `EP` | `esrm_enemies_line` |
-
-| Items permissions line | Consists of flags of weapons and items that will be allowed on maps (both on floors and in crates) | (string value) | No | `IP` | `esrm_items_line` |
-
+| Enemies permissions line | Consists of flags of monsters that will be allowed on maps | (the line of letters for `a`ssassins, `b`ullchickens, `c`ontrollers, hound`e`yes, human `g`runts, `h`eadcrabs, trip`m`ines, bar`n`acles, alien g`r`unts, alien `s`laves, `t`urrets, `z`ombies) | No | `EP` | `esrm_enemies_line` |
+| Items permissions line | Consists of flags of weapons and items that will be allowed on maps (both on floors and in crates) | (the line of letters for health`k`its, `b`atteries, `g`renades, `9` mm handguns, `s`atchels, .`3`57 pythons, `c`rossbows, ga`u`ss, cro`w`bars, `h`ornetguns, 9 mm A`R`s, sh`o`tguns, R`P`Gs, `t`ripmines, s`n`arks, `e`gons and `a`xes) | No | `IP` | `esrm_items_line` |
 | Button mode flag | Adds the button that should be found and pressed to open the exit gate | 0 / 1 | No | `BM` | `esrm_button` |
 | Allow monster makers flag | Allows replacement of some monsters with monster makers | 0 / 1 | No | `MM` | `esrm_makers` |
 | Two floors flag | Adds the second floor to the map with some balconies and enemies | 0 / 1 | Yes | `TF` | `esrm_two_floors` |
