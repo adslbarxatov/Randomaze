@@ -1265,6 +1265,20 @@ namespace RD_AAOW
 			}
 
 		/// <summary>
+		/// Метод записывает межстенный заполнитель (для удаления недоступных пространств из компилируемой зоны)
+		/// </summary>
+		/// <param name="SW">Дескриптор файла карты</param>
+		/// <param name="RelativePosition">Относительная позиция точки выхода</param>
+		public static void WriteMapFiller (StreamWriter SW, Point RelativePosition)
+			{
+			// Расчёт параметров
+			Point p = EvaluateAbsolutePosition (RelativePosition);
+			WriteBlock (SW, (p.X - WallLength / 2).ToString (), (p.Y - WallLength / 2).ToString (), "0",
+				(p.X + WallLength / 2).ToString (), (p.Y + WallLength / 2).ToString (), (WallHeight + 32).ToString (),
+				new string[] { "BLACK", "BLACK", "BLACK", "BLACK", "BLACK", "BLACK" }, BlockTypes.Default);
+			}
+
+		/// <summary>
 		/// Метод ограничивает указанное значение
 		/// </summary>
 		/// <param name="Value">Исходное значение</param>

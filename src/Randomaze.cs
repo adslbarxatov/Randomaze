@@ -37,6 +37,17 @@ namespace RD_AAOW
 			if (Localization.CurrentLanguage != SupportedLanguages.en_us)
 				Localization.CurrentLanguage = SupportedLanguages.en_us;    // Защита от других языков
 
+#if DBG
+			string ar = "";
+			for (int i = 0; i < args.Length; i++)
+				ar += args[i] + " ";
+
+			if (!string.IsNullOrWhiteSpace (ar))
+				if (RDGenerics.MessageBox (RDMessageTypes.Information_Center, ar, ">", "X") !=
+					RDMessageButtons.ButtonOne)
+					return 1;
+#endif
+
 			Application.Run (new RandomazeForm (args));
 			return 0;
 			}
