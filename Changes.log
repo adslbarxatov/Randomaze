@@ -1,5 +1,8 @@
 Randomaze: changes log
 
+ToDo:
+- Save flags from the master interface without the Launch button
+
 Version 5.1:
 • Added the end-to-end commands for enemies and items permissions;
 • Added the unavailable spaces filling algorithm to decrease the map compilation time;
