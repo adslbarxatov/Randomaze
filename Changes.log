@@ -1,7 +1,9 @@
 Randomaze: changes log
 
-ToDo:
-- Save flags from the master interface without the Launch button
+Version 5.1.1:
+• The offline quick help has been discontinued;
+• Completed the process of version control unification;
+• Fixed some minor bugs
 
 Version 5.1:
 • Added the end-to-end commands for enemies and items permissions;
