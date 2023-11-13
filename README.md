@@ -1,8 +1,6 @@
-# Randomaze v 5.1
+# Randomaze
 
-ES: Randomaze – The maps generator
-
-#
+## Description
 
 **ES: Randomaze** is the maps generator for the [mod with the same name](https://moddb.com/mods/esrm).
 It was the child project of the [ESHQ mod](https://moddb.com/mods/eshq) for Half-Life part 1.
@@ -32,9 +30,9 @@ The tool requires next compilation tools, directories and files for work:
 
 ### From the command line
 
-- `-x <map_name>`: compares specified map (currently saved map expected) with the last created one. Also enables `-go` and `-n` keys.
+- `-x <map_name>`: compares specified map (currently saved map expected) with the last created one.
 - `-s <property_alias> <property_value>`: sets the specified property to the value without starting the interface.
-- `-r`: requests the immediate recompilation of the next map (after the saved one). Corresponds to `esrm_rebuild` command in the game console.
+- `-r`: requests the immediate recompilation of the next map (after the saved one). It corresponds to `esrm_rebuild` command in the game console.
 
 ### From the settings window and game console
 
