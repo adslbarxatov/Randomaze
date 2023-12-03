@@ -1,5 +1,10 @@
 Randomaze: changes log
 
+Version 5.1.5:
+• App will not add headcrabs into crates when they are disabled in the enemies
+  permissions tab. This will increase parts of explodable crates and crates
+  with snarks (if corresponding options are enabled)
+
 Version 5.1.2:
 • The offline help has been updated to new version;
 • Completed the process of version control unification;

@@ -520,6 +520,15 @@ check:
 			return EnemiesPermissionLine.Replace ("n", "");
 			}
 
+		/// <summary>
+		/// Метод возвращает true, если строка разрешений врагов содержит хедкраба
+		/// </summary>
+		/// <param name="EnemiesPermissionLine">Имеющаяся строка разрешений для врагов</param>
+		public static bool IsHeadcrabAllowed (string EnemiesPermissionLine)
+			{
+			return EnemiesPermissionLine.Contains ("h");
+			}
+
 		// Счётчики реально добавленных сущностей
 		private static uint realEnemiesQuantity = 0;
 		private static uint realRatsQuantity = 0;

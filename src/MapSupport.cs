@@ -674,8 +674,9 @@ namespace RD_AAOW
 		/// <param name="AllowExplosives">Флаг разрешения ящиков со взрывчаткой</param>
 		/// <param name="AllowItems">Флаг разрешения ящиков с жуками и собираемыми объектами</param>
 		/// <param name="ItemPermissions">Строка разрешений для объектов в ящиках</param>
+		/// <param name="EnemiesPermissions">Строка разрешений для врагов в ящиках (крабы, снарки)</param>
 		public static void WriteMapCrate (StreamWriter SW, Point RelativePosition, Random Rnd,
-			bool AllowItems, bool AllowExplosives, string ItemPermissions)
+			bool AllowItems, bool AllowExplosives, string ItemPermissions, string EnemiesPermissions)
 			{
 			// Контроль
 			if (!AllowExplosives && !AllowItems)
@@ -713,10 +714,14 @@ namespace RD_AAOW
 			else
 				{
 				int r = Rnd.Next (4);
+				bool factor1 = EnemiesSupport.IsHeadcrabAllowed (EnemiesPermissions);
+				int idx;
 
-				// Враги
-				if (r < 3)
+				// Враги (при запрете хедкрабов увеличивается число ящиков со взрывчаткой)
+				if (factor1 && (r < 3) || !factor1 && (r < 2))
 					{
+					if (!factor1)
+						r = 0;  // Только снарки
 					SW.Write ("\"spawnobject\" \"" + (r + 27).ToString () + "\"\n");
 					}
 
@@ -726,7 +731,7 @@ namespace RD_AAOW
 					// Иногда добавлять случайное оружие или предмет
 					if (Rnd.Next (3) == 0)
 						{
-						int idx = Rnd.Next (26) + 1;
+						idx = Rnd.Next (26) + 1;
 						while ((idx <= 26) && !ItemsSupport.IsCrateItemAllowed (ItemPermissions, idx))
 							idx += (Rnd.Next (3) + 1);
 
