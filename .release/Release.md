@@ -1,4 +1,4 @@
-_Changes for v 5.1.5_:
+_Changes for v 5.1.6_:
 - App will not add headcrabs into crates when they are disabled in the enemies permissions tab. This will increase parts of explodable crates and crates with snarks (if corresponding options are enabled);
 - Probably, fixed the gravity triggering (engine is now ineligible to skip it);
 - The offline help has been updated to new version;
