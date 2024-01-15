@@ -1,5 +1,10 @@
 Randomaze: changes log
 
+ToDo:
+- Speed up the model of slave;
+- Find the fog?
+- Find the non-linear doors?
+
 Version 5.1.5:
 • App will not add headcrabs into crates when they are disabled in the enemies
   permissions tab. This will increase parts of explodable crates and crates
