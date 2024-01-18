@@ -1,9 +1,14 @@
 Randomaze: changes log
 
 ToDo:
-- Speed up the model of slave;
 - Find the fog?
 - Find the non-linear doors?
+
+Version 5.2:
+• Turrets are now required to get the level achievement;
+• Alien slaves now running faster;
+• Fixed some minor runtime bugs;
+• Core updates have been applied
 
 Version 5.1.5:
 • App will not add headcrabs into crates when they are disabled in the enemies

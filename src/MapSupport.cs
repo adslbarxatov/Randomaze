@@ -1246,7 +1246,7 @@ namespace RD_AAOW
 				{
 				return false;
 				}
-			StreamWriter SW = new StreamWriter (FS, RDGenerics.GetEncoding (SupportedEncodings.UTF8));
+			StreamWriter SW = new StreamWriter (FS, RDGenerics.GetEncoding (RDEncodings.UTF8));
 
 			SW.Write ("game \"" + ProgramDescription.AssemblyTitle + "\"\n");
 			SW.Write ("type \"singleplayer_only\"\n");

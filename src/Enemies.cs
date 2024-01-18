@@ -187,7 +187,7 @@ retry:
 
 						SW.Write ("\"spawnflags\" \"32\"\n");
 						SW.Write ("\"orientation\" \"0\"\n");
-						// Не учитывается ачивкой
+						countEnemy = true;
 						}
 					else
 						{

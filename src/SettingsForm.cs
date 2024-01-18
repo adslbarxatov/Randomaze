@@ -37,25 +37,25 @@ namespace RD_AAOW
 			// Инициализация и локализация формы
 			InitializeComponent ();
 
-			Localization.SetControlsText (this);
-			AbortButton.Text = Localization.GetDefaultText (LzDefaultTextValues.Button_Cancel);
-			ApplyButton.Text = Localization.GetDefaultText (LzDefaultTextValues.Button_OK);
+			RDLocale.SetControlsText (this);
+			AbortButton.Text = RDLocale.GetDefaultText (RDLDefaultTexts.Button_Cancel);
+			ApplyButton.Text = RDLocale.GetDefaultText (RDLDefaultTexts.Button_OK);
 
-			GenericTab.Text = Localization.GetControlText (this.Name, GenericTab.Name);
-			Localization.SetControlsText (GenericTab);
+			GenericTab.Text = RDLocale.GetControlText (this.Name, GenericTab.Name);
+			RDLocale.SetControlsText (GenericTab);
 
-			EnemiesTab.Text = Localization.GetControlText (this.Name, EnemiesTab.Name);
-			Localization.SetControlsText (EnemiesTab);
+			EnemiesTab.Text = RDLocale.GetControlText (this.Name, EnemiesTab.Name);
+			RDLocale.SetControlsText (EnemiesTab);
 
-			ItemsTab.Text = Localization.GetControlText (this.Name, ItemsTab.Name);
-			Localization.SetControlsText (ItemsTab);
+			ItemsTab.Text = RDLocale.GetControlText (this.Name, ItemsTab.Name);
+			RDLocale.SetControlsText (ItemsTab);
 
 			MazeSizeFlag.Text = EnemiesDensityFlag.Text = ItemsDensityFlag.Text =
 				CratesDensityFlag.Text = WallsDensityFlag.Text = LightingFlag.Text =
-				GravityFlag.Text = RandomizeFloorsFlag.Text = Localization.GetText ("SettingsForm_Random");
+				GravityFlag.Text = RandomizeFloorsFlag.Text = RDLocale.GetText ("SettingsForm_Random");
 
 			this.TopMost = true;
-			this.Text = ProgramDescription.AssemblyTitle + ": " + Localization.GetText ("SettingsForm_T");
+			this.Text = ProgramDescription.AssemblyTitle + ": " + RDLocale.GetText ("SettingsForm_T");
 			this.CancelButton = AbortButton;
 			this.AcceptButton = ApplyButton;
 
