@@ -1,4 +1,4 @@
-_Changes for v 5.2.1_:
+_Changes for v 5.2.2_:
+- XPUN control has been updated;
 - Turrets are now required to get the level achievement;
-- Alien slaves now running faster;
-- Probably, fixed the gravity triggering (engine is now ineligible to skip it)
+- Alien slaves now running faster
