@@ -117,7 +117,7 @@ namespace RD_AAOW
 				}
 			EnemyFlag05_CheckedChanged (null, null);
 
-			switch (settings.SectionType)
+			/*switch (settings.SectionType)
 				{
 				default:
 				case MapSectionTypes.AllTypes:
@@ -131,7 +131,14 @@ namespace RD_AAOW
 				case MapSectionTypes.OnlyInside:
 					OnlyInsideRadio.Checked = true;
 					break;
-				}
+				}*/
+			for (int i = 0; i < 3; i++)
+				SkyCombo.Items.Add (RDLocale.GetText ("GenericTab_SkyCombo" + i.ToString ("D2")));
+			SkyCombo.SelectedIndex = (int)settings.SectionType;
+
+			for (int i = 0; i < 3; i++)
+				BarrierCombo.Items.Add (RDLocale.GetText ("GenericTab_BarrierCombo" + i.ToString ("D2")));
+			BarrierCombo.SelectedIndex = (int)settings.BarriersType;
 
 			AllowItemsForSecondFloor.Checked = settings.AllowItemsForSecondFloor;
 			TwoFloorsFlag.Checked = settings.TwoFloors;
@@ -211,12 +218,14 @@ namespace RD_AAOW
 					settings.ItemsPermissionLine += "-";
 				}
 
-			if (OnlyInsideRadio.Checked)
+			/*if (OnlyInsideRadio.Checked)
 				settings.SectionType = MapSectionTypes.OnlyInside;
 			else if (OnlySkyRadio.Checked)
 				settings.SectionType = MapSectionTypes.OnlyUnderSky;
 			else
-				settings.SectionType = MapSectionTypes.AllTypes;
+				settings.SectionType = MapSectionTypes.AllTypes;*/
+			settings.SectionType = (MapSectionTypes)SkyCombo.SelectedIndex;
+			settings.BarriersType = (MapBarriersTypes)BarrierCombo.SelectedIndex;
 
 			settings.TwoFloors = TwoFloorsFlag.Checked;
 			settings.AllowItemsForSecondFloor = AllowItemsForSecondFloor.Checked;

@@ -158,9 +158,8 @@ namespace RD_AAOW
 		/// <param name="SW">Дескриптор файла карты</param>
 		/// <param name="MapNumber">Текущий номер карты</param>
 		/// <param name="Lightness">Уровень затемнения неба (0.0 – 1.0)</param>
-		/// <param name="Rnd">ГПСЧ</param>
 		/// <param name="TwoFloors">Инициализация двухэтажной карты</param>
-		public static void WriteMapHeader (StreamWriter SW, uint MapNumber, Random Rnd, float Lightness,
+		public static void WriteMapHeader (StreamWriter SW, uint MapNumber, /*Random Rnd,*/ float Lightness,
 			bool TwoFloors)
 			{
 			// Начало карты
@@ -170,7 +169,7 @@ namespace RD_AAOW
 			SW.Write ("\"mapversion\" \"220\"\n");
 
 			// Инициализация неба
-			skyIndex = Rnd.Next (skyTypes.Length / 2);
+			skyIndex = RDGenerics.RND.Next (skyTypes.Length / 2);
 
 			float inc = Lightness;
 			if (inc < 0.0f)
@@ -205,12 +204,12 @@ namespace RD_AAOW
 			// Создание цвета ламп
 			if (string.IsNullOrWhiteSpace (lightColor))
 				{
-				lightColor = "\"_light\" \"" + (224 + Rnd.Next (32)).ToString () + " " +
-					(224 + Rnd.Next (32)).ToString () + " " +
-					(112 + Rnd.Next (32)).ToString () + " " + (TwoFloors ? "200" : "150") + "\"\n";
-				subLightColor = "\"_light\" \"" + (224 + Rnd.Next (32)).ToString () + " " +
-					(224 + Rnd.Next (32)).ToString () + " " +
-					(112 + Rnd.Next (32)).ToString () + " 100\"\n";
+				lightColor = "\"_light\" \"" + (224 + RDGenerics.RND.Next (32)).ToString () + " " +
+					(224 + RDGenerics.RND.Next (32)).ToString () + " " +
+					(112 + RDGenerics.RND.Next (32)).ToString () + " " + (TwoFloors ? "200" : "150") + "\"\n";
+				subLightColor = "\"_light\" \"" + (224 + RDGenerics.RND.Next (32)).ToString () + " " +
+					(224 + RDGenerics.RND.Next (32)).ToString () + " " +
+					(112 + RDGenerics.RND.Next (32)).ToString () + " 100\"\n";
 				}
 
 			// Выбор высоты карты
@@ -602,9 +601,8 @@ namespace RD_AAOW
 		/// <param name="NearbyWalls">Список окружающих стен</param>
 		/// <param name="RelativePosition">Относительная позиция точки выхода</param>
 		/// <param name="MapNumber">Номер текущей карты, используемый для создания уникального имени кнопки</param>
-		/// <param name="Rnd">ГПСЧ</param>
 		public static void WriteMapButton (StreamWriter SW, Point RelativePosition, List<CPResults> NearbyWalls,
-			uint MapNumber, Random Rnd)
+			uint MapNumber/*, Random Rnd*/)
 			{
 			// Расчёт параметров
 			Point p = EvaluateAbsolutePosition (RelativePosition);
@@ -619,7 +617,7 @@ namespace RD_AAOW
 			SW.Write ("\"sounds\" \"11\"\n");
 			SW.Write ("\"wait\" \"-1\"\n");
 
-			WriteMapFurniture (SW, RelativePosition, FurnitureTypes.ExitButton, NearbyWalls, "Metal06", Rnd);
+			WriteMapFurniture (SW, RelativePosition, FurnitureTypes.ExitButton, NearbyWalls, "Metal06");
 
 			SW.Write ("}\n{\n");
 			AddEntity (SW, "trigger_autosave");
@@ -670,12 +668,11 @@ namespace RD_AAOW
 		/// </summary>
 		/// <param name="SW">Дескриптор файла карты</param>
 		/// <param name="RelativePosition">Относительная позиция точки создания</param>
-		/// <param name="Rnd">ГПСЧ</param>
 		/// <param name="AllowExplosives">Флаг разрешения ящиков со взрывчаткой</param>
 		/// <param name="AllowItems">Флаг разрешения ящиков с жуками и собираемыми объектами</param>
 		/// <param name="ItemPermissions">Строка разрешений для объектов в ящиках</param>
 		/// <param name="EnemiesPermissions">Строка разрешений для врагов в ящиках (крабы, снарки)</param>
-		public static void WriteMapCrate (StreamWriter SW, Point RelativePosition, Random Rnd,
+		public static void WriteMapCrate (StreamWriter SW, Point RelativePosition, /*Random Rnd,*/
 			bool AllowItems, bool AllowExplosives, string ItemPermissions, string EnemiesPermissions)
 			{
 			// Контроль
@@ -690,7 +687,7 @@ namespace RD_AAOW
 			string x2 = (p.X + 16).ToString ();
 			string y2 = (p.Y + 16).ToString ();
 
-			bool explosive = (Rnd.Next (2) == 0);
+			bool explosive = (RDGenerics.RND.Next (2) == 0);
 			string tex = "CRATE01"; // Взрывчатка по умолчанию
 
 			SW.Write ("{\n");
@@ -709,11 +706,11 @@ namespace RD_AAOW
 			// При этом предполагается, что случай обоюдного запрета до этого места не дойдёт
 			if (explosive && AllowExplosives || !AllowItems)
 				{
-				SW.Write ("\"explodemagnitude\" \"" + Rnd.Next (160, 200).ToString () + "\"\n");
+				SW.Write ("\"explodemagnitude\" \"" + RDGenerics.RND.Next (160, 200).ToString () + "\"\n");
 				}
 			else
 				{
-				int r = Rnd.Next (4);
+				int r = RDGenerics.RND.Next (4);
 				bool factor1 = EnemiesSupport.IsHeadcrabAllowed (EnemiesPermissions);
 				int idx;
 
@@ -729,18 +726,18 @@ namespace RD_AAOW
 				else
 					{
 					// Иногда добавлять случайное оружие или предмет
-					if (Rnd.Next (3) == 0)
+					if (RDGenerics.RND.Next (3) == 0)
 						{
-						idx = Rnd.Next (26) + 1;
+						idx = RDGenerics.RND.Next (26) + 1;
 						while ((idx <= 26) && !ItemsSupport.IsCrateItemAllowed (ItemPermissions, idx))
-							idx += (Rnd.Next (3) + 1);
+							idx += (RDGenerics.RND.Next (3) + 1);
 
 						if (idx <= 26)
 							SW.Write ("\"spawnobject\" \"" + idx.ToString () + "\"\n");
 						}
 
 					// Случайная текстура для ящиков без врагов
-					r = Rnd.Next (3);
+					r = RDGenerics.RND.Next (3);
 					}
 
 				switch (r)
@@ -1060,17 +1057,16 @@ namespace RD_AAOW
 		/// <param name="RelativePosition">Относительная позиция точки создания</param>
 		/// <param name="NearbyWalls">Доступные (с указанной позиции) стены</param>
 		/// <param name="WallTexture">Текстура окружающей стены</param>
-		/// <param name="Rnd">ГПСЧ</param>
 		/// <param name="FurnitureType">Индекс мебели</param>
 		public static void WriteMapFurniture (StreamWriter SW, Point RelativePosition, FurnitureTypes FurnitureType,
-			List<CPResults> NearbyWalls, string WallTexture, Random Rnd)
+			List<CPResults> NearbyWalls, string WallTexture/*, Random Rnd*/)
 			{
 			// Расчёт параметров
 			Point p = EvaluateAbsolutePosition (RelativePosition);
-			CPResults placement = NearbyWalls[Rnd.Next (NearbyWalls.Count)];
+			CPResults placement = NearbyWalls[RDGenerics.RND.Next (NearbyWalls.Count)];
 
 			// Расчёт координат
-			Furniture f = Furniture.GetFurniture (FurnitureType, placement, Rnd);
+			Furniture f = Furniture.GetFurniture (FurnitureType, placement);
 			for (uint b = 0; b < f.BlocksCount; b++)
 				{
 				int[] coords = f.GetCoordinates (b);

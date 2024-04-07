@@ -1,8 +1,10 @@
 Randomaze: changes log
 
-ToDo:
-- Add non-glass gates
-- Add variable echo type
+Version 5.3:
+• Implemented the barriers type flag: it allows you to select between transparent
+  and opaque sections barriers;
+• The sound echo will now be less remarkable on narrow maps (on high walls density);
+• Updated the HypeHelp links list
 
 Version 5.2:
 • Turrets are now required to get the level achievement;

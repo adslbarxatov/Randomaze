@@ -15,11 +15,10 @@ namespace RD_AAOW
 		/// </summary>
 		/// <param name="SW">Дескриптор файла карты</param>
 		/// <param name="RelativePosition">Относительная позиция точки создания</param>
-		/// <param name="Rnd">ГПСЧ</param>
 		/// <param name="MapNumber">Номер текущей карты</param>
 		/// <param name="AllowSecondFloor">Флаг, разрешающий размещение на внутренних площадках</param>
 		/// <param name="Permissions">Строка разрешений для видов оружия</param>
-		public static void WriteMapItem (StreamWriter SW, Point RelativePosition, Random Rnd, uint MapNumber,
+		public static void WriteMapItem (StreamWriter SW, Point RelativePosition, /*Random Rnd,*/ uint MapNumber,
 			bool AllowSecondFloor, string Permissions)
 			{
 			// Расчёт параметров
@@ -65,10 +64,10 @@ namespace RD_AAOW
 
 			// Запись объекта
 			string doc = "item_security";
-			int item = Rnd.Next (prngRange);
+			int item = RDGenerics.RND.Next (prngRange);
 
-// Выбор предмета
-retry:
+			// Выбор предмета
+			retry:
 			switch (item)
 				{
 				// Аптечки
@@ -145,7 +144,7 @@ retry:
 
 				// Монтировка или радиограната
 				case 23:
-					if (Rnd.Next (5) > 3)
+					if (RDGenerics.RND.Next (5) > 3)
 						{
 						if (Permissions.Contains (ItemsPermissionsKeys[8]))
 							MapSupport.AddEntity (SW, items[8]);
@@ -163,7 +162,7 @@ retry:
 
 				// Улей или граната
 				case 24:
-					if (Rnd.Next (5) > 3)
+					if (RDGenerics.RND.Next (5) > 3)
 						{
 						if (Permissions.Contains (ItemsPermissionsKeys[9]))
 							MapSupport.AddEntity (SW, items[9]);
@@ -180,20 +179,20 @@ retry:
 					break;
 				}
 
-finishItem:
+			finishItem:
 			int z = 40;
 			if (AllowSecondFloor)
-				z += (Rnd.Next (2) * MapSupport.DefaultWallHeight);
+				z += (RDGenerics.RND.Next (2) * MapSupport.DefaultWallHeight);
 
-			SW.Write ("\"angles\" \"0 " + Rnd.Next (360) + " 0\"\n");
+			SW.Write ("\"angles\" \"0 " + RDGenerics.RND.Next (360) + " 0\"\n");
 			SW.Write ("\"origin\" \"" + p.X.ToString () + " " + p.Y.ToString () + " " +
 				z.ToString () + "\"\n");   // На некоторой высоте над полом
 			SW.Write ("}\n");
 			return;
 
-// Проверка возможности выбора другого врага
-check:
-			item += Rnd.Next (3);
+			// Проверка возможности выбора другого врага
+			check:
+			item += RDGenerics.RND.Next (3);
 			if (item >= prngRange)
 				{
 				MapSupport.AddEntity (SW, doc);

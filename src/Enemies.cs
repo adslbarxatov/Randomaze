@@ -15,13 +15,12 @@ namespace RD_AAOW
 		/// </summary>
 		/// <param name="SW">Дескриптор файла карты</param>
 		/// <param name="RelativePosition">Относительная позиция точки создания</param>
-		/// <param name="Rnd">ГПСЧ</param>
 		/// <param name="MapNumber">Номер карты, позволяющий выполнять наполнение с прогрессом</param>
 		/// <param name="Permissions">Строка флагов разрешённых врагов</param>
 		/// <param name="SecondFloor">Флаг установки врага на внутренней площадке</param>
 		/// <param name="UnderSky">Флаг расположения под небом</param>
 		/// <param name="AllowMonsterMakers">Флаг разрешения монстр-мейкеров</param>
-		public static void WriteMapEnemy (StreamWriter SW, Point RelativePosition, Random Rnd,
+		public static void WriteMapEnemy (StreamWriter SW, Point RelativePosition, /*Random Rnd,*/
 			uint MapNumber, string Permissions, bool SecondFloor, bool UnderSky, bool AllowMonsterMakers)
 			{
 			// Расчёт параметров
@@ -62,15 +61,15 @@ namespace RD_AAOW
 
 			// Добавление
 			int z = SecondFloor ? (MapSupport.DefaultWallHeight - 16) : 0;
-			int r = Rnd.Next (360);
-			int enemy = Rnd.Next (prngRange);
+			int r = RDGenerics.RND.Next (360);
+			int enemy = RDGenerics.RND.Next (prngRange);
 
 			// Обработка для монстр-мейкеров
-			bool mm = (awaitingNextMM && (Rnd.Next (3) == 0));
+			bool mm = (awaitingNextMM && (RDGenerics.RND.Next (3) == 0));
 			bool countEnemy = false, countRat = false;
 
-// Выбор врага
-retry:
+			// Выбор врага
+			retry:
 			switch (enemy)
 				{
 				// Солдаты
@@ -81,7 +80,8 @@ retry:
 						countEnemy = true;
 
 						if (!mm)
-							SW.Write ("\"weapons\" \"" + gruntWeapons[Rnd.Next (gruntWeapons.Length)] + "\"\n");
+							SW.Write ("\"weapons\" \"" +
+								gruntWeapons[RDGenerics.RND.Next (gruntWeapons.Length)] + "\"\n");
 						}
 					else
 						{
@@ -99,7 +99,7 @@ retry:
 						countEnemy = true;
 
 						if (!mm)
-							SW.Write ("\"skin\" \"" + Rnd.Next (2).ToString () + "\"\n");
+							SW.Write ("\"skin\" \"" + RDGenerics.RND.Next (2).ToString () + "\"\n");
 						}
 					else
 						{
@@ -170,7 +170,7 @@ retry:
 						if (mm)
 							goto check; // Недопустим для монстрмейкера
 
-						switch (Rnd.Next (3))
+						switch (RDGenerics.RND.Next (3))
 							{
 							case 0:
 								MapSupport.AddEntity (SW, "monster_turret");
@@ -269,10 +269,10 @@ retry:
 						MapSupport.AddEntity (SW, enemies[6]);
 
 						SW.Write ("\"spawnflags\" \"1\"\n");
-						z = 16 + Rnd.Next (2) * 48;
+						z = 16 + RDGenerics.RND.Next (2) * 48;
 						int off = MapSupport.WallLength / 2 - 16;
 
-						switch (rWalls[Rnd.Next (rWalls.Count)])
+						switch (rWalls[RDGenerics.RND.Next (rWalls.Count)])
 							{
 							default:
 							case CPResults.Left:
@@ -305,11 +305,11 @@ retry:
 					break;
 				}
 
-finishM:
-// Обработка монстр-мейкеров или создание ачивки
+			finishM:
+			// Обработка монстр-мейкеров или создание ачивки
 			if (!mm)
 				{
-				if (AllowMonsterMakers && (Rnd.Next (3) == 0))
+				if (AllowMonsterMakers && (RDGenerics.RND.Next (3) == 0))
 					{
 					availableMMNumber++;
 					nextMMName = "MM" + MapSupport.BuildMapName (MapNumber) + "T" +
@@ -343,12 +343,12 @@ finishM:
 
 			return;
 
-// Проверка возможности выбора другого врага
-check:
-			enemy += Rnd.Next (3);
+			// Проверка возможности выбора другого врага
+			check:
+			enemy += RDGenerics.RND.Next (3);
 			if (enemy >= prngRange)
 				{
-				InitMonster (SW, mm, rats[Rnd.Next (rats.Count)]);
+				InitMonster (SW, mm, rats[RDGenerics.RND.Next (rats.Count)]);
 				countRat = true;
 
 				goto finishM;
@@ -393,8 +393,7 @@ check:
 		/// <param name="SW">Дескриптор файла карты</param>
 		/// <param name="RelativePosition">Относительная позиция точки создания</param>
 		/// <param name="MapNumber">Номер карты, позволяющий выполнять наполнение с прогрессом</param>
-		/// <param name="Rnd">ГПСЧ</param>
-		public static void WriteMapAchievement (StreamWriter SW, Point RelativePosition, Random Rnd,
+		public static void WriteMapAchievement (StreamWriter SW, Point RelativePosition, /*Random Rnd,*/
 			uint MapNumber)
 			{
 			// Расчёт параметров
@@ -455,7 +454,7 @@ check:
 				SW.Write ("\"monstertype\" \"monster_barney\"\n");
 				SW.Write ("\"teleport_sound\" \"ambience/teleport1.wav\"\n");
 				SW.Write ("\"teleport_sprite\" \"sprites/portal1.spr\"\n");
-				SW.Write ("\"angles\" \"0 " + Rnd.Next (360).ToString () + " 0\"\n");
+				SW.Write ("\"angles\" \"0 " + RDGenerics.RND.Next (360).ToString () + " 0\"\n");
 				SW.Write ("\"origin\" \"" + p.X.ToString () + " " + p.Y.ToString () + " 0\"\n");
 
 				SW.Write ("}\n{\n");

@@ -75,17 +75,45 @@ namespace RD_AAOW
 		/// </summary>
 		/// <param name="SW">Дескриптор файла карты</param>
 		/// <param name="RelativePosition">Относительная позиция точки создания</param>
-		public static void WriteMapWindow (StreamWriter SW, Point RelativePosition)
+		public static void WriteMapWindow (StreamWriter SW, Point RelativePosition, MapBarriersTypes MapBarrier)
 			{
-			// Запись стекла
+			// Запись преграды
+			bool glass;
+			switch (MapBarrier)
+				{
+				case MapBarriersTypes.OnlyGlass:
+				default:
+					glass = true;
+					break;
+
+				case MapBarriersTypes.OnlyFabric:
+					glass = false;
+					break;
+
+				case MapBarriersTypes.Both:
+					glass = RDGenerics.RND.Next (2) == 0;
+					break;
+				}
+
 			SW.Write ("{\n");
 			MapSupport.AddEntity (SW, "func_breakable");
-			SW.Write ("\"rendermode\" \"2\"\n");
-			SW.Write ("\"renderamt\" \"80\"\n");
-			SW.Write ("\"health\" \"20\"\n");
-			SW.Write ("\"material\" \"0\"\n");
 
-			WriteMapBarrier (SW, RelativePosition, BarrierTypes.Window, null);
+			if (glass)
+				{
+				SW.Write ("\"rendermode\" \"2\"\n");
+				SW.Write ("\"renderamt\" \"80\"\n");
+				SW.Write ("\"material\" \"0\"\n");
+				}
+			else
+				{
+				SW.Write ("\"rendermode\" \"0\"\n");
+				SW.Write ("\"renderamt\" \"0\"\n");
+				SW.Write ("\"material\" \"3\"\n");
+				}
+			SW.Write ("\"health\" \"20\"\n");
+
+			WriteMapBarrier (SW, RelativePosition, glass ? BarrierTypes.GlassWindow :
+				BarrierTypes.FabricWindow, null);
 
 			SW.Write ("}\n");
 			}
@@ -96,7 +124,9 @@ namespace RD_AAOW
 		/// <param name="SW">Дескриптор файла карты</param>
 		/// <param name="RelativePosition">Относительная позиция точки создания</param>
 		/// <param name="Sections">Инициализированные секции карты</param>
-		public static void WriteMapTransitSFX (StreamWriter SW, Point RelativePosition, Section[] Sections)
+		/// <param name="WallsAreRare">Флаг, указывающий на редкость стен (большие внутренние пространства)</param>
+		public static void WriteMapTransitSFX (StreamWriter SW, Point RelativePosition, Section[] Sections,
+			bool WallsAreRare)
 			{
 			// Определение необходимости установки звукового триггера
 			bool leftSideIsUnderSky, rightSideIsUnderSky;
@@ -119,8 +149,22 @@ namespace RD_AAOW
 				return;
 
 			// Запись звукового триггера
-			MapSupport.WriteMapSoundTrigger (SW, RelativePosition, true, (byte)(leftSideIsUnderSky ? 0 : 18),
-				(byte)(rightSideIsUnderSky ? 0 : 18));
+			byte leftRT, rightRT;
+			if (leftSideIsUnderSky)
+				leftRT = 0;
+			else if (WallsAreRare)
+				leftRT = 18;
+			else
+				leftRT = 17;
+
+			if (rightSideIsUnderSky)
+				rightRT = 0;
+			else if (WallsAreRare)
+				rightRT = 18;
+			else
+				rightRT = 17;
+
+			MapSupport.WriteMapSoundTrigger (SW, RelativePosition, true, leftRT, rightRT);
 			}
 
 		// Универсальный метод формирования шлюза
@@ -168,8 +212,9 @@ namespace RD_AAOW
 			// Нижняя рама окна
 			WindowFrameBottom,
 
-			// Окно
-			Window,
+			// Преграды
+			GlassWindow,
+			FabricWindow,
 
 			// Верхняя рама шлюза
 			GateFrameTop
@@ -242,11 +287,12 @@ namespace RD_AAOW
 						Texture, Texture, Texture, Texture };
 					break;
 
-				case BarrierTypes.Window:
+				case BarrierTypes.GlassWindow:
+				case BarrierTypes.FabricWindow:
+					string tex = (Type == BarrierTypes.GlassWindow) ? "Glass01" : "Fabric03";
 					z1 = "8";
 					z2 = (MapSupport.WallHeight - 8).ToString ();
-					textures = new string[] { "Glass01", "Glass01", "Glass01", "Glass01",
-						"Glass01", "Glass01", "Glass01", "Glass01" };
+					textures = new string[] { tex, tex, tex, tex, tex, tex, tex, tex };
 					rDelta = lDelta = 0;
 					mDelta = 4;
 					break;

@@ -159,6 +159,11 @@
 		/// Флаг разрешения монстр-мейкеров
 		/// </summary>
 		public bool MonsterMakers;
+
+		/// <summary>
+		/// Тип фильтрации перегородок между секциями карты
+		/// </summary>
+		public MapBarriersTypes BarriersType;
 		}
 
 	/// <summary>
@@ -180,5 +185,26 @@
 		/// Только варианты в помещении
 		/// </summary>
 		OnlyInside = 2
+		}
+
+	/// <summary>
+	/// Возможные варианты перегородок между секциями
+	/// </summary>
+	public enum MapBarriersTypes
+		{
+		/// <summary>
+		/// Только стеклянные
+		/// </summary>
+		OnlyGlass = 0,
+
+		/// <summary>
+		/// Только тканевые
+		/// </summary>
+		OnlyFabric = 1,
+
+		/// <summary>
+		/// Оба варианта
+		/// </summary>
+		Both = 2
 		}
 	}
