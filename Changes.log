@@ -1,5 +1,9 @@
 Randomaze: changes log
 
+ToDo:
+- Контроль разрешения на барнаклов при включённом случайном выборе этажности;
+- Эхо при двойной этажности должно становиться больше даже при большой плотности стен
+
 Version 5.3:
 • Implemented the barriers type flag: it allows you to select between transparent
   and opaque sections barriers;
