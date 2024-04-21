@@ -4,6 +4,11 @@ ToDo:
 - Контроль разрешения на барнаклов при включённом случайном выборе этажности;
 - Эхо при двойной этажности должно становиться больше даже при большой плотности стен
 
+Version 5.3.2:
+• Access checking method has been completely rewritten: now it will properly detect problems
+  with file / registry input / output and help user with fixing them;
+• Added the special section in the user guide for access troubleshooting
+
 Version 5.3.1:
 • Updated HypeHelp and Updates checker mechanics: this should fix apps freezing immediately
   after launch (on some PCs)

@@ -33,6 +33,9 @@ namespace RD_AAOW
 				return -2;
 			RDGenerics.ShowAbout (true);
 
+			if (!RDGenerics.AppHasAccessRights (true, false))
+				return -4;
+
 			// Запуск
 			if (RDLocale.CurrentLanguage != RDLanguages.en_us)
 				RDLocale.CurrentLanguage = RDLanguages.en_us;    // Защита от других языков
