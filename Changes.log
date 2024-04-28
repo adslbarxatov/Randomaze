@@ -1,13 +1,14 @@
 Randomaze: changes log
 
-ToDo:
-- Контроль разрешения на барнаклов при включённом случайном выборе этажности;
-- Эхо при двойной этажности должно становиться больше даже при большой плотности стен
-- Не работают клавиши Backspace и Delete при настройке клавиатуры
-- Необходимореализовать туман с изменением дальности видимости для врагов
-- Реализовать две кнопки на выбор (вторая включает телепорт)
-- Разрешить висячие турели для двухэтажных уровней
-- ESRM: проверить, не происходит ли переопределение настроек при генерации первой карты (должно происходить только временное назначение пониженной сложности)
+Version 5.4:
+• Implemented the fog density parameter;
+• Implemented the secondary exit button;
+• The distance of visibility for enemies now depends on the fog intensity;
+• Barnackles can now be enabled when the randomization of floors quantity is checked;
+• Added large echo for two-floors maps;
+• Ceiling-oriented turrets are now available on two-floor maps;
+• The settings storage has been rewritten;
+• Fixed the missing texture for the axe in the manual weapon selecion menu
 
 Version 5.3.2:
 • Access checking method has been completely rewritten: now it will properly detect problems

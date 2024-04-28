@@ -295,7 +295,9 @@ namespace RD_AAOW
 		/// <param name="SW">Дескриптор файла карты</param>
 		/// <param name="RelativePosition">Относительная позиция точки выхода</param>
 		/// <param name="MapNumber">Номер текущей карты</param>
-		public static void WriteMapEndPoint (StreamWriter SW, Point RelativePosition, uint MapNumber)
+		/// <param name="TeleportGate">Флаг указывает на наличие второго шлюза перед выходом</param>
+		public static void WriteMapEndPoint (StreamWriter SW, Point RelativePosition, uint MapNumber,
+			bool TeleportGate)
 			{
 			// Защита
 			if (MapNumber >= MapsLimit)
@@ -338,6 +340,37 @@ namespace RD_AAOW
 			SW.Write ("}\n");
 
 			WriteMapPortal (SW, RelativePosition, true);
+
+			// Второй шлюз
+			if (!TeleportGate)
+				return;
+
+			SW.Write ("{\n");
+			AddEntity (SW, "func_door");
+			SW.Write ("\"angles\" \"90 0 0\"\n");
+			SW.Write ("\"speed\" \"70\"\n");
+			SW.Write ("\"movesnd\" \"2\"\n");
+			SW.Write ("\"stopsnd\" \"11\"\n");
+			SW.Write ("\"wait\" \"-1\"\n");
+			SW.Write ("\"lip\" \"1\"\n");
+			if (MapNumber <= MapsLimit)
+				SW.Write ("\"targetname\" \"MGate" + BuildMapName (MapNumber) + "\"\n");
+
+			string tex = "Metal06";
+			WriteBlock (SW, (p.X - 12).ToString (), (p.Y - 12).ToString (), "0",
+				(p.X - 8).ToString (), (p.Y - 8).ToString (), WallHeight.ToString (),
+				new string[] { tex, tex, tex, tex, tex, tex }, BlockTypes.Default);
+			WriteBlock (SW, (p.X + 8).ToString (), (p.Y - 12).ToString (), "0",
+				(p.X + 12).ToString (), (p.Y - 8).ToString (), WallHeight.ToString (),
+				new string[] { tex, tex, tex, tex, tex, tex }, BlockTypes.Default);
+			WriteBlock (SW, (p.X - 12).ToString (), (p.Y + 8).ToString (), "0",
+				(p.X - 8).ToString (), (p.Y + 12).ToString (), WallHeight.ToString (),
+				new string[] { tex, tex, tex, tex, tex, tex }, BlockTypes.Default);
+			WriteBlock (SW, (p.X + 8).ToString (), (p.Y + 8).ToString (), "0",
+				(p.X + 12).ToString (), (p.Y + 12).ToString (), WallHeight.ToString (),
+				new string[] { tex, tex, tex, tex, tex, tex }, BlockTypes.Default);
+
+			SW.Write ("}\n");
 			}
 
 		// Метод создаёт портал на карте
@@ -371,8 +404,10 @@ namespace RD_AAOW
 		/// <param name="MapNumber">Номер текущей карты</param>
 		/// <param name="GravityLevel">Уровень гравитации на карте (10 = 100%)</param>
 		/// <param name="IsUnderSky">Флаг указывает, расположена ли точка входа под небом</param>
+		/// <param name="FogLevel">Уровень тумана на карте (10 = 100%)</param>
+		/// <param name="WallsAreRare">Флаг указывает на редкость стен на карте</param>
 		public static void WriteMapEntryPoint (StreamWriter SW, Point RelativePosition, uint MapNumber,
-			uint GravityLevel, bool IsUnderSky)
+			uint GravityLevel, uint FogLevel, bool IsUnderSky, bool WallsAreRare)
 			{
 			// Расчёт параметров
 			Point p = EvaluateAbsolutePosition (RelativePosition);
@@ -451,7 +486,7 @@ namespace RD_AAOW
 			// Гравитационный триггер
 			SW.Write ("{\n");
 			AddEntity (SW, "trigger_gravity");
-			SW.Write ("\"gravity\" \"" + (GravityLevel * 80).ToString () + "\"\n"); // Новая возможность движка
+			SW.Write ("\"gravity\" \"" + (GravityLevel * 80).ToString () + "\"\n");
 
 			WriteBlock (SW, (p.X - 32).ToString (), (p.Y - 32).ToString (), "24",
 				(p.X + 32).ToString (), (p.Y + 32).ToString (), "28",
@@ -460,8 +495,33 @@ namespace RD_AAOW
 
 			SW.Write ("}\n");
 
+			// Триггер тумана
+			SW.Write ("{\n");
+			AddEntity (SW, "trigger_fog");
+			SW.Write ("\"renderamt\" \"" + ((uint)(255.0 * FogLevel / 10.0)).ToString () + "\"\n");
+			SW.Write ("\"rendercolor\" \"" + (224 + RDGenerics.RND.Next (32)).ToString () + " " +
+				(224 + RDGenerics.RND.Next (32)).ToString () + " " +
+				(224 + RDGenerics.RND.Next (32)).ToString () + "\"\n");
+			SW.Write ("\"enablingMove\" \"0\"\n");
+
+			WriteBlock (SW, (p.X - 32).ToString (), (p.Y - 32).ToString (), "32",
+				(p.X + 32).ToString (), (p.Y + 32).ToString (), "36",
+				new string[] { TriggerTexture, TriggerTexture, TriggerTexture, TriggerTexture,
+						TriggerTexture, TriggerTexture }, BlockTypes.Default);
+
+			SW.Write ("}\n");
+
 			// Звуковой триггер
-			WriteMapSoundTrigger (SW, RelativePosition, false, (byte)(IsUnderSky ? 0 : 18), 0);
+			byte rt;
+			byte offset = (byte)(TwoFloors ? 1 : 0);
+			if (IsUnderSky)
+				rt = 0;
+			else if (WallsAreRare)
+				rt = (byte)(18 + offset);
+			else
+				rt = (byte)(17 + offset);
+
+			WriteMapSoundTrigger (SW, RelativePosition, false, rt, 0);
 
 			// Остальное
 			WriteMapPortal (SW, RelativePosition, false);
@@ -601,8 +661,9 @@ namespace RD_AAOW
 		/// <param name="NearbyWalls">Список окружающих стен</param>
 		/// <param name="RelativePosition">Относительная позиция точки выхода</param>
 		/// <param name="MapNumber">Номер текущей карты, используемый для создания уникального имени кнопки</param>
+		/// <param name="TeleportButton">Флаг, указывающий на второй тип кнопки (включение телепорта)</param>
 		public static void WriteMapButton (StreamWriter SW, Point RelativePosition, List<CPResults> NearbyWalls,
-			uint MapNumber/*, Random Rnd*/)
+			uint MapNumber, bool TeleportButton)
 			{
 			// Расчёт параметров
 			Point p = EvaluateAbsolutePosition (RelativePosition);
@@ -610,14 +671,26 @@ namespace RD_AAOW
 			// Запись
 			SW.Write ("{\n");
 			AddEntity (SW, "func_button");
-			SW.Write ("\"target\" \"Gate" + BuildMapName (MapNumber) + "\"\n");
 			SW.Write ("\"spawnflags\" \"1\"\n");
 			SW.Write ("\"delay\" \"1\"\n");
 			SW.Write ("\"speed\" \"50\"\n");
-			SW.Write ("\"sounds\" \"11\"\n");
+
+			if (TeleportButton)
+				{
+				SW.Write ("\"target\" \"MGate" + BuildMapName (MapNumber) + "\"\n");
+				SW.Write ("\"sounds\" \"8\"\n");
+				}
+			else
+				{
+				SW.Write ("\"target\" \"Gate" + BuildMapName (MapNumber) + "\"\n");
+				SW.Write ("\"sounds\" \"11\"\n");
+				}
+
 			SW.Write ("\"wait\" \"-1\"\n");
 
-			WriteMapFurniture (SW, RelativePosition, FurnitureTypes.ExitButton, NearbyWalls, "Metal06");
+			WriteMapFurniture (SW, RelativePosition,
+				TeleportButton ? FurnitureTypes.ExitTeleportButton : FurnitureTypes.ExitGateButton,
+				NearbyWalls, "Metal06");
 
 			SW.Write ("}\n{\n");
 			AddEntity (SW, "trigger_autosave");
@@ -1059,7 +1132,7 @@ namespace RD_AAOW
 		/// <param name="WallTexture">Текстура окружающей стены</param>
 		/// <param name="FurnitureType">Индекс мебели</param>
 		public static void WriteMapFurniture (StreamWriter SW, Point RelativePosition, FurnitureTypes FurnitureType,
-			List<CPResults> NearbyWalls, string WallTexture/*, Random Rnd*/)
+			List<CPResults> NearbyWalls, string WallTexture)
 			{
 			// Расчёт параметров
 			Point p = EvaluateAbsolutePosition (RelativePosition);

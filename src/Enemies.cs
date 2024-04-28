@@ -20,7 +20,7 @@ namespace RD_AAOW
 		/// <param name="SecondFloor">Флаг установки врага на внутренней площадке</param>
 		/// <param name="UnderSky">Флаг расположения под небом</param>
 		/// <param name="AllowMonsterMakers">Флаг разрешения монстр-мейкеров</param>
-		public static void WriteMapEnemy (StreamWriter SW, Point RelativePosition, /*Random Rnd,*/
+		public static void WriteMapEnemy (StreamWriter SW, Point RelativePosition,
 			uint MapNumber, string Permissions, bool SecondFloor, bool UnderSky, bool AllowMonsterMakers)
 			{
 			// Расчёт параметров
@@ -170,6 +170,7 @@ namespace RD_AAOW
 						if (mm)
 							goto check; // Недопустим для монстрмейкера
 
+						bool turret = true;
 						switch (RDGenerics.RND.Next (3))
 							{
 							case 0:
@@ -182,11 +183,21 @@ namespace RD_AAOW
 
 							case 2:
 								MapSupport.AddEntity (SW, "monster_sentry");
+								turret = false;
 								break;
 							}
 
+						if (MapSupport.TwoFloors && !UnderSky && turret && (RDGenerics.RND.Next (2) == 0))
+							{
+							SW.Write ("\"orientation\" \"1\"\n");
+							z = MapSupport.WallHeight;
+							}
+						else
+							{
+							SW.Write ("\"orientation\" \"0\"\n");
+							}
+
 						SW.Write ("\"spawnflags\" \"32\"\n");
-						SW.Write ("\"orientation\" \"0\"\n");
 						countEnemy = true;
 						}
 					else
@@ -393,8 +404,9 @@ namespace RD_AAOW
 		/// <param name="SW">Дескриптор файла карты</param>
 		/// <param name="RelativePosition">Относительная позиция точки создания</param>
 		/// <param name="MapNumber">Номер карты, позволяющий выполнять наполнение с прогрессом</param>
-		public static void WriteMapAchievement (StreamWriter SW, Point RelativePosition, /*Random Rnd,*/
-			uint MapNumber)
+		/// <param name="TeleportGate">Флаг указывает на наличие второго шлюза</param>
+		public static void WriteMapAchievement (StreamWriter SW, Point RelativePosition, uint MapNumber,
+			bool TeleportGate)
 			{
 			// Расчёт параметров
 			Point p = MapSupport.EvaluateAbsolutePosition (RelativePosition);
@@ -445,19 +457,27 @@ namespace RD_AAOW
 				SW.Write ("\"health\" \"" + realRatsQuantity.ToString () + "\"\n");
 				SW.Write ("\"origin\" \"" + p.X.ToString () + " " + p.Y.ToString () + " 80\"\n");
 
-				SW.Write ("}\n{\n");
-				MapSupport.AddEntity (SW, "monstermaker");
-				SW.Write ("\"targetname\" \"Achi" + mn + "R2\"\n");
-				SW.Write ("\"monstercount\" \"1\"\n");
-				SW.Write ("\"delay\" \"-1\"\n");
-				SW.Write ("\"m_imaxlivechildren\" \"1\"\n");
-				SW.Write ("\"monstertype\" \"monster_barney\"\n");
-				SW.Write ("\"teleport_sound\" \"ambience/teleport1.wav\"\n");
-				SW.Write ("\"teleport_sprite\" \"sprites/portal1.spr\"\n");
-				SW.Write ("\"angles\" \"0 " + RDGenerics.RND.Next (360).ToString () + " 0\"\n");
-				SW.Write ("\"origin\" \"" + p.X.ToString () + " " + p.Y.ToString () + " 0\"\n");
+				SW.Write ("}\n");
 
-				SW.Write ("}\n{\n");
+				// Иначе Барни застрянет во втором шлюзе
+				if (!TeleportGate)
+					{
+					SW.Write ("{\n");
+					MapSupport.AddEntity (SW, "monstermaker");
+					SW.Write ("\"targetname\" \"Achi" + mn + "R2\"\n");
+					SW.Write ("\"monstercount\" \"1\"\n");
+					SW.Write ("\"delay\" \"-1\"\n");
+					SW.Write ("\"m_imaxlivechildren\" \"1\"\n");
+					SW.Write ("\"monstertype\" \"monster_barney\"\n");
+					SW.Write ("\"teleport_sound\" \"ambience/teleport1.wav\"\n");
+					SW.Write ("\"teleport_sprite\" \"sprites/portal1.spr\"\n");
+					SW.Write ("\"angles\" \"0 " + RDGenerics.RND.Next (360).ToString () + " 0\"\n");
+					SW.Write ("\"origin\" \"" + p.X.ToString () + " " + p.Y.ToString () + " 0\"\n");
+
+					SW.Write ("}\n");
+					}
+
+				SW.Write ("{\n");
 				MapSupport.AddEntity (SW, "env_message");
 				SW.Write ("\"spawnflags\" \"2\"\n");
 				SW.Write ("\"targetname\" \"Achi" + mn + "R2\"\n");

@@ -10,7 +10,8 @@ namespace RD_AAOW
 	/// </summary>
 	public partial class SettingsForm: Form
 		{
-		/// <summary>
+		// Переменные
+		/*/// <summary>
 		/// Возвращает изменённые настройки приложения
 		/// </summary>
 		public ESRMSettings Settings
@@ -19,7 +20,7 @@ namespace RD_AAOW
 				{
 				return settings;
 				}
-			}
+			}*/
 		private ESRMSettings settings;
 
 		// Переменные
@@ -52,7 +53,8 @@ namespace RD_AAOW
 
 			MazeSizeFlag.Text = EnemiesDensityFlag.Text = ItemsDensityFlag.Text =
 				CratesDensityFlag.Text = WallsDensityFlag.Text = LightingFlag.Text =
-				GravityFlag.Text = RandomizeFloorsFlag.Text = RDLocale.GetText ("SettingsForm_Random");
+				GravityFlag.Text = RandomizeFloorsFlag.Text = FogFlag.Text =
+				RDLocale.GetText ("SettingsForm_Random");
 
 			this.TopMost = true;
 			this.Text = ProgramDescription.AssemblyTitle + ": " + RDLocale.GetText ("SettingsForm_T");
@@ -62,38 +64,43 @@ namespace RD_AAOW
 			// Разбор настроек
 			settings = OldSettings;
 
-			MazeSizeTrack.Maximum = (int)settings.MaximumMazeSizeCoefficient;
+			MazeSizeTrack.Maximum = (int)ESRMSettings.MaximumMazeSizeCoefficient;
 			MazeSizeTrack.Value = (int)settings.MazeSizeCoefficient;
 			MazeSizeFlag.Checked = MazeSizeFlag.Enabled = false;    // settings.RandomMazeSizeCoefficient;
 			MazeSizeFlag_CheckedChanged (null, null);
 
-			EnemiesDensityTrack.Maximum = (int)settings.MaximumEnemiesDensityCoefficient;
+			EnemiesDensityTrack.Maximum = (int)ESRMSettings.MaximumEnemiesDensityCoefficient;
 			EnemiesDensityTrack.Value = (int)settings.EnemiesDensityCoefficient;
 			EnemiesDensityFlag.Checked = settings.RandomEnemiesDensityCoefficient;
 			EnemiesDensityFlag_CheckedChanged (null, null);
 
-			ItemsDensityTrack.Maximum = (int)settings.MaximumItemsDensityCoefficient;
+			ItemsDensityTrack.Maximum = (int)ESRMSettings.MaximumItemsDensityCoefficient;
 			ItemsDensityTrack.Value = (int)settings.ItemsDensityCoefficient;
 			ItemsDensityFlag.Checked = settings.RandomItemsDensityCoefficient;
 			ItemsDensityFlag_CheckedChanged (null, null);
 
-			WallsDensityTrack.Maximum = (int)settings.MaximumWallsDensityCoefficient;
+			WallsDensityTrack.Maximum = (int)ESRMSettings.MaximumWallsDensityCoefficient;
 			WallsDensityTrack.Value = (int)settings.WallsDensityCoefficient;
-			WallsDensityFlag.Checked = WallsDensityFlag.Enabled = false;    // settings.RandomWallsDensityCoefficient;
+			WallsDensityFlag.Checked = WallsDensityFlag.Enabled = false;
 			WallsDensityFlag_CheckedChanged (null, null);
 
-			LightingTrack.Maximum = (int)settings.MaximumLightingCoefficient;
+			LightingTrack.Maximum = (int)ESRMSettings.MaximumLightingCoefficient;
 			LightingTrack.Value = (int)settings.LightingCoefficient;
 			LightingFlag.Checked = settings.RandomLightingCoefficient;
 			LightingFlag_CheckedChanged (null, null);
 
-			GravityTrack.Maximum = (int)settings.MaximumGravityCoefficient;
+			GravityTrack.Maximum = (int)ESRMSettings.MaximumGravityCoefficient;
 			GravityTrack.Value = (int)settings.GravityCoefficient;
 			GravityFlag.Checked = settings.RandomGravityCoefficient;
 			GravityFlag_CheckedChanged (null, null);
 
-			ButtonModeFlag.Checked = settings.ButtonMode;
-			MonsterMakerFlag.Checked = settings.MonsterMakers;
+			FogTrack.Maximum = (int)ESRMSettings.MaximumFogCoefficient;
+			FogTrack.Value = (int)settings.FogCoefficient + 1;
+			FogFlag.Checked = settings.RandomFogCoefficient;
+			FogFlag_CheckedChanged (null, null);
+
+			/*ButtonModeFlag.Checked = settings.ButtonMode;*/
+			MonsterMakerFlag.Checked = settings.AllowMonsterMakers;
 
 			for (int i = 0; i < EnemiesSupport.EnemiesPermissionsKeys.Length; i++)
 				enemiesFlags.Add ((CheckBox)this.Controls.Find ("EnemyFlag" + (i + 1).ToString ("D2"), true)[0]);
@@ -117,35 +124,24 @@ namespace RD_AAOW
 				}
 			EnemyFlag05_CheckedChanged (null, null);
 
-			/*switch (settings.SectionType)
-				{
-				default:
-				case MapSectionTypes.AllTypes:
-					AllTypesRadio.Checked = true;
-					break;
-
-				case MapSectionTypes.OnlyUnderSky:
-					OnlySkyRadio.Checked = true;
-					break;
-
-				case MapSectionTypes.OnlyInside:
-					OnlyInsideRadio.Checked = true;
-					break;
-				}*/
-			for (int i = 0; i < 3; i++)
+			for (int i = (int)MapSectionTypes.AllTypes; i <= (int)MapSectionTypes.OnlyInside; i++)
 				SkyCombo.Items.Add (RDLocale.GetText ("GenericTab_SkyCombo" + i.ToString ("D2")));
-			SkyCombo.SelectedIndex = (int)settings.SectionType;
+			SkyCombo.SelectedIndex = (int)settings.SectionType - 1;
 
-			for (int i = 0; i < 3; i++)
+			for (int i = (int)MapBarriersTypes.OnlyGlass; i <= (int)MapBarriersTypes.Both; i++)
 				BarrierCombo.Items.Add (RDLocale.GetText ("GenericTab_BarrierCombo" + i.ToString ("D2")));
-			BarrierCombo.SelectedIndex = (int)settings.BarriersType;
+			BarrierCombo.SelectedIndex = (int)settings.BarriersType - 1;
+
+			for (int i = (int)MapButtonsTypes.NoButtons; i <= (int)MapButtonsTypes.GateAndTeleport; i++)
+				ButtonCombo.Items.Add (RDLocale.GetText ("GenericTab_ButtonCombo" + i.ToString ("D2")));
+			ButtonCombo.SelectedIndex = (int)settings.ButtonMode - 1;
 
 			AllowItemsForSecondFloor.Checked = settings.AllowItemsForSecondFloor;
 			TwoFloorsFlag.Checked = settings.TwoFloors;
 			RandomizeFloorsFlag.Checked = settings.RandomizeFloorsQuantity;
 			TwoFloorsFlag_CheckedChanged (null, null);
 
-			CratesDensityTrack.Maximum = (int)settings.MaximumCratesDensityCoefficient;
+			CratesDensityTrack.Maximum = (int)ESRMSettings.MaximumCratesDensityCoefficient;
 			CratesDensityTrack.Value = (int)settings.CratesDensityCoefficient;
 			CratesDensityFlag.Checked = settings.RandomCratesDensityCoefficient;
 
@@ -197,35 +193,35 @@ namespace RD_AAOW
 			settings.GravityCoefficient = (uint)GravityTrack.Value;
 			settings.RandomGravityCoefficient = GravityFlag.Checked;
 
-			settings.ButtonMode = ButtonModeFlag.Checked;
-			settings.MonsterMakers = MonsterMakerFlag.Checked;
+			settings.FogCoefficient = (uint)FogTrack.Value - 1;
+			settings.RandomFogCoefficient = FogFlag.Checked;
 
-			settings.EnemiesPermissionLine = "";
+			/*settings.ButtonMode = ButtonModeFlag.Checked;*/
+			settings.AllowMonsterMakers = MonsterMakerFlag.Checked;
+
+			string s = "";
 			for (int i = 0; i < EnemiesSupport.EnemiesPermissionsKeys.Length; i++)
 				{
 				if (enemiesFlags[i].Checked)
-					settings.EnemiesPermissionLine += EnemiesSupport.EnemiesPermissionsKeys[i];
+					s += EnemiesSupport.EnemiesPermissionsKeys[i];
 				else
-					settings.EnemiesPermissionLine += "-";
+					s += "-";
 				}
+			settings.EnemiesPermissionLine = s;
 
-			settings.ItemsPermissionLine = "";
+			s = "";
 			for (int i = 0; i < ItemsSupport.ItemsPermissionsKeys.Length; i++)
 				{
 				if (itemsFlags[i].Checked)
-					settings.ItemsPermissionLine += ItemsSupport.ItemsPermissionsKeys[i];
+					s += ItemsSupport.ItemsPermissionsKeys[i];
 				else
-					settings.ItemsPermissionLine += "-";
+					s += "-";
 				}
+			settings.ItemsPermissionLine = s;
 
-			/*if (OnlyInsideRadio.Checked)
-				settings.SectionType = MapSectionTypes.OnlyInside;
-			else if (OnlySkyRadio.Checked)
-				settings.SectionType = MapSectionTypes.OnlyUnderSky;
-			else
-				settings.SectionType = MapSectionTypes.AllTypes;*/
-			settings.SectionType = (MapSectionTypes)SkyCombo.SelectedIndex;
-			settings.BarriersType = (MapBarriersTypes)BarrierCombo.SelectedIndex;
+			settings.SectionType = (MapSectionTypes)(SkyCombo.SelectedIndex + 1);
+			settings.BarriersType = (MapBarriersTypes)(BarrierCombo.SelectedIndex + 1);
+			settings.ButtonMode = (MapButtonsTypes)(ButtonCombo.SelectedIndex + 1);
 
 			settings.TwoFloors = TwoFloorsFlag.Checked;
 			settings.AllowItemsForSecondFloor = AllowItemsForSecondFloor.Checked;
@@ -285,23 +281,29 @@ namespace RD_AAOW
 			GravityTrack.BackColor = GravityTrack.Enabled ? enabledColor : disabledColor;
 			}
 
+		private void FogFlag_CheckedChanged (object sender, EventArgs e)
+			{
+			FogTrack.Enabled = !FogFlag.Checked;
+			FogTrack.BackColor = FogTrack.Enabled ? enabledColor : disabledColor;
+			}
+
 		// Ограничение суммарного коэффициента размерности лабиринта и плотности стен
 		private int sizeWallsDifferenceLimit = 5;
 		private void MazeSizeTrack_Scroll (object sender, EventArgs e)
 			{
-			int coeff = (int)settings.MaximumWallsDensityCoefficient - WallsDensityTrack.Value + MazeSizeTrack.Value;
-			int limit = (int)(settings.MaximumMazeSizeCoefficient + settings.MaximumWallsDensityCoefficient);
+			int coeff = (int)ESRMSettings.MaximumWallsDensityCoefficient - WallsDensityTrack.Value + MazeSizeTrack.Value;
+			int limit = (int)(ESRMSettings.MaximumMazeSizeCoefficient + ESRMSettings.MaximumWallsDensityCoefficient);
 
 			if (coeff < limit - sizeWallsDifferenceLimit)
 				return;
 
 			TrackBar tb = (TrackBar)sender;
 			if (tb.Name == MazeSizeTrack.Name)
-				WallsDensityTrack.Value = (int)settings.MaximumWallsDensityCoefficient -
+				WallsDensityTrack.Value = (int)ESRMSettings.MaximumWallsDensityCoefficient -
 					(limit - sizeWallsDifferenceLimit - MazeSizeTrack.Value);
 			else
 				MazeSizeTrack.Value = limit - sizeWallsDifferenceLimit -
-					((int)settings.MaximumWallsDensityCoefficient - WallsDensityTrack.Value);
+					((int)ESRMSettings.MaximumWallsDensityCoefficient - WallsDensityTrack.Value);
 			}
 
 		// Включение / выключение ящиков
@@ -315,7 +317,7 @@ namespace RD_AAOW
 		// Включение дополнительных монстров
 		private void TwoFloorsFlag_CheckedChanged (object sender, EventArgs e)
 			{
-			if (TwoFloorsFlag.Checked && !RandomizeFloorsFlag.Checked)
+			if (TwoFloorsFlag.Checked || RandomizeFloorsFlag.Checked)
 				EnemyFlag08.Enabled = AllowItemsForSecondFloor.Enabled = true;
 			else
 				EnemyFlag08.Enabled = EnemyFlag08.Checked = AllowItemsForSecondFloor.Enabled =

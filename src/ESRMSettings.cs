@@ -1,169 +1,713 @@
-﻿namespace RD_AAOW
+﻿using System;
+
+namespace RD_AAOW
 	{
 	/// <summary>
 	/// Структура описывает настраиваемые параметры приложения
 	/// </summary>
-	public struct ESRMSettings
+	public class ESRMSettings
 		{
 		/// <summary>
-		/// Масштабный коэффициент размера лабиринта
+		/// Конструктор. Инициализирует хранилище настроек и передаёт ему команду, полученную от движка
 		/// </summary>
-		public uint MazeSizeCoefficient;
+		/// <param name="SettingFromEngineToken">Псевдоним параметра, переданный от движка</param>
+		/// <param name="SettingFromEngineValue">Значение параметра, переданное от движка</param>
+		public ESRMSettings (string SettingFromEngineToken, string SettingFromEngineValue)
+			{
+			// Сохранение параметров
+			if (!string.IsNullOrWhiteSpace (SettingFromEngineToken) &&
+				!string.IsNullOrWhiteSpace (SettingFromEngineValue))
+				{
+				settingFromEngineToken = SettingFromEngineToken;
+				settingFromEngineValue = SettingFromEngineValue;
+				}
+
+			// Прогрузка значений
+			_ = MazeSizeCoefficient;
+			_ = EnemiesDensityCoefficient;
+			_ = ItemsDensityCoefficient;
+			_ = WallsDensityCoefficient;
+			_ = ButtonMode;
+			_ = CratesDensityCoefficient;
+			_ = EnemiesPermissionLine;
+			_ = LightingCoefficient;
+			_ = SectionType;
+			_ = TwoFloors;
+			_ = AllowExplosiveCrates;
+			_ = AllowItemsCrates;
+			_ = AllowItemsForSecondFloor;
+			_ = ItemsPermissionLine;
+			_ = GravityCoefficient;
+			_ = FogCoefficient;
+			_ = AllowMonsterMakers;
+			_ = BarriersType;
+			_ = CleanupOldMaps;
+
+			// Защита
+			if (!TwoFloors && !RandomizeFloorsQuantity)
+				EnemiesPermissionLine = EnemiesSupport.RemoveBarnacle (EnemiesPermissionLine);
+			}
+		private string settingFromEngineToken = "";
+		private string settingFromEngineValue = "";
 
 		/// <summary>
-		/// Случайный масштабный коэффициент размера лабиринта
+		/// Возвращает или задаёт масштабный коэффициент размера лабиринта
 		/// </summary>
-		public bool RandomMazeSizeCoefficient;
+		public uint MazeSizeCoefficient
+			{
+			get
+				{
+				return GetSettingsValue (mazeSizeCoefficientPar,
+					MaximumMazeSizeCoefficient, 4, ref mazeSizeCoefficient);
+				}
+			set
+				{
+				SetSettingsValue (mazeSizeCoefficientPar, ref mazeSizeCoefficient, value);
+				}
+			}
+		private int mazeSizeCoefficient = int.MaxValue;
+		private const string mazeSizeCoefficientPar = "MS";
+
+		// Метод загружает настройку и контролирует её вхождение в диапазон
+		private uint GetSettingsValue (string ValueToken, uint ValueMaximum, uint DefaultValue, ref int Value)
+			{
+			// Отсечка, если загрузка настройки уже выполнялась
+			if (Value < int.MaxValue)
+				return (uint)Math.Abs (Value);
+
+			// Получение настройки
+			int v;
+			int e = 0;
+			try
+				{
+				v = int.Parse (RDGenerics.GetAppSettingsValue (ValueToken));
+				}
+			catch
+				{
+				v = (int)DefaultValue;
+				}
+
+			try
+				{
+				if (settingFromEngineToken == ValueToken)
+					e = int.Parse (settingFromEngineValue);
+				}
+			catch { }
+
+			// Получение значения от движка с сохранением
+			if ((settingFromEngineToken == ValueToken) && (e > 0))
+				{
+				Value = (int)MapSupport.InboundValue (e, 1, ValueMaximum);
+				SetSettingsValue (ValueToken, ref Value, uint.MaxValue);
+				}
+
+			// Рандомизация
+			else if (v < 0)
+				{
+				Value = -RDGenerics.RND.Next (1, (int)ValueMaximum + 1);
+				}
+
+			// Простое присвоение
+			else
+				{
+				Value = (int)MapSupport.InboundValue (v, 1, ValueMaximum);
+				}
+
+			return (uint)Math.Abs (Value);
+			}
+
+		// Метод сохраняет настройку
+		private void SetSettingsValue (string ValueToken, ref int Value, uint NewValue)
+			{
+			if (NewValue < uint.MaxValue)
+				{
+				if (Value < 0)
+					Value = -(int)NewValue;
+				else
+					Value = (int)NewValue;
+				}
+
+			RDGenerics.SetAppSettingsValue (ValueToken, Value.ToString ());
+			}
 
 		/// <summary>
-		/// Ограничение коэффициента размера лабиринта
+		/// Возвращает или задаёт флаг случайного масштабного коэффициента размера лабиринта
 		/// </summary>
-		public uint MaximumMazeSizeCoefficient;
+		public bool RandomMazeSizeCoefficient
+			{
+			get
+				{
+				return (mazeSizeCoefficient < 0);
+				}
+			set
+				{
+				SetSettingsValue (mazeSizeCoefficientPar, ref mazeSizeCoefficient, value);
+				}
+			}
+
+		// Метод сохраняет рандомизацию настройки
+		private void SetSettingsValue (string ValueToken, ref int Value, bool Randomize)
+			{
+			Value = Math.Abs (Value) * (Randomize ? -1 : 1);
+			SetSettingsValue (ValueToken, ref Value, uint.MaxValue);
+			}
 
 		/// <summary>
-		/// Коэффициент плотности врагов
+		/// Возвращает ограничение коэффициента размера лабиринта
 		/// </summary>
-		public uint EnemiesDensityCoefficient;
+		public const uint MaximumMazeSizeCoefficient = 8;
+
+
 
 		/// <summary>
-		/// Случайный коэффициент плотности врагов
+		/// Возвращает или задаёт коэффициент плотности врагов
 		/// </summary>
-		public bool RandomEnemiesDensityCoefficient;
+		public uint EnemiesDensityCoefficient
+			{
+			get
+				{
+				return GetSettingsValue (enemiesDensityCoefficientPar,
+					MaximumEnemiesDensityCoefficient, 4, ref enemiesDensityCoefficient);
+				}
+			set
+				{
+				SetSettingsValue (enemiesDensityCoefficientPar, ref enemiesDensityCoefficient, value);
+				}
+			}
+		private int enemiesDensityCoefficient = int.MaxValue;
+		private const string enemiesDensityCoefficientPar = "DF";
 
 		/// <summary>
-		/// Ограничение коэффициента плотности врагов
+		/// Возвращает или задаёт флаг случайного коэффициента плотности врагов
 		/// </summary>
-		public uint MaximumEnemiesDensityCoefficient;
+		public bool RandomEnemiesDensityCoefficient
+			{
+			get
+				{
+				return (enemiesDensityCoefficient < 0);
+				}
+			set
+				{
+				SetSettingsValue (enemiesDensityCoefficientPar, ref enemiesDensityCoefficient, value);
+				}
+			}
 
 		/// <summary>
-		/// Коэффициент плотности собираемых объектов
+		/// Возвращает ограничение коэффициента плотности врагов
 		/// </summary>
-		public uint ItemsDensityCoefficient;
+		public const uint MaximumEnemiesDensityCoefficient = 8;
+
+
 
 		/// <summary>
-		/// Случайный коэффициент плотности собираемых объектов
+		/// Возвращает или задаёт коэффициент плотности собираемых объектов
 		/// </summary>
-		public bool RandomItemsDensityCoefficient;
+		public uint ItemsDensityCoefficient
+			{
+			get
+				{
+				return GetSettingsValue (itemsDensityCoefficientPar,
+					MaximumItemsDensityCoefficient, 5, ref itemsDensityCoefficient);
+				}
+			set
+				{
+				SetSettingsValue (itemsDensityCoefficientPar, ref itemsDensityCoefficient, value);
+				}
+			}
+		private int itemsDensityCoefficient = int.MaxValue;
+		private const string itemsDensityCoefficientPar = "ID";
 
 		/// <summary>
-		/// Ограничение коэффициента плотности собираемых объектов
+		/// Возвращает или задаёт флаг случайного коэффициента плотности собираемых объектов
 		/// </summary>
-		public uint MaximumItemsDensityCoefficient;
+		public bool RandomItemsDensityCoefficient
+			{
+			get
+				{
+				return (itemsDensityCoefficient < 0);
+				}
+			set
+				{
+				SetSettingsValue (itemsDensityCoefficientPar, ref itemsDensityCoefficient, value);
+				}
+			}
 
 		/// <summary>
-		/// Коэффициент насыщенности лабиринта стенами
+		/// Возвращает ограничение коэффициента плотности собираемых объектов
 		/// </summary>
-		public uint WallsDensityCoefficient;
+		public const uint MaximumItemsDensityCoefficient = 8;
+
+
 
 		/// <summary>
-		/// Случайный коэффициент насыщенности лабиринта стенами
+		/// Возвращает или задаёт коэффициент насыщенности лабиринта стенами
 		/// </summary>
-		public bool RandomWallsDensityCoefficient;
+		public uint WallsDensityCoefficient
+			{
+			get
+				{
+				return GetSettingsValue (wallsDensityCoefficientPar,
+					MaximumWallsDensityCoefficient, 5, ref wallsDensityCoefficient);
+				}
+			set
+				{
+				SetSettingsValue (wallsDensityCoefficientPar, ref wallsDensityCoefficient, value);
+				}
+			}
+		private int wallsDensityCoefficient = int.MaxValue;
+		private const string wallsDensityCoefficientPar = "WD";
 
 		/// <summary>
-		/// Ограничение коэффициента насыщенности лабиринта стенами
+		/// Возвращает или задаёт флаг случайного коэффициента насыщенности лабиринта стенами
 		/// </summary>
-		public uint MaximumWallsDensityCoefficient;
+		public bool RandomWallsDensityCoefficient
+			{
+			get
+				{
+				return (wallsDensityCoefficient < 0);
+				}
+			set
+				{
+				SetSettingsValue (wallsDensityCoefficientPar, ref wallsDensityCoefficient, value);
+				}
+			}
 
 		/// <summary>
-		/// Режим блокировки выхода кнопкой
+		/// Возвращает ограничение коэффициента насыщенности лабиринта стенами
 		/// </summary>
-		public bool ButtonMode;
+		public const uint MaximumWallsDensityCoefficient = 12;
+
+
 
 		/// <summary>
-		/// Коэффициент преобразования врагов в ящики
+		/// Возвращает или задаёт режим блокировки выхода кнопками
 		/// </summary>
-		public uint CratesDensityCoefficient;
+		public MapButtonsTypes ButtonMode
+			{
+			get
+				{
+				return (MapButtonsTypes)GetSettingsValue (buttonModePar,
+					(uint)MapButtonsTypes.GateAndTeleport, (uint)MapButtonsTypes.NoButtons,
+					ref buttonMode);
+				}
+			set
+				{
+				SetSettingsValue (buttonModePar, ref buttonMode, (uint)value);
+				}
+			}
+		private const string buttonModePar = "BM";
+		private int buttonMode = int.MaxValue;
+
+
 
 		/// <summary>
-		/// Случайный коэффициент преобразования врагов в ящики
+		/// Возвращает или задаёт коэффициент преобразования врагов в ящики
 		/// </summary>
-		public bool RandomCratesDensityCoefficient;
+		public uint CratesDensityCoefficient
+			{
+			get
+				{
+				return GetSettingsValue (cratesDensityCoefficientPar,
+					MaximumCratesDensityCoefficient, 2, ref cratesDensityCoefficient);
+				}
+			set
+				{
+				SetSettingsValue (cratesDensityCoefficientPar, ref cratesDensityCoefficient, value);
+				}
+			}
+		private int cratesDensityCoefficient = int.MaxValue;
+		private const string cratesDensityCoefficientPar = "CD";
 
 		/// <summary>
-		/// Ограничение коэффициента преобразования врагов в ящики
+		/// Возвращает или задаёт флаг случайного коэффициента преобразования врагов в ящики
 		/// </summary>
-		public uint MaximumCratesDensityCoefficient;
+		public bool RandomCratesDensityCoefficient
+			{
+			get
+				{
+				return (cratesDensityCoefficient < 0);
+				}
+			set
+				{
+				SetSettingsValue (cratesDensityCoefficientPar, ref cratesDensityCoefficient, value);
+				}
+			}
 
 		/// <summary>
-		/// Строка разрешённых врагов
+		/// Возвращает ограничение коэффициента преобразования врагов в ящики
 		/// </summary>
-		public string EnemiesPermissionLine;
+		public const uint MaximumCratesDensityCoefficient = 5;
+
+
 
 		/// <summary>
-		/// Коэффициент освещения карты
+		/// Возвращает или задаёт строку разрешённых врагов
 		/// </summary>
-		public uint LightingCoefficient;
+		public string EnemiesPermissionLine
+			{
+			get
+				{
+				// Отсечка
+				if (!string.IsNullOrWhiteSpace (enemiesPermissionLine))
+					return enemiesPermissionLine;
+
+				// Присвоение с перезаписью
+				if (settingFromEngineToken == enemiesPermissionLinePar)
+					EnemiesPermissionLine = settingFromEngineValue;
+
+				// Простое присвоение
+				else
+					enemiesPermissionLine = RDGenerics.GetAppSettingsValue (enemiesPermissionLinePar);
+
+				// По умолчанию
+				if (string.IsNullOrWhiteSpace (enemiesPermissionLine))
+					{
+					for (int i = 0; i < EnemiesSupport.EnemiesPermissionsKeys.Length; i++)
+						enemiesPermissionLine += EnemiesSupport.EnemiesPermissionsKeys[i];
+					enemiesPermissionLine = EnemiesSupport.RemoveBarnacle (enemiesPermissionLine);
+					}
+
+				return enemiesPermissionLine;
+				}
+			set
+				{
+				enemiesPermissionLine = value;
+				RDGenerics.SetAppSettingsValue (enemiesPermissionLinePar, enemiesPermissionLine);
+				}
+			}
+		private string enemiesPermissionLine = "";
+		private const string enemiesPermissionLinePar = "EP";
+
+
 
 		/// <summary>
-		/// Случайный коэффициент освещения карты
+		/// Возвращает или задаёт коэффициент освещения карты
 		/// </summary>
-		public bool RandomLightingCoefficient;
+		public uint LightingCoefficient
+			{
+			get
+				{
+				return GetSettingsValue (lightingCoefficientPar,
+					MaximumLightingCoefficient, 6, ref lightingCoefficient);
+				}
+			set
+				{
+				SetSettingsValue (lightingCoefficientPar, ref lightingCoefficient, value);
+				}
+			}
+		private int lightingCoefficient = int.MaxValue;
+		private const string lightingCoefficientPar = "LG";
 
 		/// <summary>
-		/// Ограничение коэффициента освещения карты
+		/// Возвращает или задаёт флаг случайного коэффициента освещения карты
 		/// </summary>
-		public uint MaximumLightingCoefficient;
+		public bool RandomLightingCoefficient
+			{
+			get
+				{
+				return (lightingCoefficient < 0);
+				}
+			set
+				{
+				SetSettingsValue (lightingCoefficientPar, ref lightingCoefficient, value);
+				}
+			}
 
 		/// <summary>
-		/// Тип фильтрации секций карты
+		/// Возвращает ограничение коэффициента освещения карты
 		/// </summary>
-		public MapSectionTypes SectionType;
+		public const uint MaximumLightingCoefficient = 6;
+
+
 
 		/// <summary>
-		/// Флаг двойной высоты карт
+		/// Возвращает или задаёт тип фильтрации секций карты
 		/// </summary>
-		public bool TwoFloors;
+		public MapSectionTypes SectionType
+			{
+			get
+				{
+				return (MapSectionTypes)GetSettingsValue (sectionTypePar,
+					(uint)MapSectionTypes.OnlyInside, (uint)MapSectionTypes.AllTypes,
+					ref sectionType);
+				}
+			set
+				{
+				SetSettingsValue (sectionTypePar, ref sectionType, (uint)value);
+				}
+			}
+		private const string sectionTypePar = "ST";
+		private int sectionType = int.MaxValue;
+
+
 
 		/// <summary>
-		/// Флаг рандомизации двойной высоты карт
+		/// Возвращает или задаёт флаг двойной высоты карт
 		/// </summary>
-		public bool RandomizeFloorsQuantity;
+		public bool TwoFloors
+			{
+			get
+				{
+				return GetSettingsValue (twoFloorsPar, 2, 1, ref twoFloors) > 1;
+				}
+			set
+				{
+				SetSettingsValue (twoFloorsPar, ref twoFloors, (uint)(value ? 2 : 1));
+				}
+			}
+		private int twoFloors = int.MaxValue;
+		private const string twoFloorsPar = "TF";
 
 		/// <summary>
-		/// Флаг разрешения размещения собираемых объектов на внутренних площадках
+		/// Возвращает или задаёт флаг рандомизации двойной высоты карт
 		/// </summary>
-		public bool AllowItemsForSecondFloor;
+		public bool RandomizeFloorsQuantity
+			{
+			get
+				{
+				return (twoFloors < 0);
+				}
+			set
+				{
+				SetSettingsValue (twoFloorsPar, ref twoFloors, value);
+				}
+			}
+
+
 
 		/// <summary>
-		/// Флаг разрешения ящиков с жуками и соибраемыми предметами
+		/// Возвращает или задаёт флаг разрешения для собираемых объектов на внутренних площадках
 		/// </summary>
-		public bool AllowItemsCrates;
+		public bool AllowItemsForSecondFloor
+			{
+			get
+				{
+				return TwoFloors && (GetSettingsValue (allowItemsForSecondFloorPar, 2, 2,
+					ref allowItemsForSecondFloor) > 1);
+				}
+			set
+				{
+				SetSettingsValue (allowItemsForSecondFloorPar, ref allowItemsForSecondFloor, (uint)(value ? 2 : 1));
+				}
+			}
+		private int allowItemsForSecondFloor = int.MaxValue;
+		private const string allowItemsForSecondFloorPar = "SF";
+
+
 
 		/// <summary>
-		/// Флаг разрешения ящиков со взрывчаткой
+		/// Возвращает или задаёт флаг разрешения ящиков с жуками и собираемыми предметами
 		/// </summary>
-		public bool AllowExplosiveCrates;
+		public bool AllowItemsCrates
+			{
+			get
+				{
+				return GetSettingsValue (allowItemsCratesPar, 2, 2, ref allowItemsCrates) > 1;
+				}
+			set
+				{
+				SetSettingsValue (allowItemsCratesPar, ref allowItemsCrates, (uint)(value ? 2 : 1));
+				}
+			}
+		private int allowItemsCrates = int.MaxValue;
+		private const string allowItemsCratesPar = "IC";
+
+
 
 		/// <summary>
-		/// Строка разрешённых собираемых предметов
+		/// Возвращает или задаёт флаг разрешения ящиков со взрывчаткой
 		/// </summary>
-		public string ItemsPermissionLine;
+		public bool AllowExplosiveCrates
+			{
+			get
+				{
+				return GetSettingsValue (allowExplosiveCratesPar, 2, 2, ref allowExplosiveCrates) > 1;
+				}
+			set
+				{
+				SetSettingsValue (allowExplosiveCratesPar, ref allowExplosiveCrates, (uint)(value ? 2 : 1));
+				}
+			}
+		private int allowExplosiveCrates = int.MaxValue;
+		private const string allowExplosiveCratesPar = "XC";
+
+
 
 		/// <summary>
-		/// Коэффициент гравитации
+		/// Возвращает или задаёт строку разрешённых собираемых предметов
 		/// </summary>
-		public uint GravityCoefficient;
+		public string ItemsPermissionLine
+			{
+			get
+				{
+				// Отсечка
+				if (!string.IsNullOrWhiteSpace (itemsPermissionLine))
+					return itemsPermissionLine;
+
+				// Присвоение с перезаписью
+				if (settingFromEngineToken == itemsPermissionLinePar)
+					itemsPermissionLine = settingFromEngineValue;
+
+				// Простое присвоение
+				else
+					itemsPermissionLine = RDGenerics.GetAppSettingsValue (itemsPermissionLinePar);
+
+				// По умолчанию
+				if (string.IsNullOrWhiteSpace (itemsPermissionLine))
+					{
+					for (int i = 0; i < ItemsSupport.ItemsPermissionsKeys.Length; i++)
+						itemsPermissionLine += ItemsSupport.ItemsPermissionsKeys[i];
+					}
+
+				return itemsPermissionLine;
+				}
+			set
+				{
+				itemsPermissionLine = value;
+				RDGenerics.SetAppSettingsValue (itemsPermissionLinePar, itemsPermissionLine);
+				}
+			}
+		private string itemsPermissionLine = "";
+		private const string itemsPermissionLinePar = "IP";
+
+
 
 		/// <summary>
-		/// Случайный коэффициент гравитации
+		/// Возвращает или задаёт коэффициент гравитации (в десятках процентов)
 		/// </summary>
-		public bool RandomGravityCoefficient;
+		public uint GravityCoefficient
+			{
+			get
+				{
+				return GetSettingsValue (gravityCoefficientPar,
+					MaximumGravityCoefficient, 10, ref gravityCoefficient);
+				}
+			set
+				{
+				SetSettingsValue (gravityCoefficientPar, ref gravityCoefficient, value);
+				}
+			}
+		private int gravityCoefficient = int.MaxValue;
+		private const string gravityCoefficientPar = "GR";
 
 		/// <summary>
-		/// Ограничение коэффициента гравитации
+		/// Возвращает или задаёт флаг случайного коэффициента гравитации
 		/// </summary>
-		public uint MaximumGravityCoefficient;
+		public bool RandomGravityCoefficient
+			{
+			get
+				{
+				return (gravityCoefficient < 0);
+				}
+			set
+				{
+				SetSettingsValue (gravityCoefficientPar, ref gravityCoefficient, value);
+				}
+			}
 
 		/// <summary>
-		/// Флаг разрешения монстр-мейкеров
+		/// Возвращает ограничение коэффициента гравитации
 		/// </summary>
-		public bool MonsterMakers;
+		public const uint MaximumGravityCoefficient = 20;
+
+
 
 		/// <summary>
-		/// Тип фильтрации перегородок между секциями карты
+		/// Возвращает или задаёт флаг разрешения монстр-мейкеров
 		/// </summary>
-		public MapBarriersTypes BarriersType;
+		public bool AllowMonsterMakers
+			{
+			get
+				{
+				return GetSettingsValue (allowMonsterMakersPar, 2, 1, ref allowMonsterMakers) > 1;
+				}
+			set
+				{
+				SetSettingsValue (allowMonsterMakersPar, ref allowMonsterMakers, (uint)(value ? 2 : 1));
+				}
+			}
+		private int allowMonsterMakers = int.MaxValue;
+		private const string allowMonsterMakersPar = "MM";
+
+
+
+		/// <summary>
+		/// Возвращает или задаёт тип фильтрации перегородок между секциями карты
+		/// </summary>
+		public MapBarriersTypes BarriersType
+			{
+			get
+				{
+				return (MapBarriersTypes)GetSettingsValue (barriersTypePar,
+					(uint)MapBarriersTypes.Both, (uint)MapBarriersTypes.Both,
+					ref barriersType);
+				}
+			set
+				{
+				SetSettingsValue (barriersTypePar, ref barriersType, (uint)value);
+				}
+			}
+		private const string barriersTypePar = "BT";
+		private int barriersType = int.MaxValue;
+
+
+
+		/// <summary>
+		/// Возвращает или задаёт коэффициент тумана (в десятках процентов)
+		/// </summary>
+		public uint FogCoefficient
+			{
+			get
+				{
+				return GetSettingsValue (fogCoefficientPar,
+					MaximumFogCoefficient, 1, ref fogCoefficient) - 1;
+				}
+			set
+				{
+				SetSettingsValue (fogCoefficientPar, ref fogCoefficient, value + 1);
+				}
+			}
+		private int fogCoefficient = int.MaxValue;
+		private const string fogCoefficientPar = "FC";
+
+		/// <summary>
+		/// Возвращает или задаёт флаг случайного коэффициента тумана
+		/// </summary>
+		public bool RandomFogCoefficient
+			{
+			get
+				{
+				return (fogCoefficient < 0);
+				}
+			set
+				{
+				SetSettingsValue (fogCoefficientPar, ref fogCoefficient, value);
+				}
+			}
+
+		/// <summary>
+		/// Возвращает ограничение коэффициента тумана
+		/// </summary>
+		public const uint MaximumFogCoefficient = 11;
+
+
+
+		/// <summary>
+		/// Возвращает или задаёт флаг разрешения на очистку старых карт (интерфейсная опция)
+		/// </summary>
+		public bool CleanupOldMaps
+			{
+			get
+				{
+				return GetSettingsValue (cleanupOldMapsPar, 2, 1, ref cleanupOldMaps) > 1;
+				}
+			set
+				{
+				SetSettingsValue (cleanupOldMapsPar, ref cleanupOldMaps, (uint)(value ? 2 : 1));
+				}
+			}
+		private int cleanupOldMaps = int.MaxValue;
+		private const string cleanupOldMapsPar = "OM";
 		}
 
 	/// <summary>
@@ -174,17 +718,17 @@
 		/// <summary>
 		/// Все варианты
 		/// </summary>
-		AllTypes = 0,
+		AllTypes = 1,
 
 		/// <summary>
 		/// Только варианты с небом
 		/// </summary>
-		OnlyUnderSky = 1,
+		OnlyUnderSky = 2,
 
 		/// <summary>
 		/// Только варианты в помещении
 		/// </summary>
-		OnlyInside = 2
+		OnlyInside = 3,
 		}
 
 	/// <summary>
@@ -195,16 +739,37 @@
 		/// <summary>
 		/// Только стеклянные
 		/// </summary>
-		OnlyGlass = 0,
+		OnlyGlass = 1,
 
 		/// <summary>
 		/// Только тканевые
 		/// </summary>
-		OnlyFabric = 1,
+		OnlyFabric = 2,
 
 		/// <summary>
 		/// Оба варианта
 		/// </summary>
-		Both = 2
+		Both = 3,
+		}
+
+	/// <summary>
+	/// Возможные варианты кнопок открытия выхода с карты
+	/// </summary>
+	public enum MapButtonsTypes
+		{
+		/// <summary>
+		/// Без кнопок
+		/// </summary>
+		NoButtons = 1,
+
+		/// <summary>
+		/// Одна кнопка для шлюза
+		/// </summary>
+		OnlyGate = 2,
+
+		/// <summary>
+		/// Две кнопки – для шлюза и телепорта
+		/// </summary>
+		GateAndTeleport = 3,
 		}
 	}

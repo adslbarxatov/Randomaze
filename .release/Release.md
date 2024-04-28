@@ -1,6 +1,12 @@
-_Changes for v 5.3.2_:
+_Changes for v 5.4_:
+- Implemented the fog density parameter;
+- Implemented the secondary exit button;
+- The distance of visibility for enemies now depends on the fog intensity;
+- Barnackles can now be enabled when the randomization of floors quantity is checked;
+- Added large echo for two-floors maps;
+- Ceiling-oriented turrets are now available on two-floor maps;
+- The settings storage has been rewritten;
+- Fixed the missing texture for the axe in the manual weapon selecion menu;
 - Access checking method has been completely rewritten: now it will properly detect problems with file / registry input / output and help user with fixing them;
 - Added the special section in the user guide for access troubleshooting;
-- Updated HypeHelp and Updates checker mechanics: this should fix apps freezing immediately after launch (on some PCs);
-- Implemented the barriers type flag: it allows you to select between transparent and opaque sections barriers;
-- The sound echo will now be less remarkable on narrow maps (on high walls density)
+- Updated HypeHelp and Updates checker mechanics: this should fix apps freezing immediately after launch (on some PCs)

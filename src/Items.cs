@@ -18,7 +18,7 @@ namespace RD_AAOW
 		/// <param name="MapNumber">Номер текущей карты</param>
 		/// <param name="AllowSecondFloor">Флаг, разрешающий размещение на внутренних площадках</param>
 		/// <param name="Permissions">Строка разрешений для видов оружия</param>
-		public static void WriteMapItem (StreamWriter SW, Point RelativePosition, /*Random Rnd,*/ uint MapNumber,
+		public static void WriteMapItem (StreamWriter SW, Point RelativePosition, uint MapNumber,
 			bool AllowSecondFloor, string Permissions)
 			{
 			// Расчёт параметров

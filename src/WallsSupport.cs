@@ -150,19 +150,20 @@ namespace RD_AAOW
 
 			// Запись звукового триггера
 			byte leftRT, rightRT;
+			byte offset = (byte)(MapSupport.TwoFloors ? 1 : 0);
 			if (leftSideIsUnderSky)
 				leftRT = 0;
 			else if (WallsAreRare)
-				leftRT = 18;
+				leftRT = (byte)(18 + offset);
 			else
-				leftRT = 17;
+				leftRT = (byte)(17 + offset);
 
 			if (rightSideIsUnderSky)
 				rightRT = 0;
 			else if (WallsAreRare)
-				rightRT = 18;
+				rightRT = (byte)(18 + offset);
 			else
-				rightRT = 17;
+				rightRT = (byte)(17 + offset);
 
 			MapSupport.WriteMapSoundTrigger (SW, RelativePosition, true, leftRT, rightRT);
 			}
