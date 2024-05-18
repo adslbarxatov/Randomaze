@@ -1,8 +1,7 @@
 Randomaze: changes log
 
-ToDo:
-- Add the engine command for the fog;
-- Update the internal user guide
+Version 5.4.1:
+• The application has been retargeted to .NET Framework 4.8.1
 
 Version 5.4:
 • Implemented the fog density parameter;
