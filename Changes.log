@@ -7,7 +7,7 @@ ToDo:
 
 Version 5.5:
 • The number of lighting levels has been increased to 10;
-• The lamps and sun lighting coefficients are now different;
+• The lamps and sun lighting coefficients are now separated;
 • Implemented the water level control;
 • Added monster_leech;
 • XPUN update has been applied
