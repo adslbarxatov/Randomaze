@@ -11,23 +11,13 @@ namespace RD_AAOW
 	public partial class SettingsForm: Form
 		{
 		// Переменные
-		/*/// <summary>
-		/// Возвращает изменённые настройки приложения
-		/// </summary>
-		public ESRMSettings Settings
-			{
-			get
-				{
-				return settings;
-				}
-			}*/
 		private ESRMSettings settings;
 
 		// Переменные
 		private List<CheckBox> enemiesFlags = new List<CheckBox> ();
 		private List<CheckBox> itemsFlags = new List<CheckBox> ();
-		private Color enabledColor = Color.FromArgb (0, 200, 0),
-			disabledColor = Color.FromArgb (200, 200, 200);
+		private Color enabledColor = Color.FromArgb (0, 200, 0);
+		private Color disabledColor = Color.FromArgb (200, 200, 200);
 
 		/// <summary>
 		/// Конструктор. Запускает форму
@@ -45,6 +35,9 @@ namespace RD_AAOW
 			GenericTab.Text = RDLocale.GetControlText (this.Name, GenericTab.Name);
 			RDLocale.SetControlsText (GenericTab);
 
+			Generic2Tab.Text = RDLocale.GetControlText (this.Name, Generic2Tab.Name);
+			RDLocale.SetControlsText (Generic2Tab);
+
 			EnemiesTab.Text = RDLocale.GetControlText (this.Name, EnemiesTab.Name);
 			RDLocale.SetControlsText (EnemiesTab);
 
@@ -52,9 +45,9 @@ namespace RD_AAOW
 			RDLocale.SetControlsText (ItemsTab);
 
 			MazeSizeFlag.Text = EnemiesDensityFlag.Text = ItemsDensityFlag.Text =
-				CratesDensityFlag.Text = WallsDensityFlag.Text = LightingFlag.Text =
-				GravityFlag.Text = RandomizeFloorsFlag.Text = FogFlag.Text =
-				RDLocale.GetText ("SettingsForm_Random");
+				CratesDensityFlag.Text = WallsDensityFlag.Text = InsideLightingFlag.Text =
+				GravityFlag.Text = RandomizeFloorsFlag.Text = FogFlag.Text = WaterFlag.Text =
+				OutsideLightingFlag.Text = RDLocale.GetText ("SettingsForm_Random");
 
 			this.TopMost = true;
 			this.Text = ProgramDescription.AssemblyTitle + ": " + RDLocale.GetText ("SettingsForm_T");
@@ -84,10 +77,15 @@ namespace RD_AAOW
 			WallsDensityFlag.Checked = WallsDensityFlag.Enabled = false;
 			WallsDensityFlag_CheckedChanged (null, null);
 
-			LightingTrack.Maximum = (int)ESRMSettings.MaximumLightingCoefficient;
-			LightingTrack.Value = (int)settings.LightingCoefficient;
-			LightingFlag.Checked = settings.RandomLightingCoefficient;
-			LightingFlag_CheckedChanged (null, null);
+			InsideLightingTrack.Maximum = (int)ESRMSettings.MaximumInsideLightingCoefficient;
+			InsideLightingTrack.Value = (int)settings.InsideLightingCoefficient;
+			InsideLightingFlag.Checked = settings.RandomInsideLightingCoefficient;
+			InsideLightingFlag_CheckedChanged (null, null);
+
+			OutsideLightingTrack.Maximum = (int)ESRMSettings.MaximumOutsideLightingCoefficient;
+			OutsideLightingTrack.Value = (int)settings.OutsideLightingCoefficient;
+			OutsideLightingFlag.Checked = settings.RandomOutsideLightingCoefficient;
+			OutsideLightingFlag_CheckedChanged (null, null);
 
 			GravityTrack.Maximum = (int)ESRMSettings.MaximumGravityCoefficient;
 			GravityTrack.Value = (int)settings.GravityCoefficient;
@@ -99,21 +97,17 @@ namespace RD_AAOW
 			FogFlag.Checked = settings.RandomFogCoefficient;
 			FogFlag_CheckedChanged (null, null);
 
-			/*ButtonModeFlag.Checked = settings.ButtonMode;*/
+			WaterTrack.Maximum = (int)ESRMSettings.MaximumWaterLevel;
+			WaterTrack.Value = (int)settings.WaterLevel + 1;
+			WaterFlag.Checked = settings.RandomWaterLevel;
+			WaterFlag_CheckedChanged (null, null);
+
 			MonsterMakerFlag.Checked = settings.AllowMonsterMakers;
-
-			for (int i = 0; i < EnemiesSupport.EnemiesPermissionsKeys.Length; i++)
-				enemiesFlags.Add ((CheckBox)this.Controls.Find ("EnemyFlag" + (i + 1).ToString ("D2"), true)[0]);
-
-			for (int i = 0; i < EnemiesSupport.EnemiesPermissionsKeys.Length; i++)
-				enemiesFlags[i].Checked =
-					settings.EnemiesPermissionLine.Contains (EnemiesSupport.EnemiesPermissionsKeys[i]);
-
-			for (int i = 0; i < ItemsSupport.ItemsPermissionsKeys.Length; i++)
-				itemsFlags.Add ((CheckBox)this.Controls.Find ("ItemFlag" + (i + 1).ToString ("D2"), true)[0]);
 
 			for (int i = 0; i < ItemsSupport.ItemsPermissionsKeys.Length; i++)
 				{
+				itemsFlags.Add ((CheckBox)this.Controls.Find ("ItemFlag" + (i + 1).ToString ("D2"), true)[0]);
+
 				string key = ItemsSupport.ItemsPermissionsKeys[i];
 				itemsFlags[i].Checked = settings.ItemsPermissionLine.Contains (key);
 
@@ -122,7 +116,16 @@ namespace RD_AAOW
 				if (key == "k")
 					itemsFlags[i].Checked = true;
 				}
-			EnemyFlag05_CheckedChanged (null, null);
+
+			for (int i = 0; i < EnemiesSupport.EnemiesPermissionsKeys.Length; i++)
+				{
+				enemiesFlags.Add ((CheckBox)this.Controls.Find ("EnemyFlag" + (i + 1).ToString ("D2"), true)[0]);
+				enemiesFlags[i].Checked =
+					settings.EnemiesPermissionLine.Contains (EnemiesSupport.EnemiesPermissionsKeys[i]);
+				}
+
+			GruntFlag_CheckedChanged (null, null);
+			WaterTrack_Scroll (null, null);
 
 			for (int i = (int)MapSectionTypes.AllTypes; i <= (int)MapSectionTypes.OnlyInside; i++)
 				SkyCombo.Items.Add (RDLocale.GetText ("GenericTab_SkyCombo" + i.ToString ("D2")));
@@ -133,7 +136,7 @@ namespace RD_AAOW
 			BarrierCombo.SelectedIndex = (int)settings.BarriersType - 1;
 
 			for (int i = (int)MapButtonsTypes.NoButtons; i <= (int)MapButtonsTypes.GateAndTeleport; i++)
-				ButtonCombo.Items.Add (RDLocale.GetText ("GenericTab_ButtonCombo" + i.ToString ("D2")));
+				ButtonCombo.Items.Add (RDLocale.GetText ("Generic2Tab_ButtonCombo" + i.ToString ("D2")));
 			ButtonCombo.SelectedIndex = (int)settings.ButtonMode - 1;
 
 			AllowItemsForSecondFloor.Checked = settings.AllowItemsForSecondFloor;
@@ -187,8 +190,11 @@ namespace RD_AAOW
 			settings.WallsDensityCoefficient = (uint)WallsDensityTrack.Value;
 			settings.RandomWallsDensityCoefficient = WallsDensityFlag.Checked;
 
-			settings.LightingCoefficient = (uint)LightingTrack.Value;
-			settings.RandomLightingCoefficient = LightingFlag.Checked;
+			settings.InsideLightingCoefficient = (uint)InsideLightingTrack.Value;
+			settings.RandomInsideLightingCoefficient = InsideLightingFlag.Checked;
+
+			settings.OutsideLightingCoefficient = (uint)OutsideLightingTrack.Value;
+			settings.RandomOutsideLightingCoefficient = OutsideLightingFlag.Checked;
 
 			settings.GravityCoefficient = (uint)GravityTrack.Value;
 			settings.RandomGravityCoefficient = GravityFlag.Checked;
@@ -196,7 +202,9 @@ namespace RD_AAOW
 			settings.FogCoefficient = (uint)FogTrack.Value - 1;
 			settings.RandomFogCoefficient = FogFlag.Checked;
 
-			/*settings.ButtonMode = ButtonModeFlag.Checked;*/
+			settings.WaterLevel = (uint)WaterTrack.Value - 1;
+			settings.RandomWaterLevel = WaterFlag.Checked;
+
 			settings.AllowMonsterMakers = MonsterMakerFlag.Checked;
 
 			string s = "";
@@ -269,10 +277,16 @@ namespace RD_AAOW
 			CratesDensityTrack.BackColor = CratesDensityTrack.Enabled ? enabledColor : disabledColor;
 			}
 
-		private void LightingFlag_CheckedChanged (object sender, EventArgs e)
+		private void InsideLightingFlag_CheckedChanged (object sender, EventArgs e)
 			{
-			LightingTrack.Enabled = !LightingFlag.Checked;
-			LightingTrack.BackColor = LightingTrack.Enabled ? enabledColor : disabledColor;
+			InsideLightingTrack.Enabled = !InsideLightingFlag.Checked;
+			InsideLightingTrack.BackColor = InsideLightingTrack.Enabled ? enabledColor : disabledColor;
+			}
+
+		private void OutsideLightingFlag_CheckedChanged (object sender, EventArgs e)
+			{
+			OutsideLightingTrack.Enabled = !OutsideLightingFlag.Checked;
+			OutsideLightingTrack.BackColor = OutsideLightingTrack.Enabled ? enabledColor : disabledColor;
 			}
 
 		private void GravityFlag_CheckedChanged (object sender, EventArgs e)
@@ -285,6 +299,12 @@ namespace RD_AAOW
 			{
 			FogTrack.Enabled = !FogFlag.Checked;
 			FogTrack.BackColor = FogTrack.Enabled ? enabledColor : disabledColor;
+			}
+
+		private void WaterFlag_CheckedChanged (object sender, EventArgs e)
+			{
+			WaterTrack.Enabled = !WaterFlag.Checked;
+			WaterTrack.BackColor = WaterTrack.Enabled ? enabledColor : disabledColor;
 			}
 
 		// Ограничение суммарного коэффициента размерности лабиринта и плотности стен
@@ -317,10 +337,11 @@ namespace RD_AAOW
 		// Включение дополнительных монстров
 		private void TwoFloorsFlag_CheckedChanged (object sender, EventArgs e)
 			{
+			// barnacle зависит от высоты карты
 			if (TwoFloorsFlag.Checked || RandomizeFloorsFlag.Checked)
-				EnemyFlag08.Enabled = AllowItemsForSecondFloor.Enabled = true;
+				enemiesFlags[8].Enabled = AllowItemsForSecondFloor.Enabled = true;
 			else
-				EnemyFlag08.Enabled = EnemyFlag08.Checked = AllowItemsForSecondFloor.Enabled =
+				enemiesFlags[8].Enabled = enemiesFlags[8].Checked = AllowItemsForSecondFloor.Enabled =
 					AllowItemsForSecondFloor.Checked = false;
 
 			TwoFloorsFlag.Enabled = !RandomizeFloorsFlag.Checked;
@@ -332,10 +353,21 @@ namespace RD_AAOW
 			GravityTrack.Value = GravityTrack.Maximum / 2;
 			}
 
-		// Контроль оружия, относящегося к солдатам
-		private void EnemyFlag05_CheckedChanged (object sender, EventArgs e)
+		// Изменение уровня воды
+		private void WaterTrack_Scroll (object sender, EventArgs e)
 			{
-			ItemFlag11.Checked = ItemFlag12.Checked = EnemyFlag05.Checked;
+			// leech зависит от уровня воды
+			if ((WaterTrack.Value == WaterTrack.Minimum) && !WaterFlag.Checked)
+				enemiesFlags[6].Enabled = enemiesFlags[6].Checked = false;
+			else
+				enemiesFlags[6].Enabled = true;
+			}
+
+		// Контроль оружия, относящегося к солдатам
+		private void GruntFlag_CheckedChanged (object sender, EventArgs e)
+			{
+			// 9mmAR и shotgun зависят от human_grunt
+			itemsFlags[10].Checked = itemsFlags[11].Checked = enemiesFlags[4].Checked;
 			}
 		}
 	}

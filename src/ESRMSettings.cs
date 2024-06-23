@@ -30,7 +30,8 @@ namespace RD_AAOW
 			_ = ButtonMode;
 			_ = CratesDensityCoefficient;
 			_ = EnemiesPermissionLine;
-			_ = LightingCoefficient;
+			_ = InsideLightingCoefficient;
+			_ = OutsideLightingCoefficient;
 			_ = SectionType;
 			_ = TwoFloors;
 			_ = AllowExplosiveCrates;
@@ -42,10 +43,13 @@ namespace RD_AAOW
 			_ = AllowMonsterMakers;
 			_ = BarriersType;
 			_ = CleanupOldMaps;
+			_ = WaterLevel;
 
 			// Защита
 			if (!TwoFloors && !RandomizeFloorsQuantity)
 				EnemiesPermissionLine = EnemiesSupport.RemoveBarnacle (EnemiesPermissionLine);
+			if ((WaterLevel < 1) && !RandomWaterLevel)
+				EnemiesPermissionLine = EnemiesSupport.RemoveLeech (EnemiesPermissionLine);
 			}
 		private string settingFromEngineToken = "";
 		private string settingFromEngineValue = "";
@@ -80,7 +84,7 @@ namespace RD_AAOW
 			int e = 0;
 			try
 				{
-				v = int.Parse (RDGenerics.GetAppSettingsValue (ValueToken));
+				v = int.Parse (RDGenerics.GetAppRegistryValue (ValueToken));
 				}
 			catch
 				{
@@ -127,7 +131,7 @@ namespace RD_AAOW
 					Value = (int)NewValue;
 				}
 
-			RDGenerics.SetAppSettingsValue (ValueToken, Value.ToString ());
+			RDGenerics.SetAppRegistryValue (ValueToken, Value.ToString ());
 			}
 
 		/// <summary>
@@ -357,7 +361,7 @@ namespace RD_AAOW
 
 				// Простое присвоение
 				else
-					enemiesPermissionLine = RDGenerics.GetAppSettingsValue (enemiesPermissionLinePar);
+					enemiesPermissionLine = RDGenerics.GetAppRegistryValue (enemiesPermissionLinePar);
 
 				// По умолчанию
 				if (string.IsNullOrWhiteSpace (enemiesPermissionLine))
@@ -372,7 +376,7 @@ namespace RD_AAOW
 			set
 				{
 				enemiesPermissionLine = value;
-				RDGenerics.SetAppSettingsValue (enemiesPermissionLinePar, enemiesPermissionLine);
+				RDGenerics.SetAppRegistryValue (enemiesPermissionLinePar, enemiesPermissionLine);
 				}
 			}
 		private string enemiesPermissionLine = "";
@@ -381,42 +385,82 @@ namespace RD_AAOW
 
 
 		/// <summary>
-		/// Возвращает или задаёт коэффициент освещения карты
+		/// Возвращает или задаёт коэффициент искусственного освещения карты
 		/// </summary>
-		public uint LightingCoefficient
+		public uint InsideLightingCoefficient
 			{
 			get
 				{
-				return GetSettingsValue (lightingCoefficientPar,
-					MaximumLightingCoefficient, 6, ref lightingCoefficient);
+				return GetSettingsValue (insideLightingCoefficientPar,
+					MaximumInsideLightingCoefficient, 10, ref insideLightingCoefficient);
 				}
 			set
 				{
-				SetSettingsValue (lightingCoefficientPar, ref lightingCoefficient, value);
+				SetSettingsValue (insideLightingCoefficientPar, ref insideLightingCoefficient, value);
 				}
 			}
-		private int lightingCoefficient = int.MaxValue;
-		private const string lightingCoefficientPar = "LG";
+		private int insideLightingCoefficient = int.MaxValue;
+		private const string insideLightingCoefficientPar = "LI";
 
 		/// <summary>
-		/// Возвращает или задаёт флаг случайного коэффициента освещения карты
+		/// Возвращает или задаёт флаг случайного коэффициента искусственного освещения карты
 		/// </summary>
-		public bool RandomLightingCoefficient
+		public bool RandomInsideLightingCoefficient
 			{
 			get
 				{
-				return (lightingCoefficient < 0);
+				return (insideLightingCoefficient < 0);
 				}
 			set
 				{
-				SetSettingsValue (lightingCoefficientPar, ref lightingCoefficient, value);
+				SetSettingsValue (insideLightingCoefficientPar, ref insideLightingCoefficient, value);
 				}
 			}
 
 		/// <summary>
-		/// Возвращает ограничение коэффициента освещения карты
+		/// Возвращает ограничение коэффициента искусственного освещения карты
 		/// </summary>
-		public const uint MaximumLightingCoefficient = 6;
+		public const uint MaximumInsideLightingCoefficient = 10;
+
+
+
+		/// <summary>
+		/// Возвращает или задаёт коэффициент естественного освещения карты
+		/// </summary>
+		public uint OutsideLightingCoefficient
+			{
+			get
+				{
+				return GetSettingsValue (outsideLightingCoefficientPar,
+					MaximumOutsideLightingCoefficient, 5, ref outsideLightingCoefficient);
+				}
+			set
+				{
+				SetSettingsValue (outsideLightingCoefficientPar, ref outsideLightingCoefficient, value);
+				}
+			}
+		private int outsideLightingCoefficient = int.MaxValue;
+		private const string outsideLightingCoefficientPar = "LO";
+
+		/// <summary>
+		/// Возвращает или задаёт флаг случайного коэффициента естественного освещения карты
+		/// </summary>
+		public bool RandomOutsideLightingCoefficient
+			{
+			get
+				{
+				return (outsideLightingCoefficient < 0);
+				}
+			set
+				{
+				SetSettingsValue (outsideLightingCoefficientPar, ref outsideLightingCoefficient, value);
+				}
+			}
+
+		/// <summary>
+		/// Возвращает ограничение коэффициента естественного освещения карты
+		/// </summary>
+		public const uint MaximumOutsideLightingCoefficient = 6;
 
 
 
@@ -550,7 +594,7 @@ namespace RD_AAOW
 
 				// Простое присвоение
 				else
-					itemsPermissionLine = RDGenerics.GetAppSettingsValue (itemsPermissionLinePar);
+					itemsPermissionLine = RDGenerics.GetAppRegistryValue (itemsPermissionLinePar);
 
 				// По умолчанию
 				if (string.IsNullOrWhiteSpace (itemsPermissionLine))
@@ -564,7 +608,7 @@ namespace RD_AAOW
 			set
 				{
 				itemsPermissionLine = value;
-				RDGenerics.SetAppSettingsValue (itemsPermissionLinePar, itemsPermissionLine);
+				RDGenerics.SetAppRegistryValue (itemsPermissionLinePar, itemsPermissionLine);
 				}
 			}
 		private string itemsPermissionLine = "";
@@ -659,6 +703,14 @@ namespace RD_AAOW
 			{
 			get
 				{
+				// Необходимая подстройка диапазона
+				if (!string.IsNullOrWhiteSpace (settingFromEngineValue))
+					try
+						{
+						settingFromEngineValue = (uint.Parse (settingFromEngineValue) + 1).ToString ();
+						}
+					catch { }
+
 				return GetSettingsValue (fogCoefficientPar,
 					MaximumFogCoefficient, 1, ref fogCoefficient) - 1;
 				}
@@ -689,6 +741,54 @@ namespace RD_AAOW
 		/// Возвращает ограничение коэффициента тумана
 		/// </summary>
 		public const uint MaximumFogCoefficient = 11;
+
+
+
+		/// <summary>
+		/// Возвращает или задаёт уровень воды (в пятёрках процентов)
+		/// </summary>
+		public uint WaterLevel
+			{
+			get
+				{
+				// Необходимая подстройка диапазона
+				if (!string.IsNullOrWhiteSpace (settingFromEngineValue))
+					try
+						{
+						settingFromEngineValue = (uint.Parse (settingFromEngineValue) + 1).ToString ();
+						}
+					catch { }
+
+				return GetSettingsValue (waterLevelPar,
+					MaximumWaterLevel, 1, ref waterLevel) - 1;
+				}
+			set
+				{
+				SetSettingsValue (waterLevelPar, ref waterLevel, value + 1);
+				}
+			}
+		private int waterLevel = int.MaxValue;
+		private const string waterLevelPar = "WL";
+
+		/// <summary>
+		/// Возвращает или задаёт флаг случайного уровня воды
+		/// </summary>
+		public bool RandomWaterLevel
+			{
+			get
+				{
+				return (waterLevel < 0);
+				}
+			set
+				{
+				SetSettingsValue (waterLevelPar, ref waterLevel, value);
+				}
+			}
+
+		/// <summary>
+		/// Возвращает ограничение уровня воды (45% максимум)
+		/// </summary>
+		public const uint MaximumWaterLevel = 10;
 
 
 

@@ -1,12 +1,12 @@
-_Changes for v 5.4_:
+_Changes for v 5.5_:
+- The number of lamps lighting levels has been increased to 10;
+- The lamps and sun lighting coefficients are now separated;
+- Implemented the `water level` control;
+- Added `monster_leech`;
+- `XPUN` update has been applied;
 - Implemented the fog density parameter;
 - Implemented the secondary exit button;
 - The distance of visibility for enemies now depends on the fog intensity;
 - Barnackles can now be enabled when the randomization of floors quantity is checked;
 - Added large echo for two-floors maps;
-- Ceiling-oriented turrets are now available on two-floor maps;
-- The settings storage has been rewritten;
-- Fixed the missing texture for the axe in the manual weapon selecion menu;
-- Access checking method has been completely rewritten: now it will properly detect problems with file / registry input / output and help user with fixing them;
-- Added the special section in the user guide for access troubleshooting;
-- Updated HypeHelp and Updates checker mechanics: this should fix apps freezing immediately after launch (on some PCs)
+- Ceiling-oriented turrets are now available on two-floor maps

@@ -15,10 +15,9 @@ namespace RD_AAOW
 		/// </summary>
 		/// <param name="SW">Дескриптор файла карты</param>
 		/// <param name="RelativePosition">Относительная позиция точки создания</param>
-		/// <param name="MapNumber">Номер текущей карты</param>
 		/// <param name="AllowSecondFloor">Флаг, разрешающий размещение на внутренних площадках</param>
 		/// <param name="Permissions">Строка разрешений для видов оружия</param>
-		public static void WriteMapItem (StreamWriter SW, Point RelativePosition, uint MapNumber,
+		public static void WriteMapItem (StreamWriter SW, Point RelativePosition, /*uint Map Number,*/
 			bool AllowSecondFloor, string Permissions)
 			{
 			// Расчёт параметров
@@ -29,7 +28,7 @@ namespace RD_AAOW
 
 			// Диапазон противников задаётся ограничением на верхнюю границу диапазона ГПСЧ
 			int prngRange;
-			switch (MapNumber)
+			switch (MapSupport.MapNumber)
 				{
 				case 0:
 				case 1:
@@ -45,7 +44,7 @@ namespace RD_AAOW
 				case 8:
 				case 9:
 				case 10:
-					prngRange = (int)MapNumber + 14;
+					prngRange = (int)MapSupport.MapNumber + 14;
 					break;
 
 				default:
@@ -54,7 +53,7 @@ namespace RD_AAOW
 				}
 
 			// Обходной вариант с собираемым объектом
-			if (!hiddenObjectWritten && (MapNumber % 10 == 0))
+			if (!hiddenObjectWritten && (MapSupport.MapNumber % 10 == 0))
 				{
 				hiddenObjectWritten = true;
 				MapSupport.AddEntity (SW, "item_antidote");
@@ -72,8 +71,8 @@ namespace RD_AAOW
 				{
 				// Аптечки
 				default:
-					if (Permissions.Contains (ItemsPermissionsKeys[0]))
-						MapSupport.AddEntity (SW, items[0]);
+					if (Permissions.Contains (ItemsPermissionsKeys[i_hek]))
+						MapSupport.AddEntity (SW, items[i_hek]);
 					else
 						goto check;
 					break;
@@ -84,8 +83,8 @@ namespace RD_AAOW
 				case 2:
 				case 3:
 				case 4:
-					if (Permissions.Contains (ItemsPermissionsKeys[1]))
-						MapSupport.AddEntity (SW, items[1]);
+					if (Permissions.Contains (ItemsPermissionsKeys[i_bat]))
+						MapSupport.AddEntity (SW, items[i_bat]);
 					else
 						goto check;
 					break;
@@ -93,24 +92,24 @@ namespace RD_AAOW
 				// Гранаты
 				case 6:
 				case 17:
-					if (Permissions.Contains (ItemsPermissionsKeys[2]))
-						MapSupport.AddEntity (SW, items[2]);
+					if (Permissions.Contains (ItemsPermissionsKeys[i_gre]))
+						MapSupport.AddEntity (SW, items[i_gre]);
 					else
 						goto check;
 					break;
 
 				// Пистолет
 				case 15:
-					if (Permissions.Contains (ItemsPermissionsKeys[3]))
-						MapSupport.AddEntity (SW, items[3]);
+					if (Permissions.Contains (ItemsPermissionsKeys[i_hnd]))
+						MapSupport.AddEntity (SW, items[i_hnd]);
 					else
 						goto check;
 					break;
 
 				// Гранаты с радиоуправлением
 				case 16:
-					if (Permissions.Contains (ItemsPermissionsKeys[4]))
-						MapSupport.AddEntity (SW, items[4]);
+					if (Permissions.Contains (ItemsPermissionsKeys[i_sat]))
+						MapSupport.AddEntity (SW, items[i_sat]);
 					else
 						goto check;
 					break;
@@ -118,8 +117,8 @@ namespace RD_AAOW
 				// .357
 				case 5:
 				case 18:
-					if (Permissions.Contains (ItemsPermissionsKeys[5]))
-						MapSupport.AddEntity (SW, items[5]);
+					if (Permissions.Contains (ItemsPermissionsKeys[i_357]))
+						MapSupport.AddEntity (SW, items[i_357]);
 					else
 						goto check;
 					break;
@@ -127,8 +126,8 @@ namespace RD_AAOW
 				// Арбалет
 				case 19:
 				case 20:
-					if (Permissions.Contains (ItemsPermissionsKeys[6]))
-						MapSupport.AddEntity (SW, items[6]);
+					if (Permissions.Contains (ItemsPermissionsKeys[i_crs]))
+						MapSupport.AddEntity (SW, items[i_crs]);
 					else
 						goto check;
 					break;
@@ -136,8 +135,8 @@ namespace RD_AAOW
 				// Гаусс
 				case 21:
 				case 22:
-					if (Permissions.Contains (ItemsPermissionsKeys[7]))
-						MapSupport.AddEntity (SW, items[7]);
+					if (Permissions.Contains (ItemsPermissionsKeys[i_gau]))
+						MapSupport.AddEntity (SW, items[i_gau]);
 					else
 						goto check;
 					break;
@@ -146,15 +145,15 @@ namespace RD_AAOW
 				case 23:
 					if (RDGenerics.RND.Next (5) > 3)
 						{
-						if (Permissions.Contains (ItemsPermissionsKeys[8]))
-							MapSupport.AddEntity (SW, items[8]);
+						if (Permissions.Contains (ItemsPermissionsKeys[i_bar]))
+							MapSupport.AddEntity (SW, items[i_bar]);
 						else
 							goto check;
 						}
 					else
 						{
-						if (Permissions.Contains (ItemsPermissionsKeys[4]))
-							MapSupport.AddEntity (SW, items[4]);
+						if (Permissions.Contains (ItemsPermissionsKeys[i_sat]))
+							MapSupport.AddEntity (SW, items[i_sat]);
 						else
 							goto check;
 						}
@@ -164,15 +163,15 @@ namespace RD_AAOW
 				case 24:
 					if (RDGenerics.RND.Next (5) > 3)
 						{
-						if (Permissions.Contains (ItemsPermissionsKeys[9]))
-							MapSupport.AddEntity (SW, items[9]);
+						if (Permissions.Contains (ItemsPermissionsKeys[i_hor]))
+							MapSupport.AddEntity (SW, items[i_hor]);
 						else
 							goto check;
 						}
 					else
 						{
-						if (Permissions.Contains (ItemsPermissionsKeys[2]))
-							MapSupport.AddEntity (SW, items[2]);
+						if (Permissions.Contains (ItemsPermissionsKeys[i_gre]))
+							MapSupport.AddEntity (SW, items[i_gre]);
 						else
 							goto check;
 						}
@@ -240,6 +239,23 @@ namespace RD_AAOW
 			"weapon_egon",
 			"weapon_axe"
 			};
+		private const int i_hek = 0;
+		private const int i_bat = 1;
+		private const int i_gre = 2;
+		private const int i_hnd = 3;
+		private const int i_sat = 4;
+		private const int i_357 = 5;
+		private const int i_crs = 6;
+		private const int i_gau = 7;
+		private const int i_bar = 8;
+		private const int i_hor = 9;
+		private const int i_9ar = 10;
+		private const int i_sho = 11;
+		private const int i_rpg = 12;
+		private const int i_min = 13;
+		private const int i_sna = 14;
+		private const int i_ego = 15;
+		private const int i_axe = 16;
 
 		/// <summary>
 		/// Метод проверяет допустимость данного объекта для «размещения в ящике»

@@ -77,6 +77,22 @@ namespace RD_AAOW
 			}
 
 		/// <summary>
+		/// Возвращает или задаёт номер генерируемой карты
+		/// </summary>
+		public static uint MapNumber
+			{
+			get
+				{
+				return mapNumber;
+				}
+			set
+				{
+				mapNumber = value;
+				}
+			}
+		private static uint mapNumber = 0;
+
+		/// <summary>
 		/// Стандартная длина стен на картах
 		/// </summary>
 		public const int WallLength = 128;
@@ -143,29 +159,46 @@ namespace RD_AAOW
 			}
 
 		/// <summary>
+		/// Метод формирует каноничное имя карты по её номеру с указанным инкрементом
+		/// </summary>
+		/// <param name="Offset">Инкремент номера карты</param>
+		/// <returns>Строка с название карты</returns>
+		public static string BuildMapName (uint InitialMapNumber, int Offset)
+			{
+			return RandomazeForm.MainAlias + (InitialMapNumber + Offset).ToString ("D3");
+			}
+
+		/// <summary>
+		/// Метод формирует каноничное имя карты по её номеру с указанным инкрементом
+		/// </summary>
+		/// <param name="Offset">Инкремент номера карты</param>
+		/// <returns>Строка с название карты</returns>
+		public static string BuildMapName (int Offset)
+			{
+			return BuildMapName (mapNumber, Offset);
+			}
+
+		/// <summary>
 		/// Метод формирует каноничное имя карты по её номеру
 		/// </summary>
-		/// <param name="MapNumber">Номер карты</param>
 		/// <returns>Строка с название карты</returns>
-		public static string BuildMapName (uint MapNumber)
+		public static string BuildMapName ()
 			{
-			return RandomazeForm.MainAlias + MapNumber.ToString ("D3");
+			return BuildMapName (0);
 			}
 
 		/// <summary>
 		/// Метод записывает заголовок карты
 		/// </summary>
 		/// <param name="SW">Дескриптор файла карты</param>
-		/// <param name="MapNumber">Текущий номер карты</param>
 		/// <param name="Lightness">Уровень затемнения неба (0.0 – 1.0)</param>
 		/// <param name="TwoFloors">Инициализация двухэтажной карты</param>
-		public static void WriteMapHeader (StreamWriter SW, uint MapNumber, /*Random Rnd,*/ float Lightness,
-			bool TwoFloors)
+		public static void WriteMapHeader (StreamWriter SW, float Lightness, bool TwoFloors)
 			{
 			// Начало карты
 			SW.Write ("{\n");
 			SW.Write ("\"classname\" \"worldspawn\"\n");
-			SW.Write ("\"message\" \"ES: Randomaze map " + BuildMapName (MapNumber) + " by FDL\"\n");
+			SW.Write ("\"message\" \"ES: Randomaze map " + BuildMapName () + " by FDL\"\n");
 			SW.Write ("\"mapversion\" \"220\"\n");
 
 			// Инициализация неба
@@ -294,10 +327,8 @@ namespace RD_AAOW
 		/// </summary>
 		/// <param name="SW">Дескриптор файла карты</param>
 		/// <param name="RelativePosition">Относительная позиция точки выхода</param>
-		/// <param name="MapNumber">Номер текущей карты</param>
 		/// <param name="TeleportGate">Флаг указывает на наличие второго шлюза перед выходом</param>
-		public static void WriteMapEndPoint (StreamWriter SW, Point RelativePosition, uint MapNumber,
-			bool TeleportGate)
+		public static void WriteMapEndPoint (StreamWriter SW, Point RelativePosition, bool TeleportGate)
 			{
 			// Защита
 			if (MapNumber >= MapsLimit)
@@ -308,7 +339,7 @@ namespace RD_AAOW
 
 			// Расчёт параметров
 			Point p = EvaluateAbsolutePosition (RelativePosition);
-			string mapName = BuildMapName (MapNumber + 1);
+			string mapName = BuildMapName (1);
 
 			// Запись
 			SW.Write ("{\n");
@@ -354,7 +385,7 @@ namespace RD_AAOW
 			SW.Write ("\"wait\" \"-1\"\n");
 			SW.Write ("\"lip\" \"1\"\n");
 			if (MapNumber <= MapsLimit)
-				SW.Write ("\"targetname\" \"MGate" + BuildMapName (MapNumber) + "\"\n");
+				SW.Write ("\"targetname\" \"MGate" + BuildMapName () + "\"\n");
 
 			string tex = "Metal06";
 			WriteBlock (SW, (p.X - 12).ToString (), (p.Y - 12).ToString (), "0",
@@ -401,12 +432,11 @@ namespace RD_AAOW
 		/// </summary>
 		/// <param name="SW">Дескриптор файла карты</param>
 		/// <param name="RelativePosition">Относительная позиция точки входа</param>
-		/// <param name="MapNumber">Номер текущей карты</param>
 		/// <param name="GravityLevel">Уровень гравитации на карте (10 = 100%)</param>
 		/// <param name="IsUnderSky">Флаг указывает, расположена ли точка входа под небом</param>
 		/// <param name="FogLevel">Уровень тумана на карте (10 = 100%)</param>
 		/// <param name="WallsAreRare">Флаг указывает на редкость стен на карте</param>
-		public static void WriteMapEntryPoint (StreamWriter SW, Point RelativePosition, uint MapNumber,
+		public static void WriteMapEntryPoint (StreamWriter SW, Point RelativePosition,
 			uint GravityLevel, uint FogLevel, bool IsUnderSky, bool WallsAreRare)
 			{
 			// Расчёт параметров
@@ -467,13 +497,13 @@ namespace RD_AAOW
 				{
 				SW.Write ("{\n");
 				AddEntity (SW, "info_landmark");
-				SW.Write ("\"targetname\" \"" + BuildMapName (MapNumber) + "m\"\n");
+				SW.Write ("\"targetname\" \"" + BuildMapName () + "m\"\n");
 				SW.Write ("\"origin\" \"" + xs + " " + ys + " 40\"\n");
 
 				SW.Write ("}\n{\n");
 				AddEntity (SW, "trigger_changelevel");
-				SW.Write ("\"map\" \"" + BuildMapName (MapNumber - 1) + "\"\n");
-				SW.Write ("\"landmark\" \"" + BuildMapName (MapNumber) + "m\"\n");
+				SW.Write ("\"map\" \"" + BuildMapName (-1) + "\"\n");
+				SW.Write ("\"landmark\" \"" + BuildMapName () + "m\"\n");
 
 				WriteBlock (SW, (p.X - 8).ToString (), (p.Y - 8).ToString (), "-2",
 					(p.X + 8).ToString (), (p.Y + 8).ToString (), "-1",
@@ -660,10 +690,9 @@ namespace RD_AAOW
 		/// <param name="SW">Дескриптор файла карты</param>
 		/// <param name="NearbyWalls">Список окружающих стен</param>
 		/// <param name="RelativePosition">Относительная позиция точки выхода</param>
-		/// <param name="MapNumber">Номер текущей карты, используемый для создания уникального имени кнопки</param>
 		/// <param name="TeleportButton">Флаг, указывающий на второй тип кнопки (включение телепорта)</param>
 		public static void WriteMapButton (StreamWriter SW, Point RelativePosition, List<CPResults> NearbyWalls,
-			uint MapNumber, bool TeleportButton)
+			bool TeleportButton)
 			{
 			// Расчёт параметров
 			Point p = EvaluateAbsolutePosition (RelativePosition);
@@ -677,12 +706,12 @@ namespace RD_AAOW
 
 			if (TeleportButton)
 				{
-				SW.Write ("\"target\" \"MGate" + BuildMapName (MapNumber) + "\"\n");
+				SW.Write ("\"target\" \"MGate" + BuildMapName () + "\"\n");
 				SW.Write ("\"sounds\" \"8\"\n");
 				}
 			else
 				{
-				SW.Write ("\"target\" \"Gate" + BuildMapName (MapNumber) + "\"\n");
+				SW.Write ("\"target\" \"Gate" + BuildMapName () + "\"\n");
 				SW.Write ("\"sounds\" \"11\"\n");
 				}
 
@@ -745,7 +774,7 @@ namespace RD_AAOW
 		/// <param name="AllowItems">Флаг разрешения ящиков с жуками и собираемыми объектами</param>
 		/// <param name="ItemPermissions">Строка разрешений для объектов в ящиках</param>
 		/// <param name="EnemiesPermissions">Строка разрешений для врагов в ящиках (крабы, снарки)</param>
-		public static void WriteMapCrate (StreamWriter SW, Point RelativePosition, /*Random Rnd,*/
+		public static void WriteMapCrate (StreamWriter SW, Point RelativePosition,
 			bool AllowItems, bool AllowExplosives, string ItemPermissions, string EnemiesPermissions)
 			{
 			// Контроль
@@ -951,12 +980,12 @@ namespace RD_AAOW
 			"eshq_firmor_"
 			};
 		private static string[] sunColors = new string[] {
-			"255 255 128 200",
-			"255 255 128 200",
-			"255 224 128 180",
-			"160 128 96 120",
-			"96 128 160 150",
-			"128 128 128 150",
+			"255 255 128 180",
+			"255 255 128 180",
+			"224 192 128 120",
+			"96 64 32 90",
+			"32 64 96 120",
+			"64 64 64 120",
 			};
 		private static string[] sunAngles = new string[] {
 			"280 170 0",
@@ -1001,6 +1030,54 @@ namespace RD_AAOW
 			WriteBlock (SW, x1, y1, h1, x2, y2, h2, new string[] { RoofTexture, RoofTexture, RoofTexture,
 				RoofTexture, RoofTexture, RoofTexture }, BlockTypes.Default);
 			}
+
+		/// <summary>
+		/// Метод записывает пол и потолок на карту
+		/// </summary>
+		/// <param name="SW">Дескриптор файла карты</param>
+		/// <param name="WaterLevel">Уровень воды (в долях от единицы)</param>
+		/// <param name="RelativeMapHeight">Относительная ширина карты</param>
+		/// <param name="RelativeMapWidth">Относительная длина карты</param>
+		public static void WriteMapWater (StreamWriter SW, float WaterLevel, int RelativeMapWidth,
+			int RelativeMapHeight)
+			{
+			// Расчёт параметров
+			int realMapWidth = RelativeMapWidth * WallLength;
+			int realMapHeight = RelativeMapHeight * WallLength;
+			string tex = waterTextures[RDGenerics.RND.Next (waterTextures.Length)];
+			string h = ((int)(DefaultWallHeight * WaterLevel)).ToString ();
+			string amt = (70 + RDGenerics.RND.Next (130)).ToString ();
+
+			for (int i = 0; i < 4; i++)
+				{
+				bool negX = ((i & NegativeX) != 0);
+				bool negY = ((i & NegativeY) != 0);
+				string x1 = (negX ? (-realMapWidth / 2) : 0).ToString ();
+				string x2 = (negX ? 0 : (realMapWidth / 2)).ToString ();
+				string y1 = (negY ? (-realMapHeight / 2) : 0).ToString ();
+				string y2 = (negY ? 0 : (realMapHeight / 2)).ToString ();
+
+				// Запись
+				SW.Write ("{\n");
+				AddEntity (SW, "func_water");
+				SW.Write ("\"renderamt\" \"" + amt + "\"\n");
+				SW.Write ("\"rendermode\" \"2\"\n");
+				SW.Write ("\"wait\" \"-1\"\n");
+				SW.Write ("\"skin\" \"-3\"\n");
+				SW.Write ("\"WaveHeight\" \"0.1\"\n");
+
+				WriteBlock (SW, x1, y1, "0", x2, y2, h, new string[] { tex, tex, tex,
+					tex, tex, tex }, BlockTypes.Default);
+
+				SW.Write ("}\n");
+				}
+			}
+		private static string[] waterTextures = new string[] {
+			"!_DirtyWater01",
+			"!_Ether01",
+			"!_Water01",
+			"!_Water02",
+			};
 
 		/// <summary>
 		/// Метод проверяет текстуру на соответствие псевдониму неба
@@ -1048,7 +1125,7 @@ namespace RD_AAOW
 			bool AddingTheBulb, bool SubFloor)
 			{
 			// Защита
-			if (IsSkyTexture (RoofTexture) && !SubFloor && EnvironmentAdded)
+			if (IsSkyTexture (RoofTexture) && !SubFloor && environmentAdded)
 				return false;
 
 			// Расчёт параметров

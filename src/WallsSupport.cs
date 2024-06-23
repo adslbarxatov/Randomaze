@@ -24,9 +24,9 @@ namespace RD_AAOW
 		/// <param name="SW">Дескриптор файла карты</param>
 		/// <param name="RelativePosition">Относительная позиция точки создания</param>
 		/// <param name="Frame">Флаг указывает, что записывается рама шлюза вместо него самого</param>
-		public static void WriteMapGate (StreamWriter SW, Point RelativePosition, bool Frame)
+		public static void WriteMapFinishGate (StreamWriter SW, Point RelativePosition, bool Frame)
 			{
-			WriteGate (SW, RelativePosition, Frame, MapSupport.MapsLimit + 1);
+			WriteGate (SW, RelativePosition, Frame, true);
 			}
 
 		/// <summary>
@@ -35,10 +35,9 @@ namespace RD_AAOW
 		/// <param name="SW">Дескриптор файла карты</param>
 		/// <param name="RelativePosition">Относительная позиция точки создания</param>
 		/// <param name="Frame">Флаг указывает, что записывается рама шлюза вместо него самого</param>
-		/// <param name="MapNumber">Номер карты, используемый для создания уникального имени шлюза</param>
-		public static void WriteMapGate (StreamWriter SW, Point RelativePosition, bool Frame, uint MapNumber)
+		public static void WriteMapGate (StreamWriter SW, Point RelativePosition, bool Frame/*, uint Map Number*/)
 			{
-			WriteGate (SW, RelativePosition, Frame, MapNumber);
+			WriteGate (SW, RelativePosition, Frame, false);
 			}
 
 		/// <summary>
@@ -169,10 +168,10 @@ namespace RD_AAOW
 			}
 
 		// Универсальный метод формирования шлюза
-		private static void WriteGate (StreamWriter SW, Point RelativePosition, bool Frame, uint MapNumber)
+		private static void WriteGate (StreamWriter SW, Point RelativePosition, bool Frame, bool Finish)
 			{
 			// Расчёт параметров
-			string tex = (MapNumber > MapSupport.MapsLimit) ? "MetalGate06" : "MetalGate07";
+			string tex = Finish ? "MetalGate07" : "MetalGate06";
 
 			// Запись рамы
 			if (Frame)
@@ -190,8 +189,8 @@ namespace RD_AAOW
 			SW.Write ("\"stopsnd\" \"1\"\n");
 			SW.Write ("\"wait\" \"-1\"\n");
 			SW.Write ("\"lip\" \"9\"\n");
-			if (MapNumber <= MapSupport.MapsLimit)
-				SW.Write ("\"targetname\" \"Gate" + MapSupport.BuildMapName (MapNumber) + "\"\n");
+			if (Finish)
+				SW.Write ("\"targetname\" \"Gate" + MapSupport.BuildMapName () + "\"\n");
 
 			WriteMapBarrier (SW, RelativePosition, BarrierTypes.Gate, tex);
 
