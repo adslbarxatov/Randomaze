@@ -2,11 +2,15 @@ Randomaze: changes log
 
 ToDo:
 - In-section openable doors
-- Configurable water level
-- Water monsters
 - More textures and environment
-- More lighting levels
 - ESHQ: handbrakes instead of pump
+
+Version 5.5:
+• The number of lighting levels has been increased to 10;
+• The lamps and sun lighting coefficients are now different;
+• Implemented the water level control;
+• Added monster_leech;
+• XPUN update has been applied
 
 Version 5.4.1:
 • The application has been retargeted to .NET Framework 4.8.1

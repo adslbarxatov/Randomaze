@@ -1,5 +1,5 @@
-# ER: Randomaze: user guide
-> **ƒ** &nbsp;RD AAOW FDL; 30.04.2024; 23:03
+# ES: Randomaze: user guide
+> **ƒ** &nbsp;RD AAOW FDL; 23.06.2024; 21:17
 
 
 
@@ -56,7 +56,8 @@ The tool requires next compilation tools, directories and files for work:
 | Enemies density coefficient | Sets the enemies density | 1 – 8 | Yes | `DF` | `esrm_enemies` |
 | Items density coefficient | Affects quantity of collectable items / weapons | 1 – 8 | Yes | `ID` | `esrm_items` |
 | Walls density coefficient | The larger the value, the fewer “branches” the maze will have | 1 – 12 | No | `WD` | `esrm_walls` |
-| Lighting coefficient | Affects quantity of enabled lights and the type of the sky | 1 – 6 | Yes | `LG` | `esrm_light` |
+| Lamps lighting coefficient | Affects quantity of enabled lamp lights | 1 – 10 | Yes | `LI` | `esrm_inlight` |
+| Sun lighting coefficient | Affects outdoor brightness and the type of sky | 1 – 6 | Yes | `LO` | `esrm_outlight` |
 | Crates density coefficient | Describes, how much enemies will be replaced with crates with bugs or explosives | 1 – 5 | Yes | `CD` | `esrm_crates` |
 | Gravity coefficient | Affects the gravity percentage for all objects on the map | 1 – 20 (10 = 100%) | Yes | `GR` | `esrm_gravity` |
 | Button mode | Adds the button(s) that should be found and pressed to open the exit gate | Quantity, 0 / 1 / 2 | No | `BM` | `esrm_button` |
@@ -68,5 +69,6 @@ The tool requires next compilation tools, directories and files for work:
 | Allow monster makers flag | Allows replacement of some monsters with monster makers | 0 / 1 | No | `MM` | `esrm_makers` |
 | Map barrier types | Sets allowed types of barriers between map sections (*glass*, *fabric* or *both*) | 0 / 1 / 2 | No | `BT` | `esrm_barriers` |
 | Fog coefficient | Affects the fog density percentage on the map | 0 – 10 (10 = 100%) | Yes | `FC` | `esrm_fog` |
+| Water level | Affects the water level on the map | 0 – 9 (9 = 45%) | Yes | `WL` | `esrm_water` |
 | Enemies permissions line | Consists of flags of monsters that will be allowed on maps | (the line of letters for `a`ssassins, `b`ullchickens, `c`ontrollers, hound`e`yes, human `g`runts, `h`eadcrabs, trip`m`ines, bar`n`acles, alien g`r`unts, alien `s`laves, `t`urrets, `z`ombies) | No | `EP` | `esrm_enemies_line` |
 | Items permissions line | Consists of flags of weapons and items that will be allowed on maps (both on floors and in crates) | (the line of letters for health`k`its, `b`atteries, `g`renades, `9` mm handguns, `s`atchels, .`3`57 pythons, `c`rossbows, ga`u`ss, cro`w`bars, `h`ornetguns, 9 mm A`R`s, sh`o`tguns, R`P`Gs, `t`ripmines, s`n`arks, `e`gons, `a`xes) | No | `IP` | `esrm_items_line` |
