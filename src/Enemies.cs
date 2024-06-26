@@ -17,11 +17,11 @@ namespace RD_AAOW
 		/// <param name="RelativePosition">Относительная позиция точки создания</param>
 		/// <param name="Permissions">Строка флагов разрешённых врагов</param>
 		/// <param name="SecondFloor">Флаг установки врага на внутренней площадке</param>
-		/// <param name="UnderSky">Флаг расположения под небом</param>
+		/// <param name="CeilingNotAllowed">Флаг указывает наневозможность ориентации на потолке</param>
 		/// <param name="AllowMonsterMakers">Флаг разрешения монстр-мейкеров</param>
 		/// <param name="WaterLevel">Флаг указывает, что воды достаточно для плавающих монстров</param>
 		public static void WriteMapEnemy (StreamWriter SW, Point RelativePosition,
-			string Permissions, bool SecondFloor, bool UnderSky, bool AllowMonsterMakers, uint WaterLevel)
+			string Permissions, bool SecondFloor, bool CeilingNotAllowed, bool AllowMonsterMakers, uint WaterLevel)
 			{
 			// Расчёт параметров
 			Point p = MapSupport.EvaluateAbsolutePosition (RelativePosition);
@@ -171,27 +171,11 @@ namespace RD_AAOW
 						if (mm)
 							goto check; // Недопустим для монстрмейкера
 
-						/*bool turret = true;
-						switch (RDGenerics.RND.Next (3))
-							{
-							case 0:
-								MapSupport.AddEntity (SW, "monster_turret");
-								break;
-
-							case 1:
-								MapSupport.AddEntity (SW, "monster_miniturret");
-								break;
-
-							case 2:
-								MapSupport.AddEntity (SW, "monster_sentry");
-								turret = false;
-								break;
-							}*/
 						int t = RDGenerics.RND.Next (turrets.Count);
 						MapSupport.AddEntity (SW, turrets[t]);
 						bool turret = (t < 2);
 
-						if (MapSupport.TwoFloors && !UnderSky && turret && (RDGenerics.RND.Next (2) == 0))
+						if (MapSupport.TwoFloors && !CeilingNotAllowed && turret && (RDGenerics.RND.Next (2) == 0))
 							{
 							SW.Write ("\"orientation\" \"1\"\n");
 							z = MapSupport.WallHeight;
@@ -255,7 +239,7 @@ namespace RD_AAOW
 
 				// Барнаклы
 				case 21:
-					if (MapSupport.TwoFloors && Permissions.Contains (EnemiesPermissionsKeys[m_brn]) && !UnderSky)
+					if (MapSupport.TwoFloors && Permissions.Contains (EnemiesPermissionsKeys[m_brn]) && !CeilingNotAllowed)
 						{
 						if (mm)
 							goto check; // Недопустим для монстрмейкера

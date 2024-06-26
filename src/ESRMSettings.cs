@@ -20,6 +20,21 @@ namespace RD_AAOW
 				{
 				settingFromEngineToken = SettingFromEngineToken;
 				settingFromEngineValue = SettingFromEngineValue;
+
+				// Подстройка диапазонов
+				switch (settingFromEngineToken)
+					{
+					case twoFloorsPar:
+					case allowItemsForSecondFloorPar:
+					case allowExplosiveCratesPar:
+					case allowItemsCratesPar:
+					case allowMonsterMakersPar:
+						if (settingFromEngineValue == "1")
+							settingFromEngineValue = "2";
+						if (settingFromEngineValue == "0")
+							settingFromEngineValue = "1";
+						break;
+					}
 				}
 
 			// Прогрузка значений

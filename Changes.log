@@ -3,7 +3,11 @@ Randomaze: changes log
 ToDo:
 - In-section openable doors
 - More textures and environment
-- ESHQ: handbrakes instead of pump
+
+Version 5.5.1:
+• Fixed some misleading descriptions for in-game ESRM commands;
+• Fixed the ability to overlay ceiling lamps with barnacles and turrets;
+• Finally found and fixed an old gravity triggering bug
 
 Version 5.5:
 • The number of lighting levels has been increased to 10;

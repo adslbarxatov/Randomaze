@@ -357,10 +357,12 @@ namespace RD_AAOW
 		private void WaterTrack_Scroll (object sender, EventArgs e)
 			{
 			// leech зависит от уровня воды
-			if ((WaterTrack.Value == WaterTrack.Minimum) && !WaterFlag.Checked)
+			/*if ((WaterTrack.Value == WaterTrack.Minimum) && !WaterFlag.Checked)
 				enemiesFlags[6].Enabled = enemiesFlags[6].Checked = false;
 			else
-				enemiesFlags[6].Enabled = true;
+				enemiesFlags[6].Enabled = true;*/
+			enemiesFlags[6].Enabled = false;
+			enemiesFlags[6].Checked = (WaterTrack.Value > WaterTrack.Minimum) || WaterFlag.Checked;
 			}
 
 		// Контроль оружия, относящегося к солдатам

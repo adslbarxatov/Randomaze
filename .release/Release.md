@@ -1,4 +1,7 @@
-_Changes for v 5.5_:
+_Changes for v 5.5.1_:
+- Fixed some misleading descriptions for in-game ESRM commands;
+- Fixed the ability to overlay ceiling lamps with barnacles and turrets;
+- ***Finally found and fixed an old gravity triggering bug***;
 - The number of lamps lighting levels has been increased to 10;
 - The lamps and sun lighting coefficients are now separated;
 - Implemented the `water level` control;
@@ -6,7 +9,4 @@ _Changes for v 5.5_:
 - `XPUN` update has been applied;
 - Implemented the fog density parameter;
 - Implemented the secondary exit button;
-- The distance of visibility for enemies now depends on the fog intensity;
-- Barnackles can now be enabled when the randomization of floors quantity is checked;
-- Added large echo for two-floors maps;
-- Ceiling-oriented turrets are now available on two-floor maps
+- The distance of visibility for enemies now depends on the fog intensity
