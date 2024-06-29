@@ -17,7 +17,7 @@ namespace RD_AAOW
 		/// <param name="RelativePosition">Относительная позиция точки создания</param>
 		/// <param name="AllowSecondFloor">Флаг, разрешающий размещение на внутренних площадках</param>
 		/// <param name="Permissions">Строка разрешений для видов оружия</param>
-		public static void WriteMapItem (StreamWriter SW, Point RelativePosition, /*uint Map Number,*/
+		public static void WriteMapItem (StreamWriter SW, Point RelativePosition,
 			bool AllowSecondFloor, string Permissions)
 			{
 			// Расчёт параметров

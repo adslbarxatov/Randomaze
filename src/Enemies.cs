@@ -67,6 +67,7 @@ namespace RD_AAOW
 
 			// Обработка для монстр-мейкеров
 			bool mm = (awaitingNextMM && (RDGenerics.RND.Next (3) == 0));
+			bool noMM = false;
 			bool countEnemy = false, countRat = false;
 
 			// Выбор врага
@@ -168,11 +169,14 @@ namespace RD_AAOW
 					z = 0;  // Только на полу
 					if (Permissions.Contains (EnemiesPermissionsKeys[m_tur]))
 						{
-						if (mm)
-							goto check; // Недопустим для монстрмейкера
+						/*if (mm)
+							goto check; // Недопустим для монстрмейкера*/
 
 						int t = RDGenerics.RND.Next (turrets.Count);
-						MapSupport.AddEntity (SW, turrets[t]);
+						/*MapSupport.AddEntity (SW, turrets[t]);
+						*/
+						InitMonster (SW, false, turrets[t]);
+						/*mm = false;*/
 						bool turret = (t < 2);
 
 						if (MapSupport.TwoFloors && !CeilingNotAllowed && turret && (RDGenerics.RND.Next (2) == 0))
@@ -239,13 +243,16 @@ namespace RD_AAOW
 
 				// Барнаклы
 				case 21:
-					if (MapSupport.TwoFloors && Permissions.Contains (EnemiesPermissionsKeys[m_brn]) && !CeilingNotAllowed)
+					if (MapSupport.TwoFloors && Permissions.Contains (EnemiesPermissionsKeys[m_brn]) &&
+						!CeilingNotAllowed)
 						{
-						if (mm)
+						/*if (mm)
 							goto check; // Недопустим для монстрмейкера
 
-						MapSupport.AddEntity (SW, enemies[m_brn]);
+						MapSupport.AddEntity (SW, enemies[m_brn]);*/
+						InitMonster (SW, false, enemies[m_brn]);
 						countEnemy = true;
+						/*mm = false;*/
 
 						z = MapSupport.WallHeight;  // Только на потолке
 						}
@@ -262,10 +269,14 @@ namespace RD_AAOW
 						FurnitureTypes.Computer);
 					if ((rWalls.Count > 0) && Permissions.Contains (EnemiesPermissionsKeys[m_min]))
 						{
-						if (mm)
+						/*if (mm)
 							goto check; // Недопустим для монстрмейкера
 
-						MapSupport.AddEntity (SW, enemies[m_min]);
+						MapSupport.AddEntity (SW, enemies[m_min]);*/
+						InitMonster (SW, false, enemies[m_min]);
+						/*mm = false;*/
+						noMM = true;
+						// Не учитывается ачивкой, не может формироваться мейкером, не может триггерить мейкер
 
 						SW.Write ("\"spawnflags\" \"1\"\n");
 						z = 16 + RDGenerics.RND.Next (2) * 48;
@@ -294,8 +305,6 @@ namespace RD_AAOW
 								p.Y += off;
 								break;
 							}
-
-						// Не учитывается ачивкой
 						}
 					else
 						{
@@ -303,12 +312,15 @@ namespace RD_AAOW
 						}
 					break;
 
-				// Личи
+				// Пиявки
 				case 23:
 					if ((WaterLevel > 0) && Permissions.Contains (EnemiesPermissionsKeys[m_lee]))
 						{
-						InitMonster (SW, mm, enemies[m_lee]);
-						countEnemy = true;
+						InitMonster (SW, false, enemies[m_lee]);
+						z = 4;
+						noMM = true;
+						countRat = true;
+						// Учитывается ачивкой, не может формироваться мейкером, не может триггерить мейкер
 						}
 					else
 						{
@@ -321,7 +333,7 @@ namespace RD_AAOW
 			// Обработка монстр-мейкеров или создание ачивки
 			if (!mm)
 				{
-				if (AllowMonsterMakers && (RDGenerics.RND.Next (3) == 0))
+				if (AllowMonsterMakers && !noMM && (RDGenerics.RND.Next (3) == 0))
 					{
 					availableMMNumber++;
 					nextMMName = "MM" + MapSupport.BuildMapName () + "T" +
@@ -363,13 +375,14 @@ namespace RD_AAOW
 				if (WaterLevel > 0)
 					{
 					InitMonster (SW, false, enemies[m_lee]);
-					z = 16;
+					z = 4;
 					}
 				else
 					{
-					InitMonster (SW, mm, rats[RDGenerics.RND.Next (rats.Count)]);
+					InitMonster (SW, false, rats[RDGenerics.RND.Next (rats.Count)]);
 					}
 				countRat = true;
+				mm = false;
 
 				goto finishM;
 				}
@@ -413,7 +426,9 @@ namespace RD_AAOW
 		/// <param name="SW">Дескриптор файла карты</param>
 		/// <param name="RelativePosition">Относительная позиция точки создания</param>
 		/// <param name="TeleportGate">Флаг указывает на наличие второго шлюза</param>
-		public static void WriteMapAchievement (StreamWriter SW, Point RelativePosition, bool TeleportGate)
+		/// <param name="Water">Флаг наличия воды на карте</param>
+		public static void WriteMapAchievement (StreamWriter SW, Point RelativePosition,
+			bool TeleportGate, bool Water)
 			{
 			// Расчёт параметров
 			Point p = MapSupport.EvaluateAbsolutePosition (RelativePosition);
@@ -493,8 +508,8 @@ namespace RD_AAOW
 				SW.Write ("\"messageattenuation\" \"3\"\n");
 				SW.Write ("\"origin\" \"" + p.X.ToString () + " " + p.Y.ToString () + " 88\"\n");
 
-				if (availableMMNumber > 0)
-					SW.Write ("\"message\" \"ACHI_ESRM_04\"\n");
+				if (Water)
+					SW.Write ("\"message\" \"ACHI_ESRM_02_W\"\n");
 				else
 					SW.Write ("\"message\" \"ACHI_ESRM_02\"\n");
 
@@ -542,15 +557,6 @@ namespace RD_AAOW
 		private const int m_tur = 11;
 		private const int m_zom = 12;
 
-		/*/// <summary>
-		/// Метод добавляет барнакла в разрешающую строку при включении режима двух этажей
-		/// </summary>
-		/// <param name="EnemiesPermissionLine">Имеющаяся строка разрешений для врагов</param>
-		public static string AddBarnacle (string EnemiesPermissionLine)
-			{
-			return EnemiesPermissionLine += "n";
-			}*/
-
 		/// <summary>
 		/// Метод удаляет барнакла из разрешающей строки при выключении режима двух этажей
 		/// </summary>
@@ -594,7 +600,7 @@ namespace RD_AAOW
 		// Перечень монстров-заглушек
 		private static List<string> rats = new List<string> {
 			"monster_rat" ,
-			"monster_cockroach"
+			//"monster_cockroach",
 			};
 		private static List<string> turrets = new List<string> {
 			"monster_turret",

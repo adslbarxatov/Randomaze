@@ -1046,10 +1046,14 @@ namespace RD_AAOW
 			int realMapHeight = RelativeMapHeight * WallLength;
 			string tex = waterTextures[RDGenerics.RND.Next (waterTextures.Length)];
 			string h = ((int)(DefaultWallHeight * WaterLevel)).ToString ();
-			string amt = (70 + RDGenerics.RND.Next (130)).ToString ();
+			string amt = (60 + RDGenerics.RND.Next (100)).ToString ();
 
 			for (int i = 0; i < 4; i++)
 				{
+				// Рандомный пропуск на низком уровне затопления
+				if ((WaterLevel == 0.05f) && (RDGenerics.RND.Next (2) == 0))
+					continue;
+
 				bool negX = ((i & NegativeX) != 0);
 				bool negY = ((i & NegativeY) != 0);
 				string x1 = (negX ? (-realMapWidth / 2) : 0).ToString ();
@@ -1074,7 +1078,7 @@ namespace RD_AAOW
 			}
 		private static string[] waterTextures = new string[] {
 			"!_DirtyWater01",
-			"!_Ether01",
+			"!_ToxWater02",
 			"!_Water01",
 			"!_Water02",
 			};

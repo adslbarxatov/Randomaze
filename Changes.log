@@ -4,6 +4,12 @@ ToDo:
 - In-section openable doors
 - More textures and environment
 
+Version 5.5.3:
+• Water now can randomly absent in some areas when its level is 5%;
+• monster_leech now has bigger size;
+• Fixed some issues with monster_makers generation;
+• Fixed some issues with achievement access
+
 Version 5.5.1:
 • Fixed some misleading descriptions for in-game ESRM commands;
 • Fixed the ability to overlay ceiling lamps with barnacles and turrets;

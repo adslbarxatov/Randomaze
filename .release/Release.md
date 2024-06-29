@@ -1,12 +1,12 @@
-_Changes for v 5.5.1_:
+_Changes for v 5.5.3_:
+- Water now can randomly absent in some areas when its level is 5%;
+- `monster_leech` now has bigger size;
+- Fixed some issues with monster_makers generation;
+- Fixed some issues with achievement access;
 - Fixed some misleading descriptions for in-game ESRM commands;
 - Fixed the ability to overlay ceiling lamps with barnacles and turrets;
 - ***Finally found and fixed an old gravity triggering bug***;
 - The number of lamps lighting levels has been increased to 10;
 - The lamps and sun lighting coefficients are now separated;
 - Implemented the `water level` control;
-- Added `monster_leech`;
-- `XPUN` update has been applied;
-- Implemented the fog density parameter;
-- Implemented the secondary exit button;
-- The distance of visibility for enemies now depends on the fog intensity
+- Added `monster_leech`
