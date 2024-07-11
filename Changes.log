@@ -4,6 +4,10 @@ ToDo:
 - In-section openable doors
 - More textures and environment
 
+Version 5.5.4:
+• Fixed some interferences between counters of monsters and monster makers;
+• Fixed incorrect settings translation from ingame console to fog and water levels
+
 Version 5.5.3:
 • Water now can randomly absent in some areas when its level is 5%;
 • monster_leech now has bigger size;
