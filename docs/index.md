@@ -1,5 +1,5 @@
 # ES: Randomaze: user guide
-> **ƒ** &nbsp;RD AAOW FDL; 23.06.2024; 21:17
+> **ƒ** &nbsp;RD AAOW FDL; 14.07.2024; 21:44
 
 
 
@@ -68,7 +68,7 @@ The tool requires next compilation tools, directories and files for work:
 | Allow crates with items | Enables crates with items and bugs | 0 / 1 | No | `IC` | `esrm_item_crates` |
 | Allow monster makers flag | Allows replacement of some monsters with monster makers | 0 / 1 | No | `MM` | `esrm_makers` |
 | Map barrier types | Sets allowed types of barriers between map sections (*glass*, *fabric* or *both*) | 1 / 2 / 3 | No | `BT` | `esrm_barriers` |
-| Fog coefficient | Affects the fog density percentage on the map | 1 – 11 (1 = 0%, 11 = 100%) | Yes | `FC` | `esrm_fog` |
-| Water level | Affects the water level on the map | 1 – 10 (1 = 0%, 10 = 45%) | Yes | `WL` | `esrm_water` |
+| Fog coefficient | Affects the fog density percentage on the map | 1 – 11 (0 = 0%, 10 = 100%) | Yes | `FC` | `esrm_fog` |
+| Water level | Affects the water level on the map | 1 – 10 (0 = 0%, 9 = 45%) | Yes | `WL` | `esrm_water` |
 | Enemies permissions line | Consists of flags of monsters that will be allowed on maps | (the line of letters for `a`ssassins, `b`ullchickens, `c`ontrollers, hound`e`yes, human `g`runts, `h`eadcrabs, trip`m`ines, bar`n`acles, alien g`r`unts, alien `s`laves, `t`urrets, `z`ombies) | No | `EP` | `esrm_enemies_line` |
 | Items permissions line | Consists of flags of weapons and items that will be allowed on maps (both on floors and in crates) | (the line of letters for health`k`its, `b`atteries, `g`renades, `9` mm handguns, `s`atchels, .`3`57 pythons, `c`rossbows, ga`u`ss, cro`w`bars, `h`ornetguns, 9 mm A`R`s, sh`o`tguns, R`P`Gs, `t`ripmines, s`n`arks, `e`gons, `a`xes) | No | `IP` | `esrm_items_line` |

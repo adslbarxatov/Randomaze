@@ -34,6 +34,15 @@ namespace RD_AAOW
 						if (settingFromEngineValue == "0")
 							settingFromEngineValue = "1";
 						break;
+
+					case fogCoefficientPar:
+					case waterLevelPar:
+						try
+							{
+							settingFromEngineValue = (uint.Parse (settingFromEngineValue) + 1).ToString ();
+							}
+						catch { }
+						break;
 					}
 				}
 
@@ -718,13 +727,13 @@ namespace RD_AAOW
 			{
 			get
 				{
-				// Необходимая подстройка диапазона
+				/*// Необходимая подстройка диапазона
 				if (!string.IsNullOrWhiteSpace (settingFromEngineValue))
 					try
 						{
 						settingFromEngineValue = (uint.Parse (settingFromEngineValue) + 1).ToString ();
 						}
-					catch { }
+					catch { }*/
 
 				return GetSettingsValue (fogCoefficientPar,
 					MaximumFogCoefficient, 1, ref fogCoefficient) - 1;
@@ -766,16 +775,15 @@ namespace RD_AAOW
 			{
 			get
 				{
-				// Необходимая подстройка диапазона
+				/*// Необходимая подстройка диапазона
 				if (!string.IsNullOrWhiteSpace (settingFromEngineValue))
 					try
 						{
 						settingFromEngineValue = (uint.Parse (settingFromEngineValue) + 1).ToString ();
 						}
-					catch { }
+					catch { }*/
 
-				return GetSettingsValue (waterLevelPar,
-					MaximumWaterLevel, 1, ref waterLevel) - 1;
+				return GetSettingsValue (waterLevelPar, MaximumWaterLevel, 1, ref waterLevel) - 1;
 				}
 			set
 				{

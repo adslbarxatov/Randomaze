@@ -3,10 +3,12 @@ Randomaze: changes log
 ToDo:
 - In-section openable doors
 - More textures and environment
+- Fix incorrect buttons counting
 
 Version 5.5.4:
 • Fixed some interferences between counters of monsters and monster makers;
-• Fixed incorrect settings translation from ingame console to fog and water levels
+• Fixed incorrect settings translation from ingame console to fog and water levels;
+• Fixed some engine bugs
 
 Version 5.5.3:
 • Water now can randomly absent in some areas when its level is 5%;

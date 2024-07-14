@@ -169,14 +169,8 @@ namespace RD_AAOW
 					z = 0;  // Только на полу
 					if (Permissions.Contains (EnemiesPermissionsKeys[m_tur]))
 						{
-						/*if (mm)
-							goto check; // Недопустим для монстрмейкера*/
-
 						int t = RDGenerics.RND.Next (turrets.Count);
-						/*MapSupport.AddEntity (SW, turrets[t]);
-						*/
 						InitMonster (SW, false, turrets[t]);
-						/*mm = false;*/
 						bool turret = (t < 2);
 
 						if (MapSupport.TwoFloors && !CeilingNotAllowed && turret && (RDGenerics.RND.Next (2) == 0))
@@ -246,13 +240,8 @@ namespace RD_AAOW
 					if (MapSupport.TwoFloors && Permissions.Contains (EnemiesPermissionsKeys[m_brn]) &&
 						!CeilingNotAllowed)
 						{
-						/*if (mm)
-							goto check; // Недопустим для монстрмейкера
-
-						MapSupport.AddEntity (SW, enemies[m_brn]);*/
 						InitMonster (SW, false, enemies[m_brn]);
 						countEnemy = true;
-						/*mm = false;*/
 
 						z = MapSupport.WallHeight;  // Только на потолке
 						}
@@ -269,12 +258,7 @@ namespace RD_AAOW
 						FurnitureTypes.Computer);
 					if ((rWalls.Count > 0) && Permissions.Contains (EnemiesPermissionsKeys[m_min]))
 						{
-						/*if (mm)
-							goto check; // Недопустим для монстрмейкера
-
-						MapSupport.AddEntity (SW, enemies[m_min]);*/
 						InitMonster (SW, false, enemies[m_min]);
-						/*mm = false;*/
 						noMM = true;
 						// Не учитывается ачивкой, не может формироваться мейкером, не может триггерить мейкер
 
@@ -319,6 +303,7 @@ namespace RD_AAOW
 						InitMonster (SW, false, enemies[m_lee]);
 						z = 4;
 						noMM = true;
+						mm = false;
 						countRat = true;
 						// Учитывается ачивкой, не может формироваться мейкером, не может триггерить мейкер
 						}
@@ -383,6 +368,7 @@ namespace RD_AAOW
 					}
 				countRat = true;
 				mm = false;
+				noMM = true;
 
 				goto finishM;
 				}
