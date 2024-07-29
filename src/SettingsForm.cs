@@ -135,9 +135,9 @@ namespace RD_AAOW
 				BarrierCombo.Items.Add (RDLocale.GetText ("GenericTab_BarrierCombo" + i.ToString ("D2")));
 			BarrierCombo.SelectedIndex = (int)settings.BarriersType - 1;
 
-			for (int i = (int)MapButtonsTypes.NoButtons; i <= (int)MapButtonsTypes.GateAndTeleport; i++)
+			for (int i = (int)MapButtonsTypes.NoButtons; i <= (int)MapButtonsTypes.MainAndAdditional; i++)
 				ButtonCombo.Items.Add (RDLocale.GetText ("Generic2Tab_ButtonCombo" + i.ToString ("D2")));
-			ButtonCombo.SelectedIndex = (int)settings.ButtonMode - 1;
+			ButtonCombo.SelectedIndex = (int)settings.ButtonMode;
 
 			AllowItemsForSecondFloor.Checked = settings.AllowItemsForSecondFloor;
 			TwoFloorsFlag.Checked = settings.TwoFloors;
@@ -229,7 +229,7 @@ namespace RD_AAOW
 
 			settings.SectionType = (MapSectionTypes)(SkyCombo.SelectedIndex + 1);
 			settings.BarriersType = (MapBarriersTypes)(BarrierCombo.SelectedIndex + 1);
-			settings.ButtonMode = (MapButtonsTypes)(ButtonCombo.SelectedIndex + 1);
+			settings.ButtonMode = (MapButtonsTypes)ButtonCombo.SelectedIndex;
 
 			settings.TwoFloors = TwoFloorsFlag.Checked;
 			settings.AllowItemsForSecondFloor = AllowItemsForSecondFloor.Checked;

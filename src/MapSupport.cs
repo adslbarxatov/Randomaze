@@ -327,8 +327,8 @@ namespace RD_AAOW
 		/// </summary>
 		/// <param name="SW">Дескриптор файла карты</param>
 		/// <param name="RelativePosition">Относительная позиция точки выхода</param>
-		/// <param name="TeleportGate">Флаг указывает на наличие второго шлюза перед выходом</param>
-		public static void WriteMapEndPoint (StreamWriter SW, Point RelativePosition, bool TeleportGate)
+		/// <param name="TwoButtons">Флаг указывает на наличие второй кнопки</param>
+		public static void WriteMapEndPoint (StreamWriter SW, Point RelativePosition, bool TwoButtons)
 			{
 			// Защита
 			if (MapNumber >= MapsLimit)
@@ -373,7 +373,7 @@ namespace RD_AAOW
 			WriteMapPortal (SW, RelativePosition, true);
 
 			// Второй шлюз
-			if (!TeleportGate)
+			if (!TwoButtons)
 				return;
 
 			SW.Write ("{\n");
@@ -690,9 +690,9 @@ namespace RD_AAOW
 		/// <param name="SW">Дескриптор файла карты</param>
 		/// <param name="NearbyWalls">Список окружающих стен</param>
 		/// <param name="RelativePosition">Относительная позиция точки выхода</param>
-		/// <param name="TeleportButton">Флаг, указывающий на второй тип кнопки (включение телепорта)</param>
+		/// <param name="SecondButton">Флаг, указывающий на формирование второй (дополнительной) кнопки</param>
 		public static void WriteMapButton (StreamWriter SW, Point RelativePosition, List<CPResults> NearbyWalls,
-			bool TeleportButton)
+			bool SecondButton)
 			{
 			// Расчёт параметров
 			Point p = EvaluateAbsolutePosition (RelativePosition);
@@ -704,7 +704,7 @@ namespace RD_AAOW
 			SW.Write ("\"delay\" \"1\"\n");
 			SW.Write ("\"speed\" \"50\"\n");
 
-			if (TeleportButton)
+			if (SecondButton)
 				{
 				SW.Write ("\"target\" \"MGate" + BuildMapName () + "\"\n");
 				SW.Write ("\"sounds\" \"8\"\n");
@@ -718,7 +718,7 @@ namespace RD_AAOW
 			SW.Write ("\"wait\" \"-1\"\n");
 
 			WriteMapFurniture (SW, RelativePosition,
-				TeleportButton ? FurnitureTypes.ExitTeleportButton : FurnitureTypes.ExitGateButton,
+				SecondButton ? FurnitureTypes.ExitTeleportButton : FurnitureTypes.ExitGateButton,
 				NearbyWalls, "Metal06");
 
 			SW.Write ("}\n{\n");

@@ -71,7 +71,7 @@ namespace RD_AAOW
 			bool countEnemy = false, countRat = false;
 
 			// Выбор врага
-		retry:
+			retry:
 			switch (enemy)
 				{
 				// Солдаты
@@ -314,7 +314,7 @@ namespace RD_AAOW
 					break;
 				}
 
-		finishM:
+			finishM:
 			// Обработка монстр-мейкеров или создание ачивки
 			if (!mm)
 				{
@@ -353,7 +353,7 @@ namespace RD_AAOW
 			return;
 
 			// Проверка возможности выбора другого врага
-		check:
+			check:
 			enemy += RDGenerics.RND.Next (3);
 			if (enemy >= prngRange)
 				{
@@ -411,10 +411,10 @@ namespace RD_AAOW
 		/// </summary>
 		/// <param name="SW">Дескриптор файла карты</param>
 		/// <param name="RelativePosition">Относительная позиция точки создания</param>
-		/// <param name="TeleportGate">Флаг указывает на наличие второго шлюза</param>
+		/// <param name="TwoButtons">Флаг указывает на наличие второй кнопки</param>
 		/// <param name="Water">Флаг наличия воды на карте</param>
 		public static void WriteMapAchievement (StreamWriter SW, Point RelativePosition,
-			bool TeleportGate, bool Water)
+			bool TwoButtons, bool Water)
 			{
 			// Расчёт параметров
 			Point p = MapSupport.EvaluateAbsolutePosition (RelativePosition);
@@ -467,25 +467,36 @@ namespace RD_AAOW
 
 				SW.Write ("}\n");
 
-				// Иначе Барни застрянет во втором шлюзе
-				if (!TeleportGate)
-					{
-					SW.Write ("{\n");
-					MapSupport.AddEntity (SW, "monstermaker");
-					SW.Write ("\"targetname\" \"Achi" + mn + "R2\"\n");
-					SW.Write ("\"monstercount\" \"1\"\n");
-					SW.Write ("\"delay\" \"-1\"\n");
-					SW.Write ("\"m_imaxlivechildren\" \"1\"\n");
-					SW.Write ("\"monstertype\" \"monster_barney\"\n");
-					SW.Write ("\"teleport_sound\" \"ambience/teleport1.wav\"\n");
-					SW.Write ("\"teleport_sprite\" \"sprites/portal1.spr\"\n");
-					SW.Write ("\"angles\" \"0 " + RDGenerics.RND.Next (360).ToString () + " 0\"\n");
-					SW.Write ("\"origin\" \"" + p.X.ToString () + " " + p.Y.ToString () + " 0\"\n");
+				SW.Write ("{\n");
+				MapSupport.AddEntity (SW, "monstermaker");
+				/*SW.Write ("\"targetname\" \"Achi" + mn + "R2\"\n");*/
+				SW.Write ("\"monstercount\" \"1\"\n");
+				SW.Write ("\"delay\" \"-1\"\n");
+				SW.Write ("\"m_imaxlivechildren\" \"1\"\n");
+				SW.Write ("\"monstertype\" \"monster_barney\"\n");
+				SW.Write ("\"teleport_sound\" \"ambience/teleport1.wav\"\n");
+				SW.Write ("\"teleport_sprite\" \"sprites/portal1.spr\"\n");
+				SW.Write ("\"angles\" \"0 " + RDGenerics.RND.Next (360).ToString () + " 0\"\n");
+				SW.Write ("\"origin\" \"" + p.X.ToString () + " " + p.Y.ToString () + " 0\"\n");
 
-					SW.Write ("}\n");
+				if (TwoButtons)
+					{
+					// Иначе Барни застрянет во втором шлюзе
+					SW.Write ("\"targetname\" \"Achi" + mn + "R2D\"\n");
+
+					SW.Write ("}\n{\n");
+					MapSupport.AddEntity (SW, "trigger_changetarget");
+					SW.Write ("\"targetname\" \"Achi" + mn + "R2\"\n");
+					SW.Write ("\"target\" \"MGate" + mn + "\"\n");
+					SW.Write ("\"m_iszNewTarget\" \"Achi" + mn + "R2D\"\n");
+					SW.Write ("\"origin\" \"" + p.X.ToString () + " " + p.Y.ToString () + " 92\"\n");
+					}
+				else
+					{
+					SW.Write ("\"targetname\" \"Achi" + mn + "R2\"\n");
 					}
 
-				SW.Write ("{\n");
+				SW.Write ("}\n{\n");
 				MapSupport.AddEntity (SW, "env_message");
 				SW.Write ("\"spawnflags\" \"2\"\n");
 				SW.Write ("\"targetname\" \"Achi" + mn + "R2\"\n");

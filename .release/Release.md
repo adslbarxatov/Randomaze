@@ -1,11 +1,9 @@
-_Changes for v 5.5.4_:
+_Changes for v 5.5.8_:
+- Fixed incorrect buttons accounting;
+- Added some new variants of furniture;
+- Applied some improvements to core functions;
 - Fixed some interferences between counters of monsters and monster makers;
 - Fixed incorrect settings translation from ingame console to fog and water levels;
 - Fixed some engine bugs;
 - Water now can randomly absent in some areas when its level is 5%;
-- `monster_leech` now has bigger size;
-- Fixed some issues with monster_makers generation;
-- Fixed some issues with achievement access;
-- Fixed some misleading descriptions for in-game ESRM commands;
-- Fixed the ability to overlay ceiling lamps with barnacles and turrets;
-- ***Finally found and fixed an old gravity triggering bug***
+- `monster_leech` now has bigger size

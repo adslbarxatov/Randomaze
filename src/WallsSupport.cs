@@ -35,7 +35,7 @@ namespace RD_AAOW
 		/// <param name="SW">Дескриптор файла карты</param>
 		/// <param name="RelativePosition">Относительная позиция точки создания</param>
 		/// <param name="Frame">Флаг указывает, что записывается рама шлюза вместо него самого</param>
-		public static void WriteMapGate (StreamWriter SW, Point RelativePosition, bool Frame/*, uint Map Number*/)
+		public static void WriteMapGate (StreamWriter SW, Point RelativePosition, bool Frame)
 			{
 			WriteGate (SW, RelativePosition, Frame, false);
 			}

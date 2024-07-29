@@ -24,19 +24,22 @@ namespace RD_AAOW
 				// Подстройка диапазонов
 				switch (settingFromEngineToken)
 					{
+					// Флаги
 					case twoFloorsPar:
 					case allowItemsForSecondFloorPar:
 					case allowExplosiveCratesPar:
 					case allowItemsCratesPar:
 					case allowMonsterMakersPar:
-						if (settingFromEngineValue == "1")
+						/*if (settingFromEngineValue == "1")
 							settingFromEngineValue = "2";
 						if (settingFromEngineValue == "0")
 							settingFromEngineValue = "1";
-						break;
+						break;*/
 
+					// Значения, начинающиеся с нуля
 					case fogCoefficientPar:
 					case waterLevelPar:
+					case buttonModePar:
 						try
 							{
 							settingFromEngineValue = (uint.Parse (settingFromEngineValue) + 1).ToString ();
@@ -314,13 +317,11 @@ namespace RD_AAOW
 			{
 			get
 				{
-				return (MapButtonsTypes)GetSettingsValue (buttonModePar,
-					(uint)MapButtonsTypes.GateAndTeleport, (uint)MapButtonsTypes.NoButtons,
-					ref buttonMode);
+				return (MapButtonsTypes)(GetSettingsValue (buttonModePar, 3, 1, ref buttonMode) - 1);
 				}
 			set
 				{
-				SetSettingsValue (buttonModePar, ref buttonMode, (uint)value);
+				SetSettingsValue (buttonModePar, ref buttonMode, (uint)value + 1);
 				}
 			}
 		private const string buttonModePar = "BM";
@@ -727,14 +728,6 @@ namespace RD_AAOW
 			{
 			get
 				{
-				/*// Необходимая подстройка диапазона
-				if (!string.IsNullOrWhiteSpace (settingFromEngineValue))
-					try
-						{
-						settingFromEngineValue = (uint.Parse (settingFromEngineValue) + 1).ToString ();
-						}
-					catch { }*/
-
 				return GetSettingsValue (fogCoefficientPar,
 					MaximumFogCoefficient, 1, ref fogCoefficient) - 1;
 				}
@@ -775,14 +768,6 @@ namespace RD_AAOW
 			{
 			get
 				{
-				/*// Необходимая подстройка диапазона
-				if (!string.IsNullOrWhiteSpace (settingFromEngineValue))
-					try
-						{
-						settingFromEngineValue = (uint.Parse (settingFromEngineValue) + 1).ToString ();
-						}
-					catch { }*/
-
 				return GetSettingsValue (waterLevelPar, MaximumWaterLevel, 1, ref waterLevel) - 1;
 				}
 			set
@@ -883,16 +868,16 @@ namespace RD_AAOW
 		/// <summary>
 		/// Без кнопок
 		/// </summary>
-		NoButtons = 1,
+		NoButtons = 0,
 
 		/// <summary>
-		/// Одна кнопка для шлюза
+		/// Одна кнопка
 		/// </summary>
-		OnlyGate = 2,
+		SingleButton = 1,
 
 		/// <summary>
-		/// Две кнопки – для шлюза и телепорта
+		/// Основная и дополнительная конпка
 		/// </summary>
-		GateAndTeleport = 3,
+		MainAndAdditional = 2,
 		}
 	}
