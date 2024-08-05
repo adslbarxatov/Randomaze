@@ -245,12 +245,12 @@ namespace RD_AAOW
 						}
 					else if (neighborLeft == WallsNeighborsTypes.Window)
 						{
-						lTex = "Metal08";
+						lTex = MapSupport.BlueMetalTexture;
 						lDelta = 0;
 						}
 					else if (neighborLeft == WallsNeighborsTypes.WindowCorner)
 						{
-						lTex = "Metal08";
+						lTex = MapSupport.BlueMetalTexture;
 						}
 					else if (neighborLeft == WallsNeighborsTypes.Wall)
 						{
@@ -264,12 +264,12 @@ namespace RD_AAOW
 						}
 					else if (neighborRight == WallsNeighborsTypes.Window)
 						{
-						rTex = "Metal08";
+						rTex = MapSupport.BlueMetalTexture;
 						rDelta = 0;
 						}
 					else if (neighborRight == WallsNeighborsTypes.WindowCorner)
 						{
-						rTex = "Metal08";
+						rTex = MapSupport.BlueMetalTexture;
 						}
 					else if (neighborRight == WallsNeighborsTypes.Wall)
 						{
@@ -283,13 +283,20 @@ namespace RD_AAOW
 				case BarrierTypes.Gate:
 					z1 = "0";
 					z2 = "120";
-					textures = new string[] { "Metal08", Texture, Texture, Texture,
+					textures = new string[] { MapSupport.BlueMetalTexture, Texture, Texture, Texture,
 						Texture, Texture, Texture, Texture };
 					break;
 
 				case BarrierTypes.GlassWindow:
 				case BarrierTypes.FabricWindow:
-					string tex = (Type == BarrierTypes.GlassWindow) ? "Glass01" : "Fabric03";
+					string tex;
+					uint texIdx = (uint)RDGenerics.RND.Next (2) + 1;
+
+					if (Type == BarrierTypes.GlassWindow)
+						tex = MapSupport.GetGlassTexture (texIdx);
+					else
+						tex = MapSupport.GetFabricTexture (texIdx + 2);
+
 					z1 = "8";
 					z2 = (MapSupport.WallHeight - 8).ToString ();
 					textures = new string[] { tex, tex, tex, tex, tex, tex, tex, tex };
@@ -305,7 +312,7 @@ namespace RD_AAOW
 						z1 = "120";
 					z2 = (MapSupport.WallHeight + 16).ToString ();
 
-					textures = new string[] { MapSupport.SkyTexture, "Metal08", Texture, Texture,
+					textures = new string[] { MapSupport.SkyTexture, MapSupport.BlueMetalTexture, Texture, Texture,
 						Texture, Texture, Texture, Texture };
 
 					if (Type == BarrierTypes.WindowFrameTop)
@@ -315,7 +322,7 @@ namespace RD_AAOW
 				case BarrierTypes.WindowFrameBottom:
 					z1 = "0";
 					z2 = "8";
-					textures = new string[] { "Metal08", Texture, Texture, Texture,
+					textures = new string[] { MapSupport.BlueMetalTexture, Texture, Texture, Texture,
 						Texture, Texture, Texture, Texture };
 					rDelta = lDelta = 0;
 					break;

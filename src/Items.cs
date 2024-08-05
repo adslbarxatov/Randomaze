@@ -17,8 +17,10 @@ namespace RD_AAOW
 		/// <param name="RelativePosition">Относительная позиция точки создания</param>
 		/// <param name="AllowSecondFloor">Флаг, разрешающий размещение на внутренних площадках</param>
 		/// <param name="Permissions">Строка разрешений для видов оружия</param>
+		/// <param name="ForceFloorPlacement">Флаг указывает на необходимость расположения
+		/// прямо на полу (для исключения «застревания» во враге)</param>
 		public static void WriteMapItem (StreamWriter SW, Point RelativePosition,
-			bool AllowSecondFloor, string Permissions)
+			bool AllowSecondFloor, bool ForceFloorPlacement, string Permissions)
 			{
 			// Расчёт параметров
 			Point p = MapSupport.EvaluateAbsolutePosition (RelativePosition);
@@ -179,7 +181,7 @@ namespace RD_AAOW
 				}
 
 			finishItem:
-			int z = 40;
+			int z = ForceFloorPlacement ? 0 : 40;
 			if (AllowSecondFloor)
 				z += (RDGenerics.RND.Next (2) * MapSupport.DefaultWallHeight);
 
@@ -190,7 +192,7 @@ namespace RD_AAOW
 			return;
 
 			// Проверка возможности выбора другого врага
-			check:
+		check:
 			item += RDGenerics.RND.Next (3);
 			if (item >= prngRange)
 				{

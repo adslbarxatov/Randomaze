@@ -387,7 +387,8 @@ namespace RD_AAOW
 			if (MapNumber <= MapsLimit)
 				SW.Write ("\"targetname\" \"MGate" + BuildMapName () + "\"\n");
 
-			string tex = "Metal06";
+			/*string tex = "Metal 06";*/
+			string tex = GreenMetalTexture;
 			WriteBlock (SW, (p.X - 12).ToString (), (p.Y - 12).ToString (), "0",
 				(p.X - 8).ToString (), (p.Y - 8).ToString (), WallHeight.ToString (),
 				new string[] { tex, tex, tex, tex, tex, tex }, BlockTypes.Default);
@@ -621,9 +622,6 @@ namespace RD_AAOW
 			Door = 2,
 			}
 
-		// Стандартная текстура триггера
-		private const string TriggerTexture = "AAATRIGGER";
-
 		/// <summary>
 		/// Метод записывает звуковой триггер на карту
 		/// </summary>
@@ -719,7 +717,7 @@ namespace RD_AAOW
 
 			WriteMapFurniture (SW, RelativePosition,
 				SecondButton ? FurnitureTypes.ExitTeleportButton : FurnitureTypes.ExitGateButton,
-				NearbyWalls, "Metal06");
+				NearbyWalls, GreenMetalTexture);
 
 			SW.Write ("}\n{\n");
 			AddEntity (SW, "trigger_autosave");
@@ -1076,12 +1074,6 @@ namespace RD_AAOW
 				SW.Write ("}\n");
 				}
 			}
-		private static string[] waterTextures = new string[] {
-			"!_DirtyWater01",
-			"!_ToxWater02",
-			"!_Water01",
-			"!_Water02",
-			};
 
 		/// <summary>
 		/// Метод проверяет текстуру на соответствие псевдониму неба
@@ -1092,11 +1084,6 @@ namespace RD_AAOW
 			{
 			return (Texture == SkyTexture);
 			}
-
-		/// <summary>
-		/// Возвращает имя текстуры неба
-		/// </summary>
-		public const string SkyTexture = "sky";
 
 		/// <summary>
 		/// Метод получает секцию по координатам точки
@@ -1468,5 +1455,107 @@ namespace RD_AAOW
 			// SC_CLOSE, MF_GRAYED
 			EnableMenuItem (GetSystemMenu (WindowHandle, false), 0xF060, 0x0001);
 			}
+
+		// Текстуры
+
+		/// <summary>
+		/// Возвращает имя текстуры неба
+		/// </summary>
+		public const string SkyTexture = "sky";
+
+		/// <summary>
+		/// Возвращает имя стандартной текстуры триггера
+		/// </summary>
+		public const string TriggerTexture = "AAATRIGGER";
+
+		/// <summary>
+		/// Возвращает текстуру дерева
+		/// </summary>
+		/// <param name="Number">Номер (от 1 до 4)</param>
+		public static string GetWoodTexture (uint Number)
+			{
+			int i = (int)Number - 1;
+			if ((i >= 0) && (i < woodTextures.Length))
+				return woodTextures[i];
+
+			return woodTextures[0];
+			}
+		private static string[] woodTextures = new string[]
+			{
+			"Wood01",
+			"Wood02",
+			"Wood03",
+			"Wood04",
+			};
+
+		/// <summary>
+		/// Возвращает текстуру красного металла
+		/// </summary>
+		public const string RedMetalTexture = "BorderMet05";
+
+		/// <summary>
+		/// Возвращает текстуру светло-зелёного металла
+		/// </summary>
+		public const string LimeMetalTexture = "Metal01";
+
+		/// <summary>
+		/// Возвращает текстуру зелёного металла
+		/// </summary>
+		public const string GreenMetalTexture = "Metal06";
+
+		/// <summary>
+		/// Возвращает текстуру серого металла
+		/// </summary>
+		public const string GreyMetalTexture = "Metal05";
+
+		/// <summary>
+		/// Возвращает текстуру голубого металла
+		/// </summary>
+		public const string BlueMetalTexture = "Metal08";
+
+		/// <summary>
+		/// Возвращает текстуру ткани
+		/// </summary>
+		/// <param name="Number">Номер (от 1 до 4)</param>
+		public static string GetFabricTexture (uint Number)
+			{
+			int i = (int)Number - 1;
+			if ((i >= 0) && (i < fabricTextures.Length))
+				return fabricTextures[i];
+
+			return fabricTextures[0];
+			}
+		private static string[] fabricTextures = new string[]
+			{
+			"Fabric01",
+			"Fabric02",
+			"Fabric03",
+			"Fabric04",
+			};
+
+		/// <summary>
+		/// Возвращает текстуру стекла
+		/// </summary>
+		/// <param name="Number">Номер (от 1 до 2)</param>
+		public static string GetGlassTexture (uint Number)
+			{
+			int i = (int)Number - 1;
+			if ((i >= 0) && (i < glassTextures.Length))
+				return glassTextures[i];
+
+			return glassTextures[0];
+			}
+		private static string[] glassTextures = new string[]
+			{
+			"Glass01",
+			"Glass03",
+			};
+
+		private static string[] waterTextures = new string[] {
+			"!_DirtyWater01",
+			"!_ToxWater02",
+			"!_Water01",
+			"!_Water02",
+			};
 		}
 	}
