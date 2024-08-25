@@ -387,7 +387,6 @@ namespace RD_AAOW
 			if (MapNumber <= MapsLimit)
 				SW.Write ("\"targetname\" \"MGate" + BuildMapName () + "\"\n");
 
-			/*string tex = "Metal 06";*/
 			string tex = GreenMetalTexture;
 			WriteBlock (SW, (p.X - 12).ToString (), (p.Y - 12).ToString (), "0",
 				(p.X - 8).ToString (), (p.Y - 8).ToString (), WallHeight.ToString (),

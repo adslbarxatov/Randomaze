@@ -30,11 +30,6 @@ namespace RD_AAOW
 					case allowExplosiveCratesPar:
 					case allowItemsCratesPar:
 					case allowMonsterMakersPar:
-						/*if (settingFromEngineValue == "1")
-							settingFromEngineValue = "2";
-						if (settingFromEngineValue == "0")
-							settingFromEngineValue = "1";
-						break;*/
 
 					// Значения, начинающиеся с нуля
 					case fogCoefficientPar:

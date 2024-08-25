@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 
@@ -469,7 +468,6 @@ namespace RD_AAOW
 
 				SW.Write ("{\n");
 				MapSupport.AddEntity (SW, "monstermaker");
-				/*SW.Write ("\"targetname\" \"Achi" + mn + "R2\"\n");*/
 				SW.Write ("\"monstercount\" \"1\"\n");
 				SW.Write ("\"delay\" \"-1\"\n");
 				SW.Write ("\"m_imaxlivechildren\" \"1\"\n");
