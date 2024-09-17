@@ -7,6 +7,7 @@ ToDo:
 - Return the difficulty levels
 - Убрать сообщение monster stuck
 - Понизить коэффициент генерации для турелей
+- Вероятностная генерация врагов
 
 Version 5.7.1:
 • Added the automated icon association for the mod files;
