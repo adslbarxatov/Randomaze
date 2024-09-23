@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace RD_AAOW
 	{
@@ -51,7 +52,7 @@ namespace RD_AAOW
 			_ = WallsDensityCoefficient;
 			_ = ButtonMode;
 			_ = CratesDensityCoefficient;
-			_ = EnemiesPermissionLine;
+			_ = EnemiesPermissionLine2;
 			_ = InsideLightingCoefficient;
 			_ = OutsideLightingCoefficient;
 			_ = SectionType;
@@ -69,9 +70,9 @@ namespace RD_AAOW
 
 			// Защита
 			if (!TwoFloors && !RandomizeFloorsQuantity)
-				EnemiesPermissionLine = EnemiesSupport.RemoveBarnacle (EnemiesPermissionLine);
+				EnemiesSupport.RemoveBarnacle (ref enemiesPermissionLine2);
 			if ((WaterLevel < 1) && !RandomWaterLevel)
-				EnemiesPermissionLine = EnemiesSupport.RemoveLeech (EnemiesPermissionLine);
+				EnemiesSupport.RemoveLeech (ref enemiesPermissionLine2);
 			}
 		private string settingFromEngineToken = "";
 		private string settingFromEngineValue = "";
@@ -365,42 +366,99 @@ namespace RD_AAOW
 
 
 		/// <summary>
-		/// Возвращает или задаёт строку разрешённых врагов
+		/// Возвращает или задаёт набор вероятностей генерации врагов
 		/// </summary>
-		public string EnemiesPermissionLine
+		public byte[] EnemiesPermissionLine2
 			{
 			get
 				{
 				// Отсечка
-				if (!string.IsNullOrWhiteSpace (enemiesPermissionLine))
-					return enemiesPermissionLine;
+				/*if (!string.IsNullOrWhiteSpace (enemiesPermissionLine2))
+					return enemiesPermissionLine2;*/
+				if (enemiesPermissionLine2 != null)
+					return enemiesPermissionLine2.ToArray ();
 
 				// Присвоение с перезаписью
+				string line = "";
 				if (settingFromEngineToken == enemiesPermissionLinePar)
-					EnemiesPermissionLine = settingFromEngineValue;
+					{
+					line = settingFromEngineValue;
+					RDGenerics.SetAppRegistryValue (enemiesPermissionLinePar, line);
+					}
 
 				// Простое присвоение
 				else
-					enemiesPermissionLine = RDGenerics.GetAppRegistryValue (enemiesPermissionLinePar);
-
-				// По умолчанию
-				if (string.IsNullOrWhiteSpace (enemiesPermissionLine))
 					{
-					for (int i = 0; i < EnemiesSupport.EnemiesPermissionsKeys.Length; i++)
-						enemiesPermissionLine += EnemiesSupport.EnemiesPermissionsKeys[i];
-					enemiesPermissionLine = EnemiesSupport.RemoveBarnacle (enemiesPermissionLine);
+					line = RDGenerics.GetAppRegistryValue (enemiesPermissionLinePar);
 					}
 
-				return enemiesPermissionLine;
+				// По умолчанию
+				bool defValues = false;
+				if (string.IsNullOrWhiteSpace (line))
+					{
+					/*for (int i = 0; i < EnemiesSupport.EnemiesPermissionsKeys.Length; i++)*/
+					for (int i = 0; i < EnemiesSupport.AvailableEnemiesTypes; i++)
+						line += MaximumEnemiesProbability.ToString ();
+					/*enemiesPermissionLine2 += EnemiesSupport.EnemiesPermissionsKeys[i];*/
+					defValues = true;
+					}
+
+				// Сплит
+				enemiesPermissionLine2 = new List<byte> ();
+				/*for (int i = 0; i < EnemiesSupport.EnemiesPermissionsKeys.Length; i++)*/
+				for (int i = 0; i < EnemiesSupport.AvailableEnemiesTypes; i++)
+					{
+					try
+						{
+						string s = line[i].ToString ();
+						enemiesPermissionLine2.Add (byte.Parse (s));
+						if (enemiesPermissionLine2[i] > MaximumEnemiesProbability)
+							enemiesPermissionLine2[i] = MaximumEnemiesProbability;
+						}
+					catch
+						{
+						enemiesPermissionLine2.Add (1);
+						defValues = true;
+						}
+					}
+
+				if (defValues)
+					{
+					EnemiesSupport.RemoveBarnacle (ref enemiesPermissionLine2);
+					EnemiesSupport.RemoveLeech (ref enemiesPermissionLine2);
+					EnemiesPermissionLine2 = enemiesPermissionLine2.ToArray ();
+					}
+
+				return enemiesPermissionLine2.ToArray ();
 				}
 			set
 				{
-				enemiesPermissionLine = value;
-				RDGenerics.SetAppRegistryValue (enemiesPermissionLinePar, enemiesPermissionLine);
+				enemiesPermissionLine2 = new List<byte> (value);
+				string line = "";
+				for (int i = 0; i < enemiesPermissionLine2.Count; i++)
+					line += enemiesPermissionLine2[i].ToString ();
+
+				RDGenerics.SetAppRegistryValue (enemiesPermissionLinePar, line);
 				}
 			}
-		private string enemiesPermissionLine = "";
+		private List<byte> enemiesPermissionLine2;
 		private const string enemiesPermissionLinePar = "EP";
+
+		/// <summary>
+		/// Возвращает строку разрешённых врагов
+		/// </summary>
+		public string EnemiesPermissionLineAsString
+			{
+			get
+				{
+				return RDGenerics.GetAppRegistryValue (enemiesPermissionLinePar);
+				}
+			}
+
+		/// <summary>
+		/// Возвращает ограничение вероятности генерации врагов
+		/// </summary>
+		public const byte MaximumEnemiesProbability = 5;
 
 
 

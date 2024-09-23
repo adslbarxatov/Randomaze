@@ -14,7 +14,13 @@ namespace RD_AAOW
 		private ESRMSettings settings;
 
 		// Переменные
-		private List<CheckBox> enemiesFlags = new List<CheckBox> ();
+		/*private List<CheckBox> enemiesFlags = new List<CheckBox> ();*/
+		private List<Label> enemiesLabels = new List<Label> ();
+		private List<TrackBar> enemiesTracks = new List<TrackBar> ();
+		private List<string> enemiesNames = new List<string> ();
+		private byte[] enemies;
+		private List<bool> enemiesLocks = new List<bool> ();
+
 		private List<CheckBox> itemsFlags = new List<CheckBox> ();
 		private Color enabledColor = Color.FromArgb (0, 200, 0);
 		private Color disabledColor = Color.FromArgb (200, 200, 200);
@@ -117,12 +123,33 @@ namespace RD_AAOW
 					itemsFlags[i].Checked = true;
 				}
 
-			for (int i = 0; i < EnemiesSupport.EnemiesPermissionsKeys.Length; i++)
+			for (int i = 0; i < 5; i++)
+				{
+				string idx = "Enemy" + i.ToString ("D2");
+				enemiesLabels.Add ((Label)this.Controls.Find (idx + "Label", true)[0]);
+
+				enemiesTracks.Add ((TrackBar)this.Controls.Find (idx + "Track", true)[0]);
+				enemiesTracks[i].Maximum = ESRMSettings.MaximumEnemiesProbability;
+				}
+
+			/*for (int i = 0; i < EnemiesSupport.EnemiesPermissionsKeys.Length; i++)*/
+			for (int i = 0; i < EnemiesSupport.AvailableEnemiesTypes; i++)
+				{
+				string idx = "Enemy" + i.ToString ("D2");
+				enemiesNames.Add (RDLocale.GetText (idx));
+				enemiesLocks.Add (true);
+				}
+
+			EnemyScroll.Maximum = (int)EnemiesSupport.AvailableEnemiesTypes - enemiesLabels.Count;
+
+			/*for (int i = 0; i < EnemiesSupport.EnemiesPermissionsKeys.Length; i++)
 				{
 				enemiesFlags.Add ((CheckBox)this.Controls.Find ("EnemyFlag" + (i + 1).ToString ("D2"), true)[0]);
 				enemiesFlags[i].Checked =
 					settings.EnemiesPermissionLine.Contains (EnemiesSupport.EnemiesPermissionsKeys[i]);
-				}
+				}*/
+			enemies = settings.EnemiesPermissionLine2;
+			EnemyScroll_Scroll (null, null);
 
 			GruntFlag_CheckedChanged (null, null);
 			WaterTrack_Scroll (null, null);
@@ -207,7 +234,7 @@ namespace RD_AAOW
 
 			settings.AllowMonsterMakers = MonsterMakerFlag.Checked;
 
-			string s = "";
+			/*string s = "";
 			for (int i = 0; i < EnemiesSupport.EnemiesPermissionsKeys.Length; i++)
 				{
 				if (enemiesFlags[i].Checked)
@@ -215,9 +242,10 @@ namespace RD_AAOW
 				else
 					s += "-";
 				}
-			settings.EnemiesPermissionLine = s;
+			settings.EnemiesPermissionLine = s;*/
+			settings.EnemiesPermissionLine2 = enemies;
 
-			s = "";
+			string s = "";
 			for (int i = 0; i < ItemsSupport.ItemsPermissionsKeys.Length; i++)
 				{
 				if (itemsFlags[i].Checked)
@@ -339,12 +367,22 @@ namespace RD_AAOW
 			{
 			// barnacle зависит от высоты карты
 			if (TwoFloorsFlag.Checked || RandomizeFloorsFlag.Checked)
-				enemiesFlags[8].Enabled = AllowItemsForSecondFloor.Enabled = true;
+				{
+				/*enemiesFlags[8].Enabled*/
+				enemiesLocks[8] = AllowItemsForSecondFloor.Enabled = true;
+				}
 			else
-				enemiesFlags[8].Enabled = enemiesFlags[8].Checked = AllowItemsForSecondFloor.Enabled =
-					AllowItemsForSecondFloor.Checked = false;
+				{
+				/*enemiesFlags[8].Enabled*/
+				enemiesLocks[8] = AllowItemsForSecondFloor.Enabled = AllowItemsForSecondFloor.Checked = false;
+				/*enemiesFlags[8].Checked*/
+				enemies[8] = 0;
+				}
 
 			TwoFloorsFlag.Enabled = !RandomizeFloorsFlag.Checked;
+
+			// Подгрузка новых значений
+			EnemyScroll_Scroll (null, null);
 			}
 
 		// Сброс гравитации до нормального значения
@@ -357,15 +395,51 @@ namespace RD_AAOW
 		private void WaterTrack_Scroll (object sender, EventArgs e)
 			{
 			// leech зависит от уровня воды
-			enemiesFlags[6].Enabled = false;
-			enemiesFlags[6].Checked = (WaterTrack.Value > WaterTrack.Minimum) || WaterFlag.Checked;
+			/*enemiesFlags[6].Enabled = false;*/
+			enemiesLocks[6] = false;
+			/*enemiesFlags[6].Checked =*/
+			if ((WaterTrack.Value > WaterTrack.Minimum) || WaterFlag.Checked)
+				enemies[6] = (byte)(enemiesTracks[0].Maximum / 2);
+			else
+				enemies[6] = 0;
+
+			// Подгрузка новых значений
+			EnemyScroll_Scroll (null, null);
 			}
 
 		// Контроль оружия, относящегося к солдатам
 		private void GruntFlag_CheckedChanged (object sender, EventArgs e)
 			{
 			// 9mmAR и shotgun зависят от human_grunt
-			itemsFlags[10].Checked = itemsFlags[11].Checked = enemiesFlags[4].Checked;
+			itemsFlags[10].Checked = itemsFlags[11].Checked = (enemies[4] != 0);
+			/*enemiesFlags[4].Checked*/
+			}
+
+		// Прокрутка списка врагов
+		private void EnemyScroll_Scroll (object sender, ScrollEventArgs e)
+			{
+			scroll = true;
+
+			for (int i = 0; i < enemiesLabels.Count; i++)
+				{
+				int v = i + EnemyScroll.Value;
+				enemiesLabels[i].Text = enemiesNames[v];
+				enemiesTracks[i].Value = enemies[v];
+				enemiesTracks[i].Enabled = enemiesLocks[v];
+				}
+
+			scroll = false;
+			}
+		private bool scroll = false;
+
+		// Изменение вероятности генерации врагов
+		private void Enemy00Track_Scroll (object sender, EventArgs e)
+			{
+			if (scroll)
+				return;
+
+			int idx = enemiesTracks.IndexOf ((TrackBar)sender);
+			enemies[EnemyScroll.Value + idx] = (byte)enemiesTracks[idx].Value;
 			}
 		}
 	}

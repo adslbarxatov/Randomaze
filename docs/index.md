@@ -1,5 +1,5 @@
 # ES: Randomaze: user guide
-> **ƒ** &nbsp;RD AAOW FDL; 14.07.2024; 21:44
+> **ƒ** &nbsp;RD AAOW FDL; 23.09.2024; 21:58
 
 
 
@@ -70,5 +70,5 @@ The tool requires next compilation tools, directories and files for work:
 | Map barrier types | Sets allowed types of barriers between map sections (*glass*, *fabric* or *both*) | 1 / 2 / 3 | No | `BT` | `esrm_barriers` |
 | Fog coefficient | Affects the fog density percentage on the map | 1 – 11 (0 = 0%, 10 = 100%) | Yes | `FC` | `esrm_fog` |
 | Water level | Affects the water level on the map | 1 – 10 (0 = 0%, 9 = 45%) | Yes | `WL` | `esrm_water` |
-| Enemies permissions line | Consists of flags of monsters that will be allowed on maps | (the line of letters for `a`ssassins, `b`ullchickens, `c`ontrollers, hound`e`yes, human `g`runts, `h`eadcrabs, trip`m`ines, bar`n`acles, alien g`r`unts, alien `s`laves, `t`urrets, `z`ombies) | No | `EP` | `esrm_enemies_line` |
-| Items permissions line | Consists of flags of weapons and items that will be allowed on maps (both on floors and in crates) | (the line of letters for health`k`its, `b`atteries, `g`renades, `9` mm handguns, `s`atchels, .`3`57 pythons, `c`rossbows, ga`u`ss, cro`w`bars, `h`ornetguns, 9 mm A`R`s, sh`o`tguns, R`P`Gs, `t`ripmines, s`n`arks, `e`gons, `a`xes) | No | `IP` | `esrm_items_line` |
+| Enemies permissions list | Consists of probabilities for monsters on maps | (the line of probabilities for assassins, bullchickens, controllers, houndeyes, human grunts, headcrabs, tripmines, barnacles, alien grunts, alien slaves, turrets and zombies) | No | `EP` | `esrm_enemies_list` |
+| Items permissions list | Consists of flags of weapons and items that will be allowed on maps (both on floors and in crates) | (the line of letters for health`k`its, `b`atteries, `g`renades, `9` mm handguns, `s`atchels, .`3`57 pythons, `c`rossbows, ga`u`ss, cro`w`bars, `h`ornetguns, 9 mm A`R`s, sh`o`tguns, R`P`Gs, `t`ripmines, s`n`arks, `e`gons, `a`xes) | No | `IP` | `esrm_items_list` |

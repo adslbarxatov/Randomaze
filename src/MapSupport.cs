@@ -772,7 +772,7 @@ namespace RD_AAOW
 		/// <param name="ItemPermissions">Строка разрешений для объектов в ящиках</param>
 		/// <param name="EnemiesPermissions">Строка разрешений для врагов в ящиках (крабы, снарки)</param>
 		public static void WriteMapCrate (StreamWriter SW, Point RelativePosition,
-			bool AllowItems, bool AllowExplosives, string ItemPermissions, string EnemiesPermissions)
+			bool AllowItems, bool AllowExplosives, string ItemPermissions, byte[] EnemiesPermissions)
 			{
 			// Контроль
 			if (!AllowExplosives && !AllowItems)
@@ -1387,7 +1387,7 @@ namespace RD_AAOW
 			SW.Write ("game \"" + ProgramDescription.AssemblyTitle + "\"\n");
 			SW.Write ("type \"singleplayer_only\"\n");
 			SW.Write ("version \"" + ProgramDescription.AssemblyVersion + "\"\n");
-			SW.Write ("noskills \"1\"\n");
+			//SW.Write ("noskills \"1\"\n");
 
 			SW.Write ("startmap \"" + MapName + "\"\n");
 			SW.Write ("creditsmap \"" + MapName + "\"\n");

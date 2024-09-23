@@ -4,11 +4,12 @@ ToDo:
 - In-section openable doors
 - More textures and environment
 - Switchable textures groups
-- Return the difficulty levels
-- Вероятностная генерация врагов
 
-Version 5.7.1:
-• Added the automated icon association for the mod files;
+Version 5.8:
+• Implemented configurable probability factors for enemies. You can now specify which enemies
+  should be generated more or less often, rather than turning them off;
+• The default difficulty levels have been restored (testing required);
+• Added the automated icon association for the mod files
 
 Version 5.7:
 • XPUN control has been disabled for this project
