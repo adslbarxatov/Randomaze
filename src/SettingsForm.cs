@@ -14,7 +14,6 @@ namespace RD_AAOW
 		private ESRMSettings settings;
 
 		// Переменные
-		/*private List<CheckBox> enemiesFlags = new List<CheckBox> ();*/
 		private List<Label> enemiesLabels = new List<Label> ();
 		private List<TrackBar> enemiesTracks = new List<TrackBar> ();
 		private List<string> enemiesNames = new List<string> ();
@@ -132,7 +131,6 @@ namespace RD_AAOW
 				enemiesTracks[i].Maximum = ESRMSettings.MaximumEnemiesProbability;
 				}
 
-			/*for (int i = 0; i < EnemiesSupport.EnemiesPermissionsKeys.Length; i++)*/
 			for (int i = 0; i < EnemiesSupport.AvailableEnemiesTypes; i++)
 				{
 				string idx = "Enemy" + i.ToString ("D2");
@@ -142,12 +140,6 @@ namespace RD_AAOW
 
 			EnemyScroll.Maximum = (int)EnemiesSupport.AvailableEnemiesTypes - enemiesLabels.Count;
 
-			/*for (int i = 0; i < EnemiesSupport.EnemiesPermissionsKeys.Length; i++)
-				{
-				enemiesFlags.Add ((CheckBox)this.Controls.Find ("EnemyFlag" + (i + 1).ToString ("D2"), true)[0]);
-				enemiesFlags[i].Checked =
-					settings.EnemiesPermissionLine.Contains (EnemiesSupport.EnemiesPermissionsKeys[i]);
-				}*/
 			enemies = settings.EnemiesPermissionLine2;
 			EnemyScroll_Scroll (null, null);
 
@@ -233,16 +225,6 @@ namespace RD_AAOW
 			settings.RandomWaterLevel = WaterFlag.Checked;
 
 			settings.AllowMonsterMakers = MonsterMakerFlag.Checked;
-
-			/*string s = "";
-			for (int i = 0; i < EnemiesSupport.EnemiesPermissionsKeys.Length; i++)
-				{
-				if (enemiesFlags[i].Checked)
-					s += EnemiesSupport.EnemiesPermissionsKeys[i];
-				else
-					s += "-";
-				}
-			settings.EnemiesPermissionLine = s;*/
 			settings.EnemiesPermissionLine2 = enemies;
 
 			string s = "";
@@ -368,14 +350,11 @@ namespace RD_AAOW
 			// barnacle зависит от высоты карты
 			if (TwoFloorsFlag.Checked || RandomizeFloorsFlag.Checked)
 				{
-				/*enemiesFlags[8].Enabled*/
 				enemiesLocks[8] = AllowItemsForSecondFloor.Enabled = true;
 				}
 			else
 				{
-				/*enemiesFlags[8].Enabled*/
 				enemiesLocks[8] = AllowItemsForSecondFloor.Enabled = AllowItemsForSecondFloor.Checked = false;
-				/*enemiesFlags[8].Checked*/
 				enemies[8] = 0;
 				}
 
@@ -395,9 +374,7 @@ namespace RD_AAOW
 		private void WaterTrack_Scroll (object sender, EventArgs e)
 			{
 			// leech зависит от уровня воды
-			/*enemiesFlags[6].Enabled = false;*/
 			enemiesLocks[6] = false;
-			/*enemiesFlags[6].Checked =*/
 			if ((WaterTrack.Value > WaterTrack.Minimum) || WaterFlag.Checked)
 				enemies[6] = (byte)(enemiesTracks[0].Maximum / 2);
 			else
@@ -412,7 +389,6 @@ namespace RD_AAOW
 			{
 			// 9mmAR и shotgun зависят от human_grunt
 			itemsFlags[10].Checked = itemsFlags[11].Checked = (enemies[4] != 0);
-			/*enemiesFlags[4].Checked*/
 			}
 
 		// Прокрутка списка врагов

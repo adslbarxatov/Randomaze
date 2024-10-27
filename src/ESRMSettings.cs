@@ -373,8 +373,6 @@ namespace RD_AAOW
 			get
 				{
 				// Отсечка
-				/*if (!string.IsNullOrWhiteSpace (enemiesPermissionLine2))
-					return enemiesPermissionLine2;*/
 				if (enemiesPermissionLine2 != null)
 					return enemiesPermissionLine2.ToArray ();
 
@@ -396,16 +394,13 @@ namespace RD_AAOW
 				bool defValues = false;
 				if (string.IsNullOrWhiteSpace (line))
 					{
-					/*for (int i = 0; i < EnemiesSupport.EnemiesPermissionsKeys.Length; i++)*/
 					for (int i = 0; i < EnemiesSupport.AvailableEnemiesTypes; i++)
 						line += MaximumEnemiesProbability.ToString ();
-					/*enemiesPermissionLine2 += EnemiesSupport.EnemiesPermissionsKeys[i];*/
 					defValues = true;
 					}
 
 				// Сплит
 				enemiesPermissionLine2 = new List<byte> ();
-				/*for (int i = 0; i < EnemiesSupport.EnemiesPermissionsKeys.Length; i++)*/
 				for (int i = 0; i < EnemiesSupport.AvailableEnemiesTypes; i++)
 					{
 					try

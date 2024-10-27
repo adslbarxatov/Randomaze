@@ -15,12 +15,13 @@ namespace RD_AAOW
 		/// <param name="SW">Дескриптор файла карты</param>
 		/// <param name="RelativePosition">Относительная позиция точки создания</param>
 		/// <param name="Probabilities">Список вероятностей генерации врагов</param>
-		/// <param name="SecondFloor">Флаг установки врага на внутренней площадке</param>
-		/// <param name="CeilingNotAllowed">Флаг указывает наневозможность ориентации на потолке</param>
+		/// <param name="AllowSecondFloor">Флаг разрешения установки врага на внутренней площадке</param>
+		/// <param name="CeilingNotAllowed">Флаг указывает на невозможность ориентации на потолке</param>
 		/// <param name="AllowMonsterMakers">Флаг разрешения монстр-мейкеров</param>
 		/// <param name="WaterLevel">Флаг указывает, что воды достаточно для плавающих монстров</param>
 		public static void WriteMapEnemy (StreamWriter SW, Point RelativePosition,
-			byte[] Probabilities, bool SecondFloor, bool CeilingNotAllowed, bool AllowMonsterMakers, uint WaterLevel)
+			byte[] Probabilities, bool AllowSecondFloor, bool CeilingNotAllowed,
+			bool AllowMonsterMakers, uint WaterLevel)
 			{
 			// Расчёт параметров
 			Point p = MapSupport.EvaluateAbsolutePosition (RelativePosition);
@@ -45,10 +46,14 @@ namespace RD_AAOW
 					continue;
 				if ((i == m_agr) && (MapSupport.MapNumber < 11))
 					continue;
-				if ((i == m_brn) && (MapSupport.MapNumber < 12) && !CeilingNotAllowed && MapSupport.TwoFloors)
-					continue;
-				if ((i == m_min) && (rWalls.Count < 1))
-					continue;
+
+				if (i == m_brn)
+					if ((MapSupport.MapNumber < 12) || CeilingNotAllowed || !MapSupport.TwoFloors)
+						continue;
+
+				if (i == m_min)
+					if (rWalls.Count < 1)
+						continue;
 
 				for (int j = 0; j < Probabilities[i]; j++)
 					enemiesProbabilityLine.Add ((byte)i);
@@ -57,39 +62,12 @@ namespace RD_AAOW
 			// Запись
 			SW.Write ("{\n");
 
-			// Диапазон противников задаётся ограничением на верхнюю границу диапазона ГПСЧ
-			/*int prngRange;
-			switch (MapSupport.MapNumber)
-				{
-				case 0:
-				case 1:
-				case 2:
-					prngRange = 10;
-					break;
-
-				case 3:
-				case 4:
-				case 5:
-				case 6:
-				case 7:
-				case 8:
-				case 9:
-				case 10:
-				case 11:
-				case 12:
-				case 13:
-				case 14:
-				case 15:
-					prngRange = (int)MapSupport.MapNumber + 8;
-					break;
-
-				default:
-					prngRange = 24;
-					break;
-				}*/
-
 			// Добавление
-			int z = SecondFloor ? (MapSupport.DefaultWallHeight - 16) : 0;
+			int z;
+			if (AllowSecondFloor && (RDGenerics.RND.Next (4) != 0))
+				z = MapSupport.DefaultWallHeight - 16;
+			else
+				z = 0;
 			int r = RDGenerics.RND.Next (360);
 
 			int crEnemy;
@@ -104,7 +82,6 @@ namespace RD_AAOW
 			bool mMaker = awaitingNextMM && (RDGenerics.RND.Next (3) == 0);
 
 			// Выбор врага
-			/*retry:*/
 			switch (crEnemy)
 				{
 				// Монстры-заглушки
@@ -112,11 +89,12 @@ namespace RD_AAOW
 				case m_lee:
 					if (WaterLevel > 0)
 						{
+						z = 4;  // Чуть выше пола для разблокировки плавания
 						InitMonster (SW, false, enemies[m_lee]);
-						z = 4;
 						}
 					else
 						{
+						z = 0;  // Только на полу
 						InitMonster (SW, false, rats[RDGenerics.RND.Next (rats.Count)]);
 						}
 
@@ -128,189 +106,122 @@ namespace RD_AAOW
 					break;
 
 				case m_gru:
-					/*if (Permissions.Contains (EnemiesPermissionsKeys[m_gru]))
-						{*/
 					InitMonster (SW, mMaker, enemies[m_gru]);
 					countEnemy = true;
 
 					if (!mMaker)
 						SW.Write ("\"weapons\" \"" +
 							gruntWeapons[RDGenerics.RND.Next (gruntWeapons.Length)] + "\"\n");
-					/*}
-				else
-					{
-					goto check;
-					}*/
 					break;
 
 				// Зомби
 				case m_zom:
-					/*case 16:*/
 					z = 0;  // Только на полу
-					/*if (Permissions.Contains (EnemiesPermissionsKeys[m_zom]))
-						{*/
 					InitMonster (SW, mMaker, enemies[m_zom]);
 					countEnemy = true;
 
 					if (!mMaker)
 						SW.Write ("\"skin\" \"" + RDGenerics.RND.Next (2).ToString () + "\"\n");
-					/*}
-				else
-					{
-					goto check;
-					}*/
 					break;
 
 				// Крабы
 				case m_hed:
-					/*case 17:*/
 					z = 0;  // Только на полу
-					/*if (Permissions.Contains (EnemiesPermissionsKeys[m_hed]))
-						{*/
 					InitMonster (SW, mMaker, enemies[m_hed]);
 					countEnemy = true;
-					/*}
-				else
-					{
-					goto check;
-					}*/
 					break;
 
 				// Алиены
 				case m_slv:
-					/*if (Permissions.Contains (EnemiesPermissionsKeys[m_slv]))
-						{*/
-					InitMonster (SW, mMaker, enemies[m_slv]);
+				// Куры
+				case m_bul:
+				// Ассассины
+				case m_asn:
+				// Солдаты алиенов
+				case m_agr:
+					InitMonster (SW, mMaker, enemies[crEnemy]);
 					countEnemy = true;
-					/*}
-				else
-					{
-					goto check;
-					}*/
+					break;
+
+				/*// Солдаты алиенов
+				case m_agr:
+					InitMonster (SW, mMaker, enemies[m_agr]);
+					countEnemy = true;
 					break;
 
 				// Куры
 				case m_bul:
-					/*if (Permissions.Contains (EnemiesPermissionsKeys[m_bul]))
-						{*/
 					InitMonster (SW, mMaker, enemies[m_bul]);
 					countEnemy = true;
-					/*}
-				else
-					{
-					goto check;
-					}*/
 					break;
 
 				// Ассассины
 				case m_asn:
-					/*case 13:*/
-					/*if (Permissions.Contains (EnemiesPermissionsKeys[m_asn]))
-						{*/
 					InitMonster (SW, mMaker, enemies[m_asn]);
 					countEnemy = true;
-					/*}
-				else
-					{
-					goto check;
-					}*/
-					break;
+					break;*/
 
 				// Турель
 				case m_tur:
-					/*if (Permissions.Contains (EnemiesPermissionsKeys[m_tur]))
-						{*/
 					int t = RDGenerics.RND.Next (turrets.Count);
 					InitMonster (SW, false, turrets[t]);
 					bool turret = (t < 2);
 
-					if (MapSupport.TwoFloors && !CeilingNotAllowed && turret && (RDGenerics.RND.Next (2) == 0))
+					if (!MapSupport.TwoFloors)
 						{
-						SW.Write ("\"orientation\" \"1\"\n");
-						z = MapSupport.WallHeight;
+						z = 0;
+						if (turret)
+							SW.Write ("\"orientation\" \"0\"\n");
 						}
 					else
 						{
-						SW.Write ("\"orientation\" \"0\"\n");
-						z = 0;
+						bool chance = (RDGenerics.RND.Next (2) == 0);
+						if (turret && !CeilingNotAllowed && chance)
+							{
+							z = MapSupport.WallHeight;
+							SW.Write ("\"orientation\" \"1\"\n");
+							}
+						else if (!turret && AllowSecondFloor && chance)
+							{
+							z = MapSupport.DefaultWallHeight - 16;
+							}
+						else
+							{
+							z = 0;
+							if (turret)
+								SW.Write ("\"orientation\" \"0\"\n");
+							}
 						}
 
 					SW.Write ("\"spawnflags\" \"32\"\n");
 					countEnemy = true;
-					/*}
-				else
-					{
-					goto check;
-					}*/
-					break;
-
-				// Солдаты алиенов
-				case m_agr:
-					/*if (Permissions.Contains (EnemiesPermissionsKeys[m_agr]))
-						{*/
-					InitMonster (SW, mMaker, enemies[m_agr]);
-					countEnemy = true;
-					/*}
-				else
-					{
-					goto check;
-					}*/
 					break;
 
 				// Контроллеры
 				case m_con:
-					/*if (Permissions.Contains (EnemiesPermissionsKeys[m_con]))
-						{*/
+					z = MapSupport.WallHeight - 96;    // Ближе к потолку
 					InitMonster (SW, mMaker, enemies[m_con]);
 					countEnemy = true;
-
-					z = MapSupport.WallHeight - 96;    // Ближе к потолку
-					/*}
-				else
-					{
-					goto check;
-					}*/
 					break;
 
 				// Собаки
-				/*case 11:*/
 				case m_hou:
 					z = 0;  // Только на полу
-					/*if (Permissions.Contains (EnemiesPermissionsKeys[m_hou]))
-						{*/
 					InitMonster (SW, mMaker, enemies[m_hou]);
 					countEnemy = true;
-					/*}
-				else
-					{
-					goto check;
-					}*/
 					break;
 
 				// Барнаклы
 				case m_brn:
-					/*if (MapSupport.TwoFloors && Permissions.Contains (EnemiesPermissionsKeys[m_brn]) &&
-						!CeilingNotAllowed)
-						{*/
+					z = MapSupport.WallHeight;  // Только на потолке
 					InitMonster (SW, false, enemies[m_brn]);
 					countEnemy = true;
-
-					z = MapSupport.WallHeight;  // Только на потолке
-					/*}
-				else
-					{
-					goto check;
-					}*/
 					break;
 
 				// Мины
-				/*case 2:*/
 				case m_min:
-					/*if ((rWalls.Count > 0) && Permissions.Contains (EnemiesPermissionsKeys[m_min]))
-						{*/
 					InitMonster (SW, false, enemies[m_min]);
 					noMM = true;
-					// Не учитывается ачивкой, не может формироваться мейкером, не может триггерить мейкер
 
 					SW.Write ("\"spawnflags\" \"1\"\n");
 					z = 16 + RDGenerics.RND.Next (2) * 48;
@@ -339,32 +250,9 @@ namespace RD_AAOW
 							p.Y += off;
 							break;
 						}
-					/*}
-				else
-					{
-					goto check;
-					}*/
 					break;
-
-					/*// Пиявки
-					case 23:
-						if ((WaterLevel > 0) && Permissions.Contains (EnemiesPermissionsKeys[m_lee]))
-							{
-							InitMonster (SW, false, enemies[m_lee]);
-							z = 4;
-							noMM = true;
-							mm = false;
-							countRat = true;
-							// Учитывается ачивкой, не может формироваться мейкером, не может триггерить мейкер
-							}
-						else
-							{
-							goto check;
-							}
-						break;*/
 				}
 
-			/*finishM:*/
 			// Обработка монстр-мейкеров или создание ачивки
 			if (!mMaker)
 				{
@@ -401,33 +289,6 @@ namespace RD_AAOW
 			// Финализация монстр-мейкера (имя было сброшено методом записи)
 			if (mMaker && string.IsNullOrWhiteSpace (nextMMName))
 				awaitingNextMM = false;
-
-			/*return;*/
-
-			/*// Проверка возможности выбора другого врага
-			check:
-			enemy += RDGenerics.RND.Next (3);
-			if (enemy >= prngRange)
-				{
-				if (WaterLevel > 0)
-					{
-					InitMonster (SW, false, enemies[m_lee]);
-					z = 4;
-					}
-				else
-					{
-					InitMonster (SW, false, rats[RDGenerics.RND.Next (rats.Count)]);
-					}
-				countRat = true;
-				mm = false;
-				noMM = true;
-
-				goto finishM;
-				}
-			else
-				{
-				goto retry;
-				}*/
 			}
 
 		// Состояние генерации монстр-мейкеров
@@ -568,13 +429,6 @@ namespace RD_AAOW
 		// Подстановки номеров оружия для солдат
 		private static string[] gruntWeapons = new string[] { "1", "3", "5", "8", "10" };
 
-		/*/// <summary>
-		/// Набор ключевых символов разрешений для врагов
-		/// </summary>
-		public static string[] EnemiesPermissionsKeys = new string[] {
-			"a", "b", "c", "e", "g", "h", "l", "m", "n", "r", "s", "t", "z"
-			};*/
-
 		/// <summary>
 		/// Возвращает число доступных видов врагов
 		/// </summary>
@@ -622,7 +476,6 @@ namespace RD_AAOW
 		/// <param name="EnemiesPermissionLine">Имеющаяся строка разрешений для врагов</param>
 		public static void RemoveBarnacle (ref List<byte> EnemiesPermissionLine)
 			{
-			/*return EnemiesPermissionLine.Replace (EnemiesPermissionsKeys[m_brn], "");*/
 			EnemiesPermissionLine[m_brn] = 0;
 			}
 
@@ -632,7 +485,6 @@ namespace RD_AAOW
 		/// <param name="EnemiesPermissionLine">Имеющаяся строка разрешений для врагов</param>
 		public static void RemoveLeech (ref List<byte> EnemiesPermissionLine)
 			{
-			/*return EnemiesPermissionLine.Replace (EnemiesPermissionsKeys[m_lee], "");*/
 			EnemiesPermissionLine[m_lee] = 0;
 			}
 
@@ -660,7 +512,6 @@ namespace RD_AAOW
 		/// <param name="EnemiesPermissionLine">Имеющаяся строка разрешений для врагов</param>
 		public static bool IsHeadcrabAllowed (byte[] EnemiesPermissionLine)
 			{
-			/*return EnemiesPermissionLine.Contains (EnemiesPermissionsKeys[m_hed]);*/
 			return EnemiesPermissionLine[m_hed] != 0;
 			}
 

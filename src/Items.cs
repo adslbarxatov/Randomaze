@@ -59,7 +59,18 @@ namespace RD_AAOW
 				{
 				hiddenObjectWritten = true;
 				MapSupport.AddEntity (SW, "item_antidote");
-				SW.Write ("\"MinimumToTrigger\" \"1\"\n");
+
+				int limit = (MapSupport.MapsLimit / 10) * 10;
+				if (MapSupport.MapNumber == limit)
+					{
+					SW.Write ("\"spawnflags\" \"4\"\n");
+					SW.Write ("\"MinimumToTrigger\" \"" + (limit / 10).ToString () + "\"\n");
+					}
+				else
+					{
+					SW.Write ("\"MinimumToTrigger\" \"1\"\n");
+					}
+
 				goto finishItem;
 				}
 
@@ -192,7 +203,7 @@ namespace RD_AAOW
 			return;
 
 			// Проверка возможности выбора другого врага
-		check:
+			check:
 			item += RDGenerics.RND.Next (3);
 			if (item >= prngRange)
 				{
