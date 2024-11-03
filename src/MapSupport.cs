@@ -293,11 +293,11 @@ namespace RD_AAOW
 			SW.Write ("}\n{\n");
 			AddEntity (SW, "player_loadsaved");
 			SW.Write ("\"targetname\" \"DevEnd01\"\n");
-			SW.Write ("\"holdtime\" \"6\"\n");
+			SW.Write ("\"holdtime\" \"9\"\n");
 			SW.Write ("\"message\" \"DEV_END\"\n");
 			SW.Write ("\"duration\" \"1\"\n");
 			SW.Write ("\"messagetime\" \"2\"\n");
-			SW.Write ("\"loadtime\" \"6\"\n");
+			SW.Write ("\"loadtime\" \"9\"\n");
 			SW.Write ("\"rendercolor\" \"0 0 0\"\n");
 			SW.Write ("\"renderamt\" \"255\"\n");
 			SW.Write ("\"origin\" \"" + x1 + " " + y2 + " " + z3 + "\"\n");
@@ -306,7 +306,7 @@ namespace RD_AAOW
 			AddEntity (SW, "multi_manager");
 			SW.Write ("\"targetname\" \"DevM\"\n");
 			SW.Write ("\"DevEnd01\" \"0\"\n");
-			SW.Write ("\"DevEnd02\" \"5.5\"\n");
+			SW.Write ("\"DevEnd02\" \"8.5\"\n");
 			SW.Write ("\"origin\" \"" + x2 + " " + y1 + " " + z3 + "\"\n");
 
 			SW.Write ("}\n{\n");
@@ -371,6 +371,8 @@ namespace RD_AAOW
 			SW.Write ("}\n");
 
 			WriteMapPortal (SW, RelativePosition, true);
+
+			WriteMapSound (SW, RelativePosition, "alien_cycletone", AmbientTypes.None);
 
 			// Второй шлюз
 			if (!TwoButtons)
@@ -704,7 +706,7 @@ namespace RD_AAOW
 			if (SecondButton)
 				{
 				SW.Write ("\"target\" \"MGate" + BuildMapName () + "\"\n");
-				SW.Write ("\"sounds\" \"8\"\n");
+				SW.Write ("\"sounds\" \"6\"\n");
 				}
 			else
 				{
@@ -727,6 +729,8 @@ namespace RD_AAOW
 						TriggerTexture, TriggerTexture }, BlockTypes.Default);
 
 			SW.Write ("}\n");
+
+			WriteMapSound (SW, RelativePosition, "electramb1", AmbientTypes.None);
 			}
 
 		/// <summary>
@@ -772,7 +776,7 @@ namespace RD_AAOW
 		/// <param name="ItemPermissions">Строка разрешений для объектов в ящиках</param>
 		/// <param name="EnemiesPermissions">Строка разрешений для врагов в ящиках (крабы, снарки)</param>
 		public static void WriteMapCrate (StreamWriter SW, Point RelativePosition,
-			bool AllowItems, bool AllowExplosives, string ItemPermissions, byte[] EnemiesPermissions)
+			bool AllowItems, bool AllowExplosives, byte[] ItemPermissions, byte[] EnemiesPermissions)
 			{
 			// Контроль
 			if (!AllowExplosives && !AllowItems)
@@ -809,8 +813,8 @@ namespace RD_AAOW
 				}
 			else
 				{
-				int r = RDGenerics.RND.Next (4);
 				bool factor1 = EnemiesSupport.IsHeadcrabAllowed (EnemiesPermissions);
+				int r = RDGenerics.RND.Next (factor1 ? 5 : 4);
 				int idx;
 
 				// Враги (при запрете хедкрабов увеличивается число ящиков со взрывчаткой)
@@ -825,14 +829,16 @@ namespace RD_AAOW
 				else
 					{
 					// Иногда добавлять случайное оружие или предмет
-					if (RDGenerics.RND.Next (3) == 0)
+					if (RDGenerics.RND.Next (2) == 0)
 						{
-						idx = RDGenerics.RND.Next (26) + 1;
+						SW.Write ("\"spawnobject\" \"" +
+							ItemsSupport.GetRandomItemForCrate (ItemPermissions).ToString () + "\"\n");
+						/*idx = RDGenerics.RND.Next (26) + 1;
 						while ((idx <= 26) && !ItemsSupport.IsCrateItemAllowed (ItemPermissions, idx))
 							idx += (RDGenerics.RND.Next (3) + 1);
 
 						if (idx <= 26)
-							SW.Write ("\"spawnobject\" \"" + idx.ToString () + "\"\n");
+							SW.Write ("\"spawnobject\" \"" + idx.ToString () + "\"\n");*/
 						}
 
 					// Случайная текстура для ящиков без врагов

@@ -20,7 +20,13 @@ namespace RD_AAOW
 		private byte[] enemies;
 		private List<bool> enemiesLocks = new List<bool> ();
 
-		private List<CheckBox> itemsFlags = new List<CheckBox> ();
+		/*private List<CheckBox> itemsFlags = new List<CheckBox> ();*/
+		private List<Label> itemsLabels = new List<Label> ();
+		private List<TrackBar> itemsTracks = new List<TrackBar> ();
+		private List<string> itemsNames = new List<string> ();
+		private byte[] items;
+		private List<bool> itemsLocks = new List<bool> ();
+
 		private Color enabledColor = Color.FromArgb (0, 200, 0);
 		private Color disabledColor = Color.FromArgb (200, 200, 200);
 
@@ -109,7 +115,7 @@ namespace RD_AAOW
 
 			MonsterMakerFlag.Checked = settings.AllowMonsterMakers;
 
-			for (int i = 0; i < ItemsSupport.ItemsPermissionsKeys.Length; i++)
+			/*for (int i = 0; i < ItemsSupport.ItemsPermissionsKeys.Length; i++)
 				{
 				itemsFlags.Add ((CheckBox)this.Controls.Find ("ItemFlag" + (i + 1).ToString ("D2"), true)[0]);
 
@@ -120,7 +126,7 @@ namespace RD_AAOW
 					itemsFlags[i].Enabled = false;
 				if (key == "k")
 					itemsFlags[i].Checked = true;
-				}
+				}*/
 
 			for (int i = 0; i < 5; i++)
 				{
@@ -143,7 +149,28 @@ namespace RD_AAOW
 			enemies = settings.EnemiesPermissionLine2;
 			EnemyScroll_Scroll (null, null);
 
-			GruntFlag_CheckedChanged (null, null);
+			for (int i = 0; i < 7; i++)
+				{
+				string idx = "Item" + i.ToString ("D2");
+				itemsLabels.Add ((Label)this.Controls.Find (idx + "Label", true)[0]);
+
+				itemsTracks.Add ((TrackBar)this.Controls.Find (idx + "Track", true)[0]);
+				itemsTracks[i].Maximum = ESRMSettings.MaximumItemsProbability;
+				}
+
+			for (int i = 0; i < ItemsSupport.AvailableItemsTypes; i++)
+				{
+				string idx = "Item" + i.ToString ("D2");
+				itemsNames.Add (RDLocale.GetText (idx));
+				itemsLocks.Add (true);
+				}
+
+			ItemScroll.Maximum = (int)ItemsSupport.AvailableItemsTypes - itemsLabels.Count;
+
+			items = settings.ItemsPermissionLine2;
+			ItemScroll_Scroll (null, null);
+			/*GruntFlag_CheckedChanged (null, null);*/
+
 			WaterTrack_Scroll (null, null);
 
 			for (int i = (int)MapSectionTypes.AllTypes; i <= (int)MapSectionTypes.OnlyInside; i++)
@@ -226,8 +253,9 @@ namespace RD_AAOW
 
 			settings.AllowMonsterMakers = MonsterMakerFlag.Checked;
 			settings.EnemiesPermissionLine2 = enemies;
+			settings.ItemsPermissionLine2 = items;
 
-			string s = "";
+			/*string s = "";
 			for (int i = 0; i < ItemsSupport.ItemsPermissionsKeys.Length; i++)
 				{
 				if (itemsFlags[i].Checked)
@@ -235,7 +263,7 @@ namespace RD_AAOW
 				else
 					s += "-";
 				}
-			settings.ItemsPermissionLine = s;
+			settings.ItemsPermissionLine = s;*/
 
 			settings.SectionType = (MapSectionTypes)(SkyCombo.SelectedIndex + 1);
 			settings.BarriersType = (MapBarriersTypes)(BarrierCombo.SelectedIndex + 1);
@@ -384,12 +412,19 @@ namespace RD_AAOW
 			EnemyScroll_Scroll (null, null);
 			}
 
-		// Контроль оружия, относящегося к солдатам
+		/*// Контроль оружия, относящегося к солдатам
 		private void GruntFlag_CheckedChanged (object sender, EventArgs e)
 			{
 			// 9mmAR и shotgun зависят от human_grunt
-			itemsFlags[10].Checked = itemsFlags[11].Checked = (enemies[4] != 0);
-			}
+			itemsLocks[10] = itemsLocks[11] = false;
+			if (enemies[4] != 0)
+				items[10] = items[11] = (byte)(itemsTracks[0].Maximum / 2);
+			else
+				items[10] = items[11] = 0;
+
+			// Подгрузка новых значений
+			ItemScroll_Scroll (null, null);
+			}*/
 
 		// Прокрутка списка врагов
 		private void EnemyScroll_Scroll (object sender, ScrollEventArgs e)
@@ -416,6 +451,40 @@ namespace RD_AAOW
 
 			int idx = enemiesTracks.IndexOf ((TrackBar)sender);
 			enemies[EnemyScroll.Value + idx] = (byte)enemiesTracks[idx].Value;
+			}
+
+		// Прокрутка списка предметов
+		private void ItemScroll_Scroll (object sender, ScrollEventArgs e)
+			{
+			scroll = true;
+
+			for (int i = 0; i < itemsLabels.Count; i++)
+				{
+				int v = i + ItemScroll.Value;
+				itemsLabels[i].Text = itemsNames[v];
+				if (ItemsSupport.ItemsOnlyFromCrates.Contains (v))
+					itemsLabels[i].Text += " *";
+
+				itemsTracks[i].Value = items[v];
+				itemsTracks[i].Enabled = itemsLocks[v];
+				}
+
+			scroll = false;
+			}
+
+		// Изменение вероятности генерации предметов
+		private void Item00Track_Scroll (object sender, EventArgs e)
+			{
+			if (scroll)
+				return;
+
+			int idx = itemsTracks.IndexOf ((TrackBar)sender);
+
+			// Аптечки и броня не могут быть удалены совсем
+			if ((ItemScroll.Value + idx < 2) && (itemsTracks[idx].Value < 1))
+				itemsTracks[idx].Value = 1;
+
+			items[ItemScroll.Value + idx] = (byte)itemsTracks[idx].Value;
 			}
 		}
 	}

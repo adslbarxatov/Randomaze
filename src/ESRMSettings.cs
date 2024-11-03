@@ -60,7 +60,7 @@ namespace RD_AAOW
 			_ = AllowExplosiveCrates;
 			_ = AllowItemsCrates;
 			_ = AllowItemsForSecondFloor;
-			_ = ItemsPermissionLine;
+			_ = ItemsPermissionLine2;
 			_ = GravityCoefficient;
 			_ = FogCoefficient;
 			_ = AllowMonsterMakers;
@@ -390,14 +390,16 @@ namespace RD_AAOW
 					line = RDGenerics.GetAppRegistryValue (enemiesPermissionLinePar);
 					}
 
-				// По умолчанию
+				// Забой недостающих элементов
 				bool defValues = false;
-				if (string.IsNullOrWhiteSpace (line))
+				/*if (string.IsNullOrWhiteSpace (line))
+					{*/
+				for (int i = line.Length; i < EnemiesSupport.AvailableEnemiesTypes; i++)
 					{
-					for (int i = 0; i < EnemiesSupport.AvailableEnemiesTypes; i++)
-						line += MaximumEnemiesProbability.ToString ();
+					line += MaximumEnemiesProbability.ToString ();
 					defValues = true;
 					}
+				/*}*/
 
 				// Сплит
 				enemiesPermissionLine2 = new List<byte> ();
@@ -454,6 +456,100 @@ namespace RD_AAOW
 		/// Возвращает ограничение вероятности генерации врагов
 		/// </summary>
 		public const byte MaximumEnemiesProbability = 5;
+
+
+
+		/// <summary>
+		/// Возвращает или задаёт набор вероятностей генерации предметов
+		/// </summary>
+		public byte[] ItemsPermissionLine2
+			{
+			get
+				{
+				// Отсечка
+				if (itemsPermissionLine2 != null)
+					return itemsPermissionLine2.ToArray ();
+
+				// Присвоение с перезаписью
+				string line = "";
+				if (settingFromEngineToken == itemsPermissionLinePar)
+					{
+					line = settingFromEngineValue;
+					RDGenerics.SetAppRegistryValue (itemsPermissionLinePar, line);
+					}
+
+				// Простое присвоение
+				else
+					{
+					line = RDGenerics.GetAppRegistryValue (itemsPermissionLinePar);
+					}
+
+				// Забой недостающих элементов
+				bool defValues = false;
+				/*if (string.IsNullOrWhiteSpace (line))
+					{*/
+				for (int i = line.Length; i < ItemsSupport.AvailableItemsTypes; i++)
+					{
+					line += MaximumItemsProbability.ToString ();
+					defValues = true;
+					}
+				/*}*/
+
+				// Сплит
+				itemsPermissionLine2 = new List<byte> ();
+				for (int i = 0; i < ItemsSupport.AvailableItemsTypes; i++)
+					{
+					try
+						{
+						string s = line[i].ToString ();
+						itemsPermissionLine2.Add (byte.Parse (s));
+						if (itemsPermissionLine2[i] > MaximumItemsProbability)
+							itemsPermissionLine2[i] = MaximumItemsProbability;
+						}
+					catch
+						{
+						itemsPermissionLine2.Add (1);
+						defValues = true;
+						}
+					}
+
+				if (defValues)
+					{
+					/*En emiesSupport.RemoveBarnacle (ref itemsPermissionLine2);
+					En emiesSupport.RemoveLeech (ref itemsPermissionLine2);*/
+					ItemsPermissionLine2 = itemsPermissionLine2.ToArray ();
+					}
+
+				return itemsPermissionLine2.ToArray ();
+				}
+			set
+				{
+				itemsPermissionLine2 = new List<byte> (value);
+				string line = "";
+				for (int i = 0; i < itemsPermissionLine2.Count; i++)
+					line += itemsPermissionLine2[i].ToString ();
+
+				RDGenerics.SetAppRegistryValue (itemsPermissionLinePar, line);
+				}
+			}
+		private List<byte> itemsPermissionLine2;
+		private const string itemsPermissionLinePar = "IP";
+
+		/// <summary>
+		/// Возвращает строку разрешённых предметов
+		/// </summary>
+		public string ItemsPermissionLineAsString
+			{
+			get
+				{
+				return RDGenerics.GetAppRegistryValue (itemsPermissionLinePar);
+				}
+			}
+
+		/// <summary>
+		/// Возвращает ограничение вероятности генерации предметов
+		/// </summary>
+		public const byte MaximumItemsProbability = 5;
 
 
 
@@ -650,7 +746,7 @@ namespace RD_AAOW
 
 
 
-		/// <summary>
+		/*/// <summary>
 		/// Возвращает или задаёт строку разрешённых собираемых предметов
 		/// </summary>
 		public string ItemsPermissionLine
@@ -685,7 +781,7 @@ namespace RD_AAOW
 				}
 			}
 		private string itemsPermissionLine = "";
-		private const string itemsPermissionLinePar = "IP";
+		private const string itemsPermissionLinePar = "IP";*/
 
 
 

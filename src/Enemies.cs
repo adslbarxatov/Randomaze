@@ -29,6 +29,7 @@ namespace RD_AAOW
 			List<CPResults> rWalls = RandomazeForm.GetSurroundingWalls (RelativePosition,
 				FurnitureTypes.Computer);
 			List<byte> enemiesProbabilityLine = new List<byte> ();
+			enemiesProbabilityLine.Add (255);   // Заглушка для крыс
 
 			for (int i = 0; i < Probabilities.Length; i++)
 				{
@@ -70,11 +71,11 @@ namespace RD_AAOW
 				z = 0;
 			int r = RDGenerics.RND.Next (360);
 
-			int crEnemy;
-			if ((enemiesProbabilityLine.Count < 1) || (RDGenerics.RND.Next (enemiesProbabilityLine.Count) == 0))
+			int crEnemy = RDGenerics.RND.Next (enemiesProbabilityLine.Count);
+			if ((enemiesProbabilityLine.Count < 1) || (crEnemy == 0))
 				crEnemy = m_lee;
 			else
-				crEnemy = enemiesProbabilityLine[RDGenerics.RND.Next (enemiesProbabilityLine.Count)];
+				crEnemy = enemiesProbabilityLine[crEnemy];
 
 			// Обработка для монстр-мейкеров
 			bool noMM = false;
@@ -142,24 +143,6 @@ namespace RD_AAOW
 					InitMonster (SW, mMaker, enemies[crEnemy]);
 					countEnemy = true;
 					break;
-
-				/*// Солдаты алиенов
-				case m_agr:
-					InitMonster (SW, mMaker, enemies[m_agr]);
-					countEnemy = true;
-					break;
-
-				// Куры
-				case m_bul:
-					InitMonster (SW, mMaker, enemies[m_bul]);
-					countEnemy = true;
-					break;
-
-				// Ассассины
-				case m_asn:
-					InitMonster (SW, mMaker, enemies[m_asn]);
-					countEnemy = true;
-					break;*/
 
 				// Турель
 				case m_tur:

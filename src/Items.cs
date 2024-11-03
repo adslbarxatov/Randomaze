@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 
@@ -16,11 +15,11 @@ namespace RD_AAOW
 		/// <param name="SW">Дескриптор файла карты</param>
 		/// <param name="RelativePosition">Относительная позиция точки создания</param>
 		/// <param name="AllowSecondFloor">Флаг, разрешающий размещение на внутренних площадках</param>
-		/// <param name="Permissions">Строка разрешений для видов оружия</param>
+		/// <param name="Probabilities">Набор вероятностей для видов предметов</param>
 		/// <param name="ForceFloorPlacement">Флаг указывает на необходимость расположения
 		/// прямо на полу (для исключения «застревания» во враге)</param>
 		public static void WriteMapItem (StreamWriter SW, Point RelativePosition,
-			bool AllowSecondFloor, bool ForceFloorPlacement, string Permissions)
+			bool AllowSecondFloor, bool ForceFloorPlacement, byte[] Probabilities)
 			{
 			// Расчёт параметров
 			Point p = MapSupport.EvaluateAbsolutePosition (RelativePosition);
@@ -29,7 +28,7 @@ namespace RD_AAOW
 			SW.Write ("{\n");
 
 			// Диапазон противников задаётся ограничением на верхнюю границу диапазона ГПСЧ
-			int prngRange;
+			/*int prngRange;
 			switch (MapSupport.MapNumber)
 				{
 				case 0:
@@ -52,7 +51,7 @@ namespace RD_AAOW
 				default:
 					prngRange = 25;
 					break;
-				}
+				}*/
 
 			// Обходной вариант с собираемым объектом
 			if (!hiddenObjectWritten && (MapSupport.MapNumber % 10 == 0))
@@ -74,24 +73,73 @@ namespace RD_AAOW
 				goto finishItem;
 				}
 
+			List<byte> itemsProbabilityLine = new List<byte> ();
+			itemsProbabilityLine.Add (255);
+
+			for (int i = 0; i < Probabilities.Length; i++)
+				{
+				// Эти виды оружия доступны только в ящиках
+				/*if ((i == i_sho) || (i == i_rpg) || (i == i_axe) ||
+					(i == i_ego) || (i == i_sna) || (i == i_min) ||
+					(i == i_9ar) || (i == i_hor) || (i == i_bar))*/
+				if (ItemsOnlyFromCrates.Contains (i))
+					continue;
+
+				if ((i == i_357) && (MapSupport.MapNumber < 2))
+					continue;
+				if ((i == i_sat) && (MapSupport.MapNumber < 3))
+					continue;
+				if ((i == i_crs) && (MapSupport.MapNumber < 4))
+					continue;
+				if ((i == i_gau) && (MapSupport.MapNumber < 5))
+					continue;
+				/*if ((i == i_hor) && (MapSupport.MapNumber < 5))
+					continue;
+				if ((i == i_min) && (MapSupport.MapNumber < 6))
+					continue;*/
+				/*if ((i == i_axe) && (MapSupport.MapNumber < 7))
+					continue;
+				if ((i == i_rpg) && (MapSupport.MapNumber < 8))
+					continue;*/
+				/*if ((i == i_sna) && (MapSupport.MapNumber < 9))
+					continue;
+				if ((i == i_ego) && (MapSupport.MapNumber < 10))
+					continue;*/
+
+				for (int j = 0; j < Probabilities[i]; j++)
+					itemsProbabilityLine.Add ((byte)i);
+				}
+
 			// Запись объекта
-			string doc = "item_security";
-			int item = RDGenerics.RND.Next (prngRange);
+			/*string doc = "item_security";
+			int item = RDGenerics.RND.Next (prngRange);*/
+			int crItem = RDGenerics.RND.Next (itemsProbabilityLine.Count);
+			if ((itemsProbabilityLine.Count < 1) || (crItem == 0))
+				crItem = 255;
+			else
+				crItem = itemsProbabilityLine[crItem];
 
 			// Выбор предмета
-			retry:
-			switch (item)
+			/*retry:
+			switch (item)*/
+			switch (crItem)
 				{
-				// Аптечки
+				// Документы
 				default:
-					if (Permissions.Contains (ItemsPermissionsKeys[i_hek]))
-						MapSupport.AddEntity (SW, items[i_hek]);
-					else
-						goto check;
+				case 255:
+					MapSupport.AddEntity (SW, "item_security");
+					break;
+
+				// Аптечки
+				case i_hek:
+					/*if (Permissions.Contains (ItemsPermissionsKeys[i_hek]))*/
+					MapSupport.AddEntity (SW, items[i_hek]);
+					/*else
+						goto check;*/
 					break;
 
 				// Броня
-				case 0:
+				/*case 0:
 				case 1:
 				case 2:
 				case 3:
@@ -100,94 +148,69 @@ namespace RD_AAOW
 						MapSupport.AddEntity (SW, items[i_bat]);
 					else
 						goto check;
+					break;*/
+				case i_bat:
+					MapSupport.AddEntity (SW, items[i_bat]);
 					break;
 
 				// Гранаты
-				case 6:
+				/*case 6:
 				case 17:
 					if (Permissions.Contains (ItemsPermissionsKeys[i_gre]))
 						MapSupport.AddEntity (SW, items[i_gre]);
 					else
 						goto check;
+					break;*/
+				case i_gre:
+					MapSupport.AddEntity (SW, items[i_gre]);
 					break;
 
 				// Пистолет
-				case 15:
-					if (Permissions.Contains (ItemsPermissionsKeys[i_hnd]))
-						MapSupport.AddEntity (SW, items[i_hnd]);
-					else
-						goto check;
+				/*case 15:*/
+				case i_hnd:
+					/*if (Permissions.Contains (ItemsPermissionsKeys[i_hnd]))*/
+					MapSupport.AddEntity (SW, items[i_hnd]);
+					/*else
+						goto check;*/
 					break;
 
 				// Гранаты с радиоуправлением
-				case 16:
-					if (Permissions.Contains (ItemsPermissionsKeys[i_sat]))
-						MapSupport.AddEntity (SW, items[i_sat]);
-					else
-						goto check;
+				/*case 16:*/
+				case i_sat:
+					/*if (Permissions.Contains (ItemsPermissionsKeys[i_sat]))*/
+					MapSupport.AddEntity (SW, items[i_sat]);
+					/*else
+						goto check;*/
 					break;
 
 				// .357
-				case 5:
-				case 18:
-					if (Permissions.Contains (ItemsPermissionsKeys[i_357]))
-						MapSupport.AddEntity (SW, items[i_357]);
-					else
-						goto check;
+				/*case 5:
+				case 18:*/
+				case i_357:
+					/*if (Permissions.Contains (ItemsPermissionsKeys[i_357]))*/
+					MapSupport.AddEntity (SW, items[i_357]);
+					/*else
+						goto check;*/
 					break;
 
 				// Арбалет
-				case 19:
-				case 20:
-					if (Permissions.Contains (ItemsPermissionsKeys[i_crs]))
-						MapSupport.AddEntity (SW, items[i_crs]);
-					else
-						goto check;
+				/*case 19:
+				case 20:*/
+				case i_crs:
+					/*if (Permissions.Contains (ItemsPermissionsKeys[i_crs]))*/
+					MapSupport.AddEntity (SW, items[i_crs]);
+					/*else
+						goto check;*/
 					break;
 
 				// Гаусс
-				case 21:
-				case 22:
-					if (Permissions.Contains (ItemsPermissionsKeys[i_gau]))
-						MapSupport.AddEntity (SW, items[i_gau]);
-					else
-						goto check;
-					break;
-
-				// Монтировка или радиограната
-				case 23:
-					if (RDGenerics.RND.Next (5) > 3)
-						{
-						if (Permissions.Contains (ItemsPermissionsKeys[i_bar]))
-							MapSupport.AddEntity (SW, items[i_bar]);
-						else
-							goto check;
-						}
-					else
-						{
-						if (Permissions.Contains (ItemsPermissionsKeys[i_sat]))
-							MapSupport.AddEntity (SW, items[i_sat]);
-						else
-							goto check;
-						}
-					break;
-
-				// Улей или граната
-				case 24:
-					if (RDGenerics.RND.Next (5) > 3)
-						{
-						if (Permissions.Contains (ItemsPermissionsKeys[i_hor]))
-							MapSupport.AddEntity (SW, items[i_hor]);
-						else
-							goto check;
-						}
-					else
-						{
-						if (Permissions.Contains (ItemsPermissionsKeys[i_gre]))
-							MapSupport.AddEntity (SW, items[i_gre]);
-						else
-							goto check;
-						}
+				/*case 21:
+				case 22:*/
+				case i_gau:
+					/*if (Permissions.Contains (ItemsPermissionsKeys[i_gau]))*/
+					MapSupport.AddEntity (SW, items[i_gau]);
+					/*else
+						goto check;*/
 					break;
 				}
 
@@ -200,9 +223,9 @@ namespace RD_AAOW
 			SW.Write ("\"origin\" \"" + p.X.ToString () + " " + p.Y.ToString () + " " +
 				z.ToString () + "\"\n");   // На некоторой высоте над полом
 			SW.Write ("}\n");
-			return;
+			/*return;*/
 
-			// Проверка возможности выбора другого врага
+			/*// Проверка возможности выбора другого врага
 			check:
 			item += RDGenerics.RND.Next (3);
 			if (item >= prngRange)
@@ -213,13 +236,13 @@ namespace RD_AAOW
 			else
 				{
 				goto retry;
-				}
+				}*/
 			}
 
 		// Флаг наличия записи об объекте-достижении
 		private static bool hiddenObjectWritten = false;
 
-		/// <summary>
+		/*/// <summary>
 		/// Набор ключевых символов разрешений для предметов
 		/// </summary>
 		public static string[] ItemsPermissionsKeys = new string[] {
@@ -227,7 +250,18 @@ namespace RD_AAOW
 			"k", "b", "g", "9", "s", "3", "c", "u", "w", "h", 
 			// Ящики
 			"r", "o", "p", "t", "n", "e", "a"
-			};
+			};*/
+
+		/// <summary>
+		/// Возвращает число доступных видов врагов
+		/// </summary>
+		public static uint AvailableItemsTypes
+			{
+			get
+				{
+				return (uint)items.Length;
+				}
+			}
 
 		// Набор имён классов предметов
 		private static string[] items = new string[] {
@@ -271,12 +305,57 @@ namespace RD_AAOW
 		private const int i_axe = 16;
 
 		/// <summary>
+		/// Метод возвращает код объекта для ящика на основе указанных разрешений
+		/// </summary>
+		/// <param name="Probabilities">Набор вероятностей для видов предметов</param>
+		public static uint GetRandomItemForCrate (byte[] Probabilities)
+			{
+			// Определение доступных вариантов
+			List<byte> itemsProbabilityLine = new List<byte> ();
+			for (int i = 0; i < Probabilities.Length; i++)
+				{
+				/*if ((i == i_sat) && (MapSupport.MapNumber < 3))
+					continue;
+				if ((i == i_gau) && (MapSupport.MapNumber < 4))
+					continue;
+				if ((i == i_hor) && (MapSupport.MapNumber < 5))
+					continue;
+				if ((i == i_min) && (MapSupport.MapNumber < 6))
+					continue;
+				if ((i == i_axe) && (MapSupport.MapNumber < 7))
+					continue;
+				if ((i == i_rpg) && (MapSupport.MapNumber < 8))
+					continue;
+				if ((i == i_sna) && (MapSupport.MapNumber < 9))
+					continue;
+				if ((i == i_ego) && (MapSupport.MapNumber < 10))
+					continue;*/
+
+				for (int j = 0; j < Probabilities[i]; j++)
+					itemsProbabilityLine.Add ((byte)i);
+				}
+
+			// Выбор варианта
+			int crItem = RDGenerics.RND.Next (itemsProbabilityLine.Count);
+			if (itemsProbabilityLine.Count < 1)
+				crItem = i_hek;
+			else
+				crItem = itemsProbabilityLine[crItem];
+
+			// Возврат
+			if (itemIndices[crItem].Length < 2)
+				return itemIndices[crItem][0];
+
+			return itemIndices[crItem][RDGenerics.RND.Next (itemIndices[crItem].Length)];
+			}
+
+		/*/// <summary>
 		/// Метод проверяет допустимость данного объекта для «размещения в ящике»
 		/// </summary>
 		/// <param name="Permissions">Строка разрешений</param>
 		/// <param name="ItemIndex">Индекс объекта для ящика</param>
 		/// <returns></returns>
-		public static bool IsCrateItemAllowed (string Permissions, int ItemIndex)
+		public static bool IsCrateItemAllowed (byte[] Permissions, int ItemIndex)
 			{
 			// Контроль
 			int idx = weaponEquivalents.IndexOf (ItemIndex);
@@ -287,7 +366,7 @@ namespace RD_AAOW
 					return true;
 				}
 
-			return Permissions.Contains (ItemsPermissionsKeys[idx]);
+			return Permissions[idx] != 0;
 			}
 
 		// Набор сопоставлений для собираемых объектов при генерации из ящиков
@@ -303,6 +382,50 @@ namespace RD_AAOW
 			-1, -1, -1, 4, -1, 13, 11, 16, -1, -1, 
 			// Ящики
 			6, 9, 15, -1, -1, -1, -1
+			};*/
+		private static uint[][] itemIndices = new uint[][] {
+			new uint[] { 2 },
+			new uint[] { 1 },
+			new uint[] { 17 },
+			new uint[] { 3, 4 },
+			new uint[] { 19 },
+
+			new uint[] { 12, 13 },
+			new uint[] { 10, 11 },
+			new uint[] { 23, 16 },
+			new uint[] { 22 },
+			new uint[] { 21 },
+
+			new uint[] { 5, 6 },
+			new uint[] { 8, 9 },
+			new uint[] { 14, 15 },
+			new uint[] { 18 },
+			new uint[] { 20 },
+
+			new uint[] { 24 },
+			new uint[] { 26 },
+			};
+
+		/// <summary>
+		/// Возвращает список предметов, доступных только в ящиках
+		/// </summary>
+		public static List<int> ItemsOnlyFromCrates
+			{
+			get
+				{
+				return new List<int> (itemsOnlyFromCrates);
+				}
+			}
+		private static int[] itemsOnlyFromCrates = new int[] {
+			i_sho,
+			i_rpg,
+			i_axe,
+			i_ego,
+			i_sna,
+			i_min,
+			i_9ar,
+			i_hor,
+			i_bar,
 			};
 		}
 	}

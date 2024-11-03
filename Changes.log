@@ -5,6 +5,14 @@ ToDo:
 - More textures and environment
 - Switchable textures groups
 
+Version 5.9:
+• Both buttons of exit gates are now have ambient sounds (this should make it simplier
+  to find them);
+• Implemented configurable probability factors for items. You can now specify which items
+  should be generated more or less often, rather than turning them off;
+• Fixed some bugs around the compilation and processing of the last map;
+• Fixed some interface bugs
+
 Version 5.8.4:
 • The registrator of file associations has been upgraded;
 • Fixed the ability of barnackles to appear in single-floor maps and/or cover ceiling lights;
