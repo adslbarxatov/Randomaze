@@ -68,7 +68,7 @@ The tool requires next compilation tools, directories and files for work:
 | Allow crates with items | Enables crates with items and bugs | 0 / 1 | No | `IC` | `esrm_item_crates` |
 | Allow monster makers flag | Allows replacement of some monsters with monster makers | 0 / 1 | No | `MM` | `esrm_makers` |
 | Map barrier types | Sets allowed types of barriers between map sections (*glass*, *fabric* or *both*) | 1 / 2 / 3 | No | `BT` | `esrm_barriers` |
-| Fog coefficient | Affects the fog density percentage on the map | 1 – 11 (0 = 0%, 10 = 100%) | Yes | `FC` | `esrm_fog` |
-| Water level | Affects the water level on the map | 1 – 10 (0 = 0%, 9 = 45%) | Yes | `WL` | `esrm_water` |
-| Enemies permissions list | Consists of probabilities for monsters on maps | (the line of probabilities for assassins, bullchickens, controllers, houndeyes, human grunts, headcrabs, tripmines, barnacles, alien grunts, alien slaves, turrets and zombies) | No | `EP` | `esrm_enemies_list` |
-| Items permissions list | Consists of flags of weapons and items that will be allowed on maps (both on floors and in crates) | (the line of letters for health`k`its, `b`atteries, `g`renades, `9` mm handguns, `s`atchels, .`3`57 pythons, `c`rossbows, ga`u`ss, cro`w`bars, `h`ornetguns, 9 mm A`R`s, sh`o`tguns, R`P`Gs, `t`ripmines, s`n`arks, `e`gons, `a`xes) | No | `IP` | `esrm_items_list` |
+| Fog coefficient | Affects the fog density percentage on the map | 0 – 10 (0 = 0%, 10 = 100%) | Yes | `FC` | `esrm_fog` |
+| Water level | Affects the water level on the map | 0 – 9 (0 = 0%, 9 = 45%) | Yes | `WL` | `esrm_water` |
+| Enemies permissions list | Consists of probabilities for monsters on maps | (the line of **probabilities** (**0 – 5**) for assassins, bullchickens, controllers, houndeyes, human grunts, headcrabs, tripmines, barnacles, alien grunts, alien slaves, turrets and zombies) | No | `EP` | `esrm_enemies_list` |
+| Items permissions list | Consists of probabilities for weapons and items that will be allowed on maps (both on floors and in crates) | (the line of **probabilities** (**0 – 5**) for healthkits, batteries, grenades, 9mm handguns, satchels, .357 pythons, crossbows, gauss, crowbars, hornetguns, 9mm ARs, shotguns, RPGs, tripmines, snarks, egons and axes) | No | `IP` | `esrm_items_list` |

@@ -5,7 +5,7 @@ ToDo:
 - More textures and environment
 - Switchable textures groups
 
-Version 5.9:
+Version 5.9.1:
 • Both buttons of exit gates are now have ambient sounds (this should make it simplier
   to find them);
 • Implemented configurable probability factors for items. You can now specify which items

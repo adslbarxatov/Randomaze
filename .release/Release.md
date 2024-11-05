@@ -1,4 +1,4 @@
-_Changes for v 5.9_:
+_Changes for v 5.9.1_:
 - Both buttons of exit gates are now have ambient sounds (this should make it simplier to find them);
 - Implemented configurable probability factors for items. You can now specify which items should be generated more or less often, rather than turning them off;
 - Fixed some bugs around the compilation and processing of the last map;
