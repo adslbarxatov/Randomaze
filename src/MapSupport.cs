@@ -154,7 +154,7 @@ namespace RD_AAOW
 			{
 			get
 				{
-				return (entitiesQuantity > 1024);
+				return (entitiesQuantity > (1 << 11));
 				}
 			}
 
@@ -1423,6 +1423,23 @@ namespace RD_AAOW
 			WriteBlock (SW, (p.X - WallLength / 2).ToString (), (p.Y - WallLength / 2).ToString (), "0",
 				(p.X + WallLength / 2).ToString (), (p.Y + WallLength / 2).ToString (), (WallHeight + 32).ToString (),
 				new string[] { "BLACK", "BLACK", "BLACK", "BLACK", "BLACK", "BLACK" }, BlockTypes.Default);
+			}
+
+		/// <summary>
+		/// Метод записывает точку навигационной сетки на карту
+		/// </summary>
+		/// <param name="SW">Дескриптор файла карты</param>
+		/// <param name="RelativePosition">Относительная позиция точки выхода</param>
+		public static void WriteMapNode (StreamWriter SW, Point RelativePosition)
+			{
+			// Расчёт параметров
+			Point p = EvaluateAbsolutePosition (RelativePosition);
+
+			SW.Write ("{\n");
+			/*SW.Write ("\"classname\" \"info_node\"\n");*/
+			AddEntity (SW, "info_node", true);
+			SW.Write ("\"origin\" \"" + p.X.ToString () + " " + p.Y.ToString () + " 16\"\n");
+			SW.Write ("}\n");
 			}
 
 		/// <summary>

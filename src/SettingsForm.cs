@@ -20,7 +20,6 @@ namespace RD_AAOW
 		private byte[] enemies;
 		private List<bool> enemiesLocks = new List<bool> ();
 
-		/*private List<CheckBox> itemsFlags = new List<CheckBox> ();*/
 		private List<Label> itemsLabels = new List<Label> ();
 		private List<TrackBar> itemsTracks = new List<TrackBar> ();
 		private List<string> itemsNames = new List<string> ();
@@ -115,19 +114,6 @@ namespace RD_AAOW
 
 			MonsterMakerFlag.Checked = settings.AllowMonsterMakers;
 
-			/*for (int i = 0; i < ItemsSupport.ItemsPermissionsKeys.Length; i++)
-				{
-				itemsFlags.Add ((CheckBox)this.Controls.Find ("ItemFlag" + (i + 1).ToString ("D2"), true)[0]);
-
-				string key = ItemsSupport.ItemsPermissionsKeys[i];
-				itemsFlags[i].Checked = settings.ItemsPermissionLine.Contains (key);
-
-				if ((key == "k") || (key == "r") || (key == "o"))
-					itemsFlags[i].Enabled = false;
-				if (key == "k")
-					itemsFlags[i].Checked = true;
-				}*/
-
 			for (int i = 0; i < 5; i++)
 				{
 				string idx = "Enemy" + i.ToString ("D2");
@@ -169,8 +155,6 @@ namespace RD_AAOW
 
 			items = settings.ItemsPermissionLine2;
 			ItemScroll_Scroll (null, null);
-			/*GruntFlag_CheckedChanged (null, null);*/
-
 			WaterTrack_Scroll (null, null);
 
 			for (int i = (int)MapSectionTypes.AllTypes; i <= (int)MapSectionTypes.OnlyInside; i++)
@@ -197,6 +181,8 @@ namespace RD_AAOW
 			AllowExplosiveCratesFlag.Checked = settings.AllowExplosiveCrates;
 			AllowItemsCratesFlag.Checked = settings.AllowItemsCrates;
 			AllowExplosiveCratesFlag_CheckedChanged (null, null);
+
+			NodesFlag.Checked = settings.UseMapNodes;
 
 			// Запуск
 			this.ShowDialog ();
@@ -255,16 +241,6 @@ namespace RD_AAOW
 			settings.EnemiesPermissionLine2 = enemies;
 			settings.ItemsPermissionLine2 = items;
 
-			/*string s = "";
-			for (int i = 0; i < ItemsSupport.ItemsPermissionsKeys.Length; i++)
-				{
-				if (itemsFlags[i].Checked)
-					s += ItemsSupport.ItemsPermissionsKeys[i];
-				else
-					s += "-";
-				}
-			settings.ItemsPermissionLine = s;*/
-
 			settings.SectionType = (MapSectionTypes)(SkyCombo.SelectedIndex + 1);
 			settings.BarriersType = (MapBarriersTypes)(BarrierCombo.SelectedIndex + 1);
 			settings.ButtonMode = (MapButtonsTypes)ButtonCombo.SelectedIndex;
@@ -277,6 +253,8 @@ namespace RD_AAOW
 			settings.AllowItemsCrates = AllowItemsCratesFlag.Checked;
 			settings.CratesDensityCoefficient = (uint)CratesDensityTrack.Value;
 			settings.RandomCratesDensityCoefficient = CratesDensityFlag.Checked;
+
+			settings.UseMapNodes = NodesFlag.Checked;
 
 			// Выход
 			cancelled = false;
@@ -411,20 +389,6 @@ namespace RD_AAOW
 			// Подгрузка новых значений
 			EnemyScroll_Scroll (null, null);
 			}
-
-		/*// Контроль оружия, относящегося к солдатам
-		private void GruntFlag_CheckedChanged (object sender, EventArgs e)
-			{
-			// 9mmAR и shotgun зависят от human_grunt
-			itemsLocks[10] = itemsLocks[11] = false;
-			if (enemies[4] != 0)
-				items[10] = items[11] = (byte)(itemsTracks[0].Maximum / 2);
-			else
-				items[10] = items[11] = 0;
-
-			// Подгрузка новых значений
-			ItemScroll_Scroll (null, null);
-			}*/
 
 		// Прокрутка списка врагов
 		private void EnemyScroll_Scroll (object sender, ScrollEventArgs e)

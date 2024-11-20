@@ -746,45 +746,6 @@ namespace RD_AAOW
 
 
 
-		/*/// <summary>
-		/// Возвращает или задаёт строку разрешённых собираемых предметов
-		/// </summary>
-		public string ItemsPermissionLine
-			{
-			get
-				{
-				// Отсечка
-				if (!string.IsNullOrWhiteSpace (itemsPermissionLine))
-					return itemsPermissionLine;
-
-				// Присвоение с перезаписью
-				if (settingFromEngineToken == itemsPermissionLinePar)
-					itemsPermissionLine = settingFromEngineValue;
-
-				// Простое присвоение
-				else
-					itemsPermissionLine = RDGenerics.GetAppRegistryValue (itemsPermissionLinePar);
-
-				// По умолчанию
-				if (string.IsNullOrWhiteSpace (itemsPermissionLine))
-					{
-					for (int i = 0; i < ItemsSupport.ItemsPermissionsKeys.Length; i++)
-						itemsPermissionLine += ItemsSupport.ItemsPermissionsKeys[i];
-					}
-
-				return itemsPermissionLine;
-				}
-			set
-				{
-				itemsPermissionLine = value;
-				RDGenerics.SetAppRegistryValue (itemsPermissionLinePar, itemsPermissionLine);
-				}
-			}
-		private string itemsPermissionLine = "";
-		private const string itemsPermissionLinePar = "IP";*/
-
-
-
 		/// <summary>
 		/// Возвращает или задаёт коэффициент гравитации (в десятках процентов)
 		/// </summary>
@@ -960,6 +921,25 @@ namespace RD_AAOW
 			}
 		private int cleanupOldMaps = int.MaxValue;
 		private const string cleanupOldMapsPar = "OM";
+
+
+
+		/// <summary>
+		/// Возвращает или задаёт флаг разрешения генерации навигационной сетки
+		/// </summary>
+		public bool UseMapNodes
+			{
+			get
+				{
+				return GetSettingsValue (useMapNodesPar, 2, 1, ref useMapNodes) > 1;
+				}
+			set
+				{
+				SetSettingsValue (useMapNodesPar, ref useMapNodes, (uint)(value ? 2 : 1));
+				}
+			}
+		private int useMapNodes = int.MaxValue;
+		private const string useMapNodesPar = "MN";
 		}
 
 	/// <summary>

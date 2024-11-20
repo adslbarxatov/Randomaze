@@ -5,6 +5,12 @@ ToDo:
 - More textures and environment
 - Switchable textures groups
 
+Version 6.0:
+• Implemented the ability to add the navigation mesh to the maps;
+• Implemented the built-in map compiler based on Zoner's tools sources;
+• App now able to merge generation and compilation logs;
+• Fixed some minor interface bugs
+
 Version 5.9.1:
 • Both buttons of exit gates are now have ambient sounds (this should make it simplier
   to find them);
