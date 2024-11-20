@@ -8,6 +8,7 @@ ToDo:
 Version 6.0:
 • Implemented the ability to add the navigation mesh to the maps;
 • Implemented the built-in map compiler based on Zoner's tools sources;
+• The maximum quantity of entities on the map has been doubled;
 • App now able to merge generation and compilation logs;
 • Fixed some minor interface bugs
 
