@@ -8,5 +8,5 @@ Detailed description of the app is available on [its own page](https://adslbarxa
 
 ---
 
-*The product is distributed according to the [Application development policy](https://adslbarxatov.github.io/ADP).
+*The product is distributed according to the [Integrated operational policy](https://adslbarxatov.github.io/IOP).
 By starting to work with this product, you fully agree with this Policy and accept it!*
