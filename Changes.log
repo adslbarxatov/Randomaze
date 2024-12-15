@@ -5,6 +5,9 @@ ToDo:
 - More textures and environment
 - Switchable textures groups
 
+Version 6.0.2:
+• Access and appearance of the Lab Policy have been updated
+
 Version 6.0:
 • Implemented the ability to add the navigation mesh to the maps;
 • Implemented the built-in map compiler based on Zoner's tools sources;

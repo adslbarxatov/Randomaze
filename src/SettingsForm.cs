@@ -132,7 +132,7 @@ namespace RD_AAOW
 
 			EnemyScroll.Maximum = (int)EnemiesSupport.AvailableEnemiesTypes - enemiesLabels.Count;
 
-			enemies = settings.EnemiesPermissionLine2;
+			enemies = settings.EnemiesPermissionLine;
 			EnemyScroll_Scroll (null, null);
 
 			for (int i = 0; i < 7; i++)
@@ -153,7 +153,7 @@ namespace RD_AAOW
 
 			ItemScroll.Maximum = (int)ItemsSupport.AvailableItemsTypes - itemsLabels.Count;
 
-			items = settings.ItemsPermissionLine2;
+			items = settings.ItemsPermissionLine;
 			ItemScroll_Scroll (null, null);
 			WaterTrack_Scroll (null, null);
 
@@ -238,8 +238,8 @@ namespace RD_AAOW
 			settings.RandomWaterLevel = WaterFlag.Checked;
 
 			settings.AllowMonsterMakers = MonsterMakerFlag.Checked;
-			settings.EnemiesPermissionLine2 = enemies;
-			settings.ItemsPermissionLine2 = items;
+			settings.EnemiesPermissionLine = enemies;
+			settings.ItemsPermissionLine = items;
 
 			settings.SectionType = (MapSectionTypes)(SkyCombo.SelectedIndex + 1);
 			settings.BarriersType = (MapBarriersTypes)(BarrierCombo.SelectedIndex + 1);

@@ -52,7 +52,7 @@ namespace RD_AAOW
 			_ = WallsDensityCoefficient;
 			_ = ButtonMode;
 			_ = CratesDensityCoefficient;
-			_ = EnemiesPermissionLine2;
+			_ = EnemiesPermissionLine;
 			_ = InsideLightingCoefficient;
 			_ = OutsideLightingCoefficient;
 			_ = SectionType;
@@ -60,7 +60,7 @@ namespace RD_AAOW
 			_ = AllowExplosiveCrates;
 			_ = AllowItemsCrates;
 			_ = AllowItemsForSecondFloor;
-			_ = ItemsPermissionLine2;
+			_ = ItemsPermissionLine;
 			_ = GravityCoefficient;
 			_ = FogCoefficient;
 			_ = AllowMonsterMakers;
@@ -70,9 +70,9 @@ namespace RD_AAOW
 
 			// Защита
 			if (!TwoFloors && !RandomizeFloorsQuantity)
-				EnemiesSupport.RemoveBarnacle (ref enemiesPermissionLine2);
+				EnemiesSupport.RemoveBarnacle (ref enemiesPermissionLine);
 			if ((WaterLevel < 1) && !RandomWaterLevel)
-				EnemiesSupport.RemoveLeech (ref enemiesPermissionLine2);
+				EnemiesSupport.RemoveLeech (ref enemiesPermissionLine);
 			}
 		private string settingFromEngineToken = "";
 		private string settingFromEngineValue = "";
@@ -368,13 +368,13 @@ namespace RD_AAOW
 		/// <summary>
 		/// Возвращает или задаёт набор вероятностей генерации врагов
 		/// </summary>
-		public byte[] EnemiesPermissionLine2
+		public byte[] EnemiesPermissionLine
 			{
 			get
 				{
 				// Отсечка
-				if (enemiesPermissionLine2 != null)
-					return enemiesPermissionLine2.ToArray ();
+				if (enemiesPermissionLine != null)
+					return enemiesPermissionLine.ToArray ();
 
 				// Присвоение с перезаписью
 				string line = "";
@@ -392,53 +392,50 @@ namespace RD_AAOW
 
 				// Забой недостающих элементов
 				bool defValues = false;
-				/*if (string.IsNullOrWhiteSpace (line))
-					{*/
 				for (int i = line.Length; i < EnemiesSupport.AvailableEnemiesTypes; i++)
 					{
 					line += MaximumEnemiesProbability.ToString ();
 					defValues = true;
 					}
-				/*}*/
 
 				// Сплит
-				enemiesPermissionLine2 = new List<byte> ();
+				enemiesPermissionLine = new List<byte> ();
 				for (int i = 0; i < EnemiesSupport.AvailableEnemiesTypes; i++)
 					{
 					try
 						{
 						string s = line[i].ToString ();
-						enemiesPermissionLine2.Add (byte.Parse (s));
-						if (enemiesPermissionLine2[i] > MaximumEnemiesProbability)
-							enemiesPermissionLine2[i] = MaximumEnemiesProbability;
+						enemiesPermissionLine.Add (byte.Parse (s));
+						if (enemiesPermissionLine[i] > MaximumEnemiesProbability)
+							enemiesPermissionLine[i] = MaximumEnemiesProbability;
 						}
 					catch
 						{
-						enemiesPermissionLine2.Add (1);
+						enemiesPermissionLine.Add (1);
 						defValues = true;
 						}
 					}
 
 				if (defValues)
 					{
-					EnemiesSupport.RemoveBarnacle (ref enemiesPermissionLine2);
-					EnemiesSupport.RemoveLeech (ref enemiesPermissionLine2);
-					EnemiesPermissionLine2 = enemiesPermissionLine2.ToArray ();
+					EnemiesSupport.RemoveBarnacle (ref enemiesPermissionLine);
+					EnemiesSupport.RemoveLeech (ref enemiesPermissionLine);
+					EnemiesPermissionLine = enemiesPermissionLine.ToArray ();
 					}
 
-				return enemiesPermissionLine2.ToArray ();
+				return enemiesPermissionLine.ToArray ();
 				}
 			set
 				{
-				enemiesPermissionLine2 = new List<byte> (value);
+				enemiesPermissionLine = new List<byte> (value);
 				string line = "";
-				for (int i = 0; i < enemiesPermissionLine2.Count; i++)
-					line += enemiesPermissionLine2[i].ToString ();
+				for (int i = 0; i < enemiesPermissionLine.Count; i++)
+					line += enemiesPermissionLine[i].ToString ();
 
 				RDGenerics.SetAppRegistryValue (enemiesPermissionLinePar, line);
 				}
 			}
-		private List<byte> enemiesPermissionLine2;
+		private List<byte> enemiesPermissionLine;
 		private const string enemiesPermissionLinePar = "EP";
 
 		/// <summary>
@@ -462,13 +459,13 @@ namespace RD_AAOW
 		/// <summary>
 		/// Возвращает или задаёт набор вероятностей генерации предметов
 		/// </summary>
-		public byte[] ItemsPermissionLine2
+		public byte[] ItemsPermissionLine
 			{
 			get
 				{
 				// Отсечка
-				if (itemsPermissionLine2 != null)
-					return itemsPermissionLine2.ToArray ();
+				if (itemsPermissionLine != null)
+					return itemsPermissionLine.ToArray ();
 
 				// Присвоение с перезаписью
 				string line = "";
@@ -486,53 +483,46 @@ namespace RD_AAOW
 
 				// Забой недостающих элементов
 				bool defValues = false;
-				/*if (string.IsNullOrWhiteSpace (line))
-					{*/
 				for (int i = line.Length; i < ItemsSupport.AvailableItemsTypes; i++)
 					{
 					line += MaximumItemsProbability.ToString ();
 					defValues = true;
 					}
-				/*}*/
 
 				// Сплит
-				itemsPermissionLine2 = new List<byte> ();
+				itemsPermissionLine = new List<byte> ();
 				for (int i = 0; i < ItemsSupport.AvailableItemsTypes; i++)
 					{
 					try
 						{
 						string s = line[i].ToString ();
-						itemsPermissionLine2.Add (byte.Parse (s));
-						if (itemsPermissionLine2[i] > MaximumItemsProbability)
-							itemsPermissionLine2[i] = MaximumItemsProbability;
+						itemsPermissionLine.Add (byte.Parse (s));
+						if (itemsPermissionLine[i] > MaximumItemsProbability)
+							itemsPermissionLine[i] = MaximumItemsProbability;
 						}
 					catch
 						{
-						itemsPermissionLine2.Add (1);
+						itemsPermissionLine.Add (1);
 						defValues = true;
 						}
 					}
 
 				if (defValues)
-					{
-					/*En emiesSupport.RemoveBarnacle (ref itemsPermissionLine2);
-					En emiesSupport.RemoveLeech (ref itemsPermissionLine2);*/
-					ItemsPermissionLine2 = itemsPermissionLine2.ToArray ();
-					}
+					ItemsPermissionLine = itemsPermissionLine.ToArray ();
 
-				return itemsPermissionLine2.ToArray ();
+				return itemsPermissionLine.ToArray ();
 				}
 			set
 				{
-				itemsPermissionLine2 = new List<byte> (value);
+				itemsPermissionLine = new List<byte> (value);
 				string line = "";
-				for (int i = 0; i < itemsPermissionLine2.Count; i++)
-					line += itemsPermissionLine2[i].ToString ();
+				for (int i = 0; i < itemsPermissionLine.Count; i++)
+					line += itemsPermissionLine[i].ToString ();
 
 				RDGenerics.SetAppRegistryValue (itemsPermissionLinePar, line);
 				}
 			}
-		private List<byte> itemsPermissionLine2;
+		private List<byte> itemsPermissionLine;
 		private const string itemsPermissionLinePar = "IP";
 
 		/// <summary>

@@ -833,12 +833,6 @@ namespace RD_AAOW
 						{
 						SW.Write ("\"spawnobject\" \"" +
 							ItemsSupport.GetRandomItemForCrate (ItemPermissions).ToString () + "\"\n");
-						/*idx = RDGenerics.RND.Next (26) + 1;
-						while ((idx <= 26) && !ItemsSupport.IsCrateItemAllowed (ItemPermissions, idx))
-							idx += (RDGenerics.RND.Next (3) + 1);
-
-						if (idx <= 26)
-							SW.Write ("\"spawnobject\" \"" + idx.ToString () + "\"\n");*/
 						}
 
 					// Случайная текстура для ящиков без врагов
@@ -1436,7 +1430,6 @@ namespace RD_AAOW
 			Point p = EvaluateAbsolutePosition (RelativePosition);
 
 			SW.Write ("{\n");
-			/*SW.Write ("\"classname\" \"info_node\"\n");*/
 			AddEntity (SW, "info_node", true);
 			SW.Write ("\"origin\" \"" + p.X.ToString () + " " + p.Y.ToString () + " 16\"\n");
 			SW.Write ("}\n");

@@ -27,32 +27,6 @@ namespace RD_AAOW
 			// Запись
 			SW.Write ("{\n");
 
-			// Диапазон противников задаётся ограничением на верхнюю границу диапазона ГПСЧ
-			/*int prngRange;
-			switch (MapSupport.MapNumber)
-				{
-				case 0:
-				case 1:
-					prngRange = 15;
-					break;
-
-				case 2:
-				case 3:
-				case 4:
-				case 5:
-				case 6:
-				case 7:
-				case 8:
-				case 9:
-				case 10:
-					prngRange = (int)MapSupport.MapNumber + 14;
-					break;
-
-				default:
-					prngRange = 25;
-					break;
-				}*/
-
 			// Обходной вариант с собираемым объектом
 			if (!hiddenObjectWritten && (MapSupport.MapNumber % 10 == 0))
 				{
@@ -79,9 +53,6 @@ namespace RD_AAOW
 			for (int i = 0; i < Probabilities.Length; i++)
 				{
 				// Эти виды оружия доступны только в ящиках
-				/*if ((i == i_sho) || (i == i_rpg) || (i == i_axe) ||
-					(i == i_ego) || (i == i_sna) || (i == i_min) ||
-					(i == i_9ar) || (i == i_hor) || (i == i_bar))*/
 				if (ItemsOnlyFromCrates.Contains (i))
 					continue;
 
@@ -93,26 +64,12 @@ namespace RD_AAOW
 					continue;
 				if ((i == i_gau) && (MapSupport.MapNumber < 5))
 					continue;
-				/*if ((i == i_hor) && (MapSupport.MapNumber < 5))
-					continue;
-				if ((i == i_min) && (MapSupport.MapNumber < 6))
-					continue;*/
-				/*if ((i == i_axe) && (MapSupport.MapNumber < 7))
-					continue;
-				if ((i == i_rpg) && (MapSupport.MapNumber < 8))
-					continue;*/
-				/*if ((i == i_sna) && (MapSupport.MapNumber < 9))
-					continue;
-				if ((i == i_ego) && (MapSupport.MapNumber < 10))
-					continue;*/
 
 				for (int j = 0; j < Probabilities[i]; j++)
 					itemsProbabilityLine.Add ((byte)i);
 				}
 
 			// Запись объекта
-			/*string doc = "item_security";
-			int item = RDGenerics.RND.Next (prngRange);*/
 			int crItem = RDGenerics.RND.Next (itemsProbabilityLine.Count);
 			if ((itemsProbabilityLine.Count < 1) || (crItem == 0))
 				crItem = 255;
@@ -120,8 +77,6 @@ namespace RD_AAOW
 				crItem = itemsProbabilityLine[crItem];
 
 			// Выбор предмета
-			/*retry:
-			switch (item)*/
 			switch (crItem)
 				{
 				// Документы
@@ -132,85 +87,43 @@ namespace RD_AAOW
 
 				// Аптечки
 				case i_hek:
-					/*if (Permissions.Contains (ItemsPermissionsKeys[i_hek]))*/
-					MapSupport.AddEntity (SW, items[i_hek]);
-					/*else
-						goto check;*/
-					break;
+					/*MapSupport.AddEntity (SW, items[i_hek]);
+					break;*/
 
 				// Броня
-				/*case 0:
-				case 1:
-				case 2:
-				case 3:
-				case 4:
-					if (Permissions.Contains (ItemsPermissionsKeys[i_bat]))
-						MapSupport.AddEntity (SW, items[i_bat]);
-					else
-						goto check;
-					break;*/
 				case i_bat:
-					MapSupport.AddEntity (SW, items[i_bat]);
-					break;
+					/*MapSupport.AddEntity (SW, items[i_bat]);
+					break;*/
 
 				// Гранаты
-				/*case 6:
-				case 17:
-					if (Permissions.Contains (ItemsPermissionsKeys[i_gre]))
-						MapSupport.AddEntity (SW, items[i_gre]);
-					else
-						goto check;
-					break;*/
 				case i_gre:
-					MapSupport.AddEntity (SW, items[i_gre]);
-					break;
+					/*MapSupport.AddEntity (SW, items[i_gre]);
+					break;*/
 
 				// Пистолет
-				/*case 15:*/
 				case i_hnd:
-					/*if (Permissions.Contains (ItemsPermissionsKeys[i_hnd]))*/
-					MapSupport.AddEntity (SW, items[i_hnd]);
-					/*else
-						goto check;*/
-					break;
+					/*MapSupport.AddEntity (SW, items[i_hnd]);
+					break;*/
 
 				// Гранаты с радиоуправлением
-				/*case 16:*/
 				case i_sat:
-					/*if (Permissions.Contains (ItemsPermissionsKeys[i_sat]))*/
-					MapSupport.AddEntity (SW, items[i_sat]);
-					/*else
-						goto check;*/
-					break;
+					/*MapSupport.AddEntity (SW, items[i_sat]);
+					break;*/
 
 				// .357
-				/*case 5:
-				case 18:*/
 				case i_357:
-					/*if (Permissions.Contains (ItemsPermissionsKeys[i_357]))*/
-					MapSupport.AddEntity (SW, items[i_357]);
-					/*else
-						goto check;*/
-					break;
+					/*MapSupport.AddEntity (SW, items[i_357]);
+					break;*/
 
 				// Арбалет
-				/*case 19:
-				case 20:*/
 				case i_crs:
-					/*if (Permissions.Contains (ItemsPermissionsKeys[i_crs]))*/
-					MapSupport.AddEntity (SW, items[i_crs]);
-					/*else
-						goto check;*/
-					break;
+					/*MapSupport.AddEntity (SW, items[i_crs]);
+					break;*/
 
 				// Гаусс
-				/*case 21:
-				case 22:*/
 				case i_gau:
-					/*if (Permissions.Contains (ItemsPermissionsKeys[i_gau]))*/
-					MapSupport.AddEntity (SW, items[i_gau]);
-					/*else
-						goto check;*/
+					/*MapSupport.AddEntity (SW, items[i_gau]);*/
+					MapSupport.AddEntity (SW, items[crItem]);
 					break;
 				}
 
@@ -223,34 +136,10 @@ namespace RD_AAOW
 			SW.Write ("\"origin\" \"" + p.X.ToString () + " " + p.Y.ToString () + " " +
 				z.ToString () + "\"\n");   // На некоторой высоте над полом
 			SW.Write ("}\n");
-			/*return;*/
-
-			/*// Проверка возможности выбора другого врага
-			check:
-			item += RDGenerics.RND.Next (3);
-			if (item >= prngRange)
-				{
-				MapSupport.AddEntity (SW, doc);
-				goto finishItem;
-				}
-			else
-				{
-				goto retry;
-				}*/
 			}
 
 		// Флаг наличия записи об объекте-достижении
 		private static bool hiddenObjectWritten = false;
-
-		/*/// <summary>
-		/// Набор ключевых символов разрешений для предметов
-		/// </summary>
-		public static string[] ItemsPermissionsKeys = new string[] {
-			// Прямая генерация
-			"k", "b", "g", "9", "s", "3", "c", "u", "w", "h", 
-			// Ящики
-			"r", "o", "p", "t", "n", "e", "a"
-			};*/
 
 		/// <summary>
 		/// Возвращает число доступных видов врагов
@@ -313,27 +202,8 @@ namespace RD_AAOW
 			// Определение доступных вариантов
 			List<byte> itemsProbabilityLine = new List<byte> ();
 			for (int i = 0; i < Probabilities.Length; i++)
-				{
-				/*if ((i == i_sat) && (MapSupport.MapNumber < 3))
-					continue;
-				if ((i == i_gau) && (MapSupport.MapNumber < 4))
-					continue;
-				if ((i == i_hor) && (MapSupport.MapNumber < 5))
-					continue;
-				if ((i == i_min) && (MapSupport.MapNumber < 6))
-					continue;
-				if ((i == i_axe) && (MapSupport.MapNumber < 7))
-					continue;
-				if ((i == i_rpg) && (MapSupport.MapNumber < 8))
-					continue;
-				if ((i == i_sna) && (MapSupport.MapNumber < 9))
-					continue;
-				if ((i == i_ego) && (MapSupport.MapNumber < 10))
-					continue;*/
-
 				for (int j = 0; j < Probabilities[i]; j++)
 					itemsProbabilityLine.Add ((byte)i);
-				}
 
 			// Выбор варианта
 			int crItem = RDGenerics.RND.Next (itemsProbabilityLine.Count);
@@ -349,40 +219,6 @@ namespace RD_AAOW
 			return itemIndices[crItem][RDGenerics.RND.Next (itemIndices[crItem].Length)];
 			}
 
-		/*/// <summary>
-		/// Метод проверяет допустимость данного объекта для «размещения в ящике»
-		/// </summary>
-		/// <param name="Permissions">Строка разрешений</param>
-		/// <param name="ItemIndex">Индекс объекта для ящика</param>
-		/// <returns></returns>
-		public static bool IsCrateItemAllowed (byte[] Permissions, int ItemIndex)
-			{
-			// Контроль
-			int idx = weaponEquivalents.IndexOf (ItemIndex);
-			if (idx < 0)
-				{
-				idx = ammoEquivalents.IndexOf (ItemIndex);
-				if (idx < 0)
-					return true;
-				}
-
-			return Permissions[idx] != 0;
-			}
-
-		// Набор сопоставлений для собираемых объектов при генерации из ящиков
-		private static List<int> weaponEquivalents = new List<int> {
-			// Прямая генерация
-			2, 1, 17, 3, 19, 12, 10, 23, 22, 21, 
-			// Ящики
-			5, 8, 14, 18, 20, 24, 26
-			};
-
-		private static List<int> ammoEquivalents = new List<int> {
-			// Прямая генерация
-			-1, -1, -1, 4, -1, 13, 11, 16, -1, -1, 
-			// Ящики
-			6, 9, 15, -1, -1, -1, -1
-			};*/
 		private static uint[][] itemIndices = new uint[][] {
 			new uint[] { 2 },
 			new uint[] { 1 },
