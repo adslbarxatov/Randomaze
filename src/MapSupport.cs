@@ -771,16 +771,15 @@ namespace RD_AAOW
 		/// </summary>
 		/// <param name="SW">Дескриптор файла карты</param>
 		/// <param name="RelativePosition">Относительная позиция точки создания</param>
-		/// <param name="AllowExplosives">Флаг разрешения ящиков со взрывчаткой</param>
-		/// <param name="AllowItems">Флаг разрешения ящиков с жуками и собираемыми объектами</param>
+		/// <param name="CratesBalance">Баланс ящиков между предметами и взрывчаткой</param>
 		/// <param name="ItemPermissions">Строка разрешений для объектов в ящиках</param>
 		/// <param name="EnemiesPermissions">Строка разрешений для врагов в ящиках (крабы, снарки)</param>
 		public static void WriteMapCrate (StreamWriter SW, Point RelativePosition,
-			bool AllowItems, bool AllowExplosives, byte[] ItemPermissions, byte[] EnemiesPermissions)
+			int CratesBalance, byte[] ItemPermissions, byte[] EnemiesPermissions)
 			{
-			// Контроль
+			/*// Контроль
 			if (!AllowExplosives && !AllowItems)
-				return;
+				return;*/
 
 			// Расчёт параметров
 			Point p = EvaluateAbsolutePosition (RelativePosition);
@@ -790,7 +789,10 @@ namespace RD_AAOW
 			string x2 = (p.X + 16).ToString ();
 			string y2 = (p.Y + 16).ToString ();
 
-			bool explosive = (RDGenerics.RND.Next (2) == 0);
+			/*bool explosive = (RDGenerics.RND.Next (2) == 0);*/
+			bool explosive = CratesBalance >
+				RDGenerics.RND.Next (-ESRMSettings.CratesBalanceRange, ESRMSettings.CratesBalanceRange);
+
 			string tex = "CRATE01"; // Взрывчатка по умолчанию
 
 			SW.Write ("{\n");
@@ -803,11 +805,12 @@ namespace RD_AAOW
 			SW.Write ("\"rendermode\" \"4\"\n");    // Прозрачность для врагов
 			SW.Write ("\"renderamt\" \"255\"\n");
 
-			// Разрешение для взрывчатки будет необходимым, но недостаточным условием для её появления:
+			/*// Разрешение для взрывчатки будет необходимым, но недостаточным условием для её появления:
 			// решающим фактором будет ГПСЧ.
 			// Запрет на остальные ящики будет достаточным условием для появления взрывчатки.
 			// При этом предполагается, что случай обоюдного запрета до этого места не дойдёт
-			if (explosive && AllowExplosives || !AllowItems)
+			if (explosive && AllowExplosives || !AllowItems)*/
+			if (explosive)
 				{
 				SW.Write ("\"explodemagnitude\" \"" + RDGenerics.RND.Next (160, 200).ToString () + "\"\n");
 				}

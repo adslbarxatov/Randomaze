@@ -58,14 +58,12 @@ The tool requires next compilation tools, directories and files for work:
 | Walls density coefficient | The larger the value, the fewer “branches” the maze will have | 1 – 12 | No | `WD` | `esrm_walls` |
 | Lamps lighting coefficient | Affects quantity of enabled lamp lights | 1 – 10 | Yes | `LI` | `esrm_inlight` |
 | Sun lighting coefficient | Affects outdoor brightness and the type of sky | 1 – 6 | Yes | `LO` | `esrm_outlight` |
-| Crates density coefficient | Describes, how much enemies will be replaced with crates with bugs or explosives | 1 – 5 | Yes | `CD` | `esrm_crates` |
+| Crates density coefficient | Describes, how much enemies will be replaced with crates with bugs or explosives | 0 – 5 | Yes | `CD` | `esrm_crates` |
 | Gravity coefficient | Affects the gravity percentage for all objects on the map | 1 – 20 (10 = 100%) | Yes | `GR` | `esrm_gravity` |
 | Button mode | Adds the button(s) that should be found and pressed to open the exit gate | Quantity, 1 / 2 / 3 | No | `BM` | `esrm_button` |
 | Map section types | Sets allowed types of map sections (*all*, *only under sky* or *only inside*) | 1 / 2 / 3 | No | `ST` | `esrm_sections` |
 | Two floors flag | Adds the second floor to the map with some balconies and enemies | 0 / 1 | Yes | `TF` | `esrm_two_floors` |
 | Allow items on the second floor | Permits the generation of items for balconies | 0 / 1 | Yes | `TF` | `esrm_two_floors` |
-| Allow explosive crates | Enables explosive crates | 0 / 1 | No | `XC` | `esrm_expl_crates` |
-| Allow crates with items | Enables crates with items and bugs | 0 / 1 | No | `IC` | `esrm_item_crates` |
 | Allow monster makers flag | Allows replacement of some monsters with monster makers | 0 / 1 | No | `MM` | `esrm_makers` |
 | Map barrier types | Sets allowed types of barriers between map sections (*glass*, *fabric* or *both*) | 1 / 2 / 3 | No | `BT` | `esrm_barriers` |
 | Fog coefficient | Affects the fog density percentage on the map | 0 – 10 (0 = 0%, 10 = 100%) | Yes | `FC` | `esrm_fog` |

@@ -28,14 +28,15 @@ namespace RD_AAOW
 					// Флаги
 					case twoFloorsPar:
 					case allowItemsForSecondFloorPar:
-					case allowExplosiveCratesPar:
-					case allowItemsCratesPar:
+					/*case allowExplosiveCratesPar:
+					case allowItemsCratesPar:*/
 					case allowMonsterMakersPar:
 
 					// Значения, начинающиеся с нуля
 					case fogCoefficientPar:
 					case waterLevelPar:
 					case buttonModePar:
+					case cratesDensityCoefficientPar:
 						try
 							{
 							settingFromEngineValue = (uint.Parse (settingFromEngineValue) + 1).ToString ();
@@ -51,14 +52,14 @@ namespace RD_AAOW
 			_ = ItemsDensityCoefficient;
 			_ = WallsDensityCoefficient;
 			_ = ButtonMode;
-			_ = CratesDensityCoefficient;
+			_ = CratesDensityCoefficient2;
 			_ = EnemiesPermissionLine;
 			_ = InsideLightingCoefficient;
 			_ = OutsideLightingCoefficient;
 			_ = SectionType;
 			_ = TwoFloors;
-			_ = AllowExplosiveCrates;
-			_ = AllowItemsCrates;
+			/*_ = AllowExplosiveCrates;
+			_ = AllowItemsCrates;*/
 			_ = AllowItemsForSecondFloor;
 			_ = ItemsPermissionLine;
 			_ = GravityCoefficient;
@@ -67,6 +68,7 @@ namespace RD_AAOW
 			_ = BarriersType;
 			_ = CleanupOldMaps;
 			_ = WaterLevel;
+			_ = CratesBalance;
 
 			// Защита
 			if (!TwoFloors && !RandomizeFloorsQuantity)
@@ -322,46 +324,6 @@ namespace RD_AAOW
 			}
 		private const string buttonModePar = "BM";
 		private int buttonMode = int.MaxValue;
-
-
-
-		/// <summary>
-		/// Возвращает или задаёт коэффициент преобразования врагов в ящики
-		/// </summary>
-		public uint CratesDensityCoefficient
-			{
-			get
-				{
-				return GetSettingsValue (cratesDensityCoefficientPar,
-					MaximumCratesDensityCoefficient, 2, ref cratesDensityCoefficient);
-				}
-			set
-				{
-				SetSettingsValue (cratesDensityCoefficientPar, ref cratesDensityCoefficient, value);
-				}
-			}
-		private int cratesDensityCoefficient = int.MaxValue;
-		private const string cratesDensityCoefficientPar = "CD";
-
-		/// <summary>
-		/// Возвращает или задаёт флаг случайного коэффициента преобразования врагов в ящики
-		/// </summary>
-		public bool RandomCratesDensityCoefficient
-			{
-			get
-				{
-				return (cratesDensityCoefficient < 0);
-				}
-			set
-				{
-				SetSettingsValue (cratesDensityCoefficientPar, ref cratesDensityCoefficient, value);
-				}
-			}
-
-		/// <summary>
-		/// Возвращает ограничение коэффициента преобразования врагов в ящики
-		/// </summary>
-		public const uint MaximumCratesDensityCoefficient = 5;
 
 
 
@@ -698,7 +660,7 @@ namespace RD_AAOW
 
 
 
-		/// <summary>
+		/*/// <summary>
 		/// Возвращает или задаёт флаг разрешения ящиков с жуками и собираемыми предметами
 		/// </summary>
 		public bool AllowItemsCrates
@@ -732,7 +694,7 @@ namespace RD_AAOW
 				}
 			}
 		private int allowExplosiveCrates = int.MaxValue;
-		private const string allowExplosiveCratesPar = "XC";
+		private const string allowExplosiveCratesPar = "XC";*/
 
 
 
@@ -930,6 +892,78 @@ namespace RD_AAOW
 			}
 		private int useMapNodes = int.MaxValue;
 		private const string useMapNodesPar = "MN";
+
+
+
+		/// <summary>
+		/// Возвращает или задаёт баланс ящиков между предметами и взывчаткой
+		/// [-CratesBalanceRange; +CratesBalanceRange]
+		/// </summary>
+		public int CratesBalance
+			{
+			get
+				{
+				return (int)GetSettingsValue (cratesBalancePar, MaximumCratesBalance, CratesBalanceRange + 1,
+					ref cratesBalance) - CratesBalanceRange - 1;
+				}
+			set
+				{
+				SetSettingsValue (cratesBalancePar, ref cratesBalance, (uint)(value + CratesBalanceRange + 1));
+				}
+			}
+		private int cratesBalance = int.MaxValue;
+		private const string cratesBalancePar = "CB";
+
+		/// <summary>
+		/// Возвращает ограничение баланса ящиков (соответствует границе +3)
+		/// </summary>
+		private const uint MaximumCratesBalance = 2 * CratesBalanceRange + 1;
+
+		/// <summary>
+		/// Возвращает границу диапазона баланса ящиков
+		/// </summary>
+		public const int CratesBalanceRange = 3;
+
+
+
+		/// <summary>
+		/// Возвращает или задаёт коэффициент преобразования врагов в ящики
+		/// [0; 5]
+		/// </summary>
+		public uint CratesDensityCoefficient2
+			{
+			get
+				{
+				return GetSettingsValue (cratesDensityCoefficientPar,
+					MaximumCratesDensityCoefficient2, 3, ref cratesDensityCoefficient) - 1;
+				}
+			set
+				{
+				SetSettingsValue (cratesDensityCoefficientPar, ref cratesDensityCoefficient, value + 1);
+				}
+			}
+		private int cratesDensityCoefficient = int.MaxValue;
+		private const string cratesDensityCoefficientPar = "CD";
+
+		/// <summary>
+		/// Возвращает или задаёт флаг случайного коэффициента преобразования врагов в ящики
+		/// </summary>
+		public bool RandomCratesDensityCoefficient2
+			{
+			get
+				{
+				return (cratesDensityCoefficient < 0);
+				}
+			set
+				{
+				SetSettingsValue (cratesDensityCoefficientPar, ref cratesDensityCoefficient, value);
+				}
+			}
+
+		/// <summary>
+		/// Возвращает ограничение коэффициента преобразования врагов в ящики
+		/// </summary>
+		public const uint MaximumCratesDensityCoefficient2 = 6;
 		}
 
 	/// <summary>

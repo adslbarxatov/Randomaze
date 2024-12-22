@@ -174,13 +174,18 @@ namespace RD_AAOW
 			RandomizeFloorsFlag.Checked = settings.RandomizeFloorsQuantity;
 			TwoFloorsFlag_CheckedChanged (null, null);
 
-			CratesDensityTrack.Maximum = (int)ESRMSettings.MaximumCratesDensityCoefficient;
-			CratesDensityTrack.Value = (int)settings.CratesDensityCoefficient;
-			CratesDensityFlag.Checked = settings.RandomCratesDensityCoefficient;
+			/*CratesDensityTrack.Minimum = 0;*/
+			CratesDensityTrack.Maximum = (int)ESRMSettings.MaximumCratesDensityCoefficient2;
+			CratesDensityTrack.Value = (int)settings.CratesDensityCoefficient2+1;
+			CratesDensityFlag.Checked = settings.RandomCratesDensityCoefficient2;
 
-			AllowExplosiveCratesFlag.Checked = settings.AllowExplosiveCrates;
+			/*AllowExplosiveCratesFlag.Checked = settings.AllowExplosiveCrates;
 			AllowItemsCratesFlag.Checked = settings.AllowItemsCrates;
-			AllowExplosiveCratesFlag_CheckedChanged (null, null);
+			AllowExplosiveCratesFlag_CheckedChanged (null, null);*/
+			CratesBalanceTrack.Minimum = -ESRMSettings.CratesBalanceRange;
+			CratesBalanceTrack.Maximum = ESRMSettings.CratesBalanceRange;
+			CratesBalanceTrack.Value = settings.CratesBalance;
+			CratesDensityFlag_CheckedChanged (null, null);
 
 			NodesFlag.Checked = settings.UseMapNodes;
 
@@ -249,10 +254,11 @@ namespace RD_AAOW
 			settings.AllowItemsForSecondFloor = AllowItemsForSecondFloor.Checked;
 			settings.RandomizeFloorsQuantity = RandomizeFloorsFlag.Checked;
 
-			settings.AllowExplosiveCrates = AllowExplosiveCratesFlag.Checked;
-			settings.AllowItemsCrates = AllowItemsCratesFlag.Checked;
-			settings.CratesDensityCoefficient = (uint)CratesDensityTrack.Value;
-			settings.RandomCratesDensityCoefficient = CratesDensityFlag.Checked;
+			/*settings.AllowExplosiveCrates = AllowExplosiveCratesFlag.Checked;
+			settings.AllowItemsCrates = AllowItemsCratesFlag.Checked;*/
+			settings.CratesDensityCoefficient2 = (uint)CratesDensityTrack.Value - 1;
+			settings.RandomCratesDensityCoefficient2 = CratesDensityFlag.Checked;
+			settings.CratesBalance = CratesBalanceTrack.Value;
 
 			settings.UseMapNodes = NodesFlag.Checked;
 
@@ -288,8 +294,8 @@ namespace RD_AAOW
 
 		private void CratesDensityFlag_CheckedChanged (object sender, EventArgs e)
 			{
-			CratesDensityTrack.Enabled = !CratesDensityFlag.Checked && (AllowExplosiveCratesFlag.Checked ||
-				AllowItemsCratesFlag.Checked);
+			CratesDensityTrack.Enabled = !CratesDensityFlag.Checked /*&& (AllowExplosiveCratesFlag.Checked ||
+				AllowItemsCratesFlag.Checked)*/;
 			CratesDensityTrack.BackColor = CratesDensityTrack.Enabled ? enabledColor : disabledColor;
 			}
 
@@ -342,13 +348,13 @@ namespace RD_AAOW
 					((int)ESRMSettings.MaximumWallsDensityCoefficient - WallsDensityTrack.Value);
 			}
 
-		// Включение / выключение ящиков
+		/*// Включение / выключение ящиков
 		private void AllowExplosiveCratesFlag_CheckedChanged (object sender, EventArgs e)
 			{
 			Label05.Enabled = CratesDensityFlag.Enabled = (AllowExplosiveCratesFlag.Checked ||
 				AllowItemsCratesFlag.Checked);
 			CratesDensityFlag_CheckedChanged (null, null);
-			}
+			}*/
 
 		// Включение дополнительных монстров
 		private void TwoFloorsFlag_CheckedChanged (object sender, EventArgs e)
@@ -449,6 +455,13 @@ namespace RD_AAOW
 				itemsTracks[idx].Value = 1;
 
 			items[ItemScroll.Value + idx] = (byte)itemsTracks[idx].Value;
+			}
+
+		// Изменение значение плотности ящиков
+		private void CratesDensityTrack_Scroll (object sender, EventArgs e)
+			{
+			CratesBalanceLabel.Enabled = CratesBalanceTrack.Enabled = (CratesDensityTrack.Value >
+				CratesDensityTrack.Minimum);
 			}
 		}
 	}
