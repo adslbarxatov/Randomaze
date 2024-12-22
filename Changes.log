@@ -10,7 +10,9 @@ Version 6.1:
   and crates with explosives. Its edges (+3 and -3) allow you to disable
   corresponding types of crates (items or explosives);
 • The crate density value can now be set to zero to disable crates
-  altogether
+  altogether;
+• Engine: fixed bug that disallowed you to set letters as controls;
+• Engine: current updates from the mother project have been applied
 
 Version 6.0.2:
 • Access and appearance of the Lab Policy have been updated
