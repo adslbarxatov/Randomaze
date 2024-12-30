@@ -5,6 +5,11 @@ ToDo:
 - More textures and environment
 - Switchable textures groups
 
+Version 6.1.5:
+• Engine: debris of destructible object now reacts to the force of
+  the weapon used;
+• Engine: added the stand-alone material for fabric textures (SCRIPT IMPLEMENTATION REQUIRED);
+
 Version 6.1:
 • Implemented the crates balance instead of flags for crates with items
   and crates with explosives. Its edges (+3 and -3) allow you to disable
