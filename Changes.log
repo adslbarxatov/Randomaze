@@ -8,7 +8,11 @@ ToDo:
 Version 6.1.5:
 • Engine: debris of destructible object now reacts to the force of
   the weapon used;
-• Engine: added the stand-alone material for fabric textures (SCRIPT IMPLEMENTATION REQUIRED);
+• Engine: added the stand-alone material for fabric textures;
+• Engine: fixed incorrect startup angle and behavior of trigger_camera;
+• Engine: fixed some memory leaks in previously updated code;
+• Randomaze: fixed inability to spawn Barney if the second button was
+  found before collecting all the rats;
 
 Version 6.1:
 • Implemented the crates balance instead of flags for crates with items
