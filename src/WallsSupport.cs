@@ -1,5 +1,4 @@
 ﻿using System.Drawing;
-using System.IO;
 
 namespace RD_AAOW
 	{
@@ -21,60 +20,56 @@ namespace RD_AAOW
 		/// <summary>
 		/// Метод записывает шлюз, ограничивающий точку входа, на карту
 		/// </summary>
-		/// <param name="SW">Дескриптор файла карты</param>
 		/// <param name="RelativePosition">Относительная позиция точки создания</param>
 		/// <param name="Frame">Флаг указывает, что записывается рама шлюза вместо него самого</param>
-		public static void WriteMapFinishGate (StreamWriter SW, Point RelativePosition, bool Frame)
+		public static void WriteMapFinishGate (/*StreamWriter SW,*/ Point RelativePosition, bool Frame)
 			{
-			WriteGate (SW, RelativePosition, Frame, true);
+			WriteGate (RelativePosition, Frame, true);
 			}
 
 		/// <summary>
 		/// Метод записывает шлюз, закрывающий точку выхода, на карту
 		/// </summary>
-		/// <param name="SW">Дескриптор файла карты</param>
 		/// <param name="RelativePosition">Относительная позиция точки создания</param>
 		/// <param name="Frame">Флаг указывает, что записывается рама шлюза вместо него самого</param>
-		public static void WriteMapGate (StreamWriter SW, Point RelativePosition, bool Frame)
+		public static void WriteMapGate (/*StreamWriter SW,*/ Point RelativePosition, bool Frame)
 			{
-			WriteGate (SW, RelativePosition, Frame, false);
+			WriteGate (RelativePosition, Frame, false);
 			}
 
 		/// <summary>
 		/// Метод записывает стену на карту
 		/// </summary>
-		/// <param name="SW">Дескриптор файла карты</param>
 		/// <param name="RelativePosition">Относительная позиция точки создания</param>
 		/// <param name="Texture">Текстура стены</param>
 		/// <param name="LeftEnd">Тип левого торца стены</param>
 		/// <param name="RightEnd">Тип правого торца стены</param>
-		public static void WriteMapWall (StreamWriter SW, Point RelativePosition, string Texture,
+		public static void WriteMapWall (/*StreamWriter SW,*/ Point RelativePosition, string Texture,
 			WallsNeighborsTypes LeftEnd, WallsNeighborsTypes RightEnd)
 			{
 			neighborLeft = LeftEnd;
 			neighborRight = RightEnd;
 
-			WriteMapBarrier (SW, RelativePosition, BarrierTypes.DefaultWall, Texture);
+			WriteMapBarrier (RelativePosition, BarrierTypes.DefaultWall, Texture);
 			}
 
 		/// <summary>
 		/// Метод записывает раму окна на карту
 		/// </summary>
-		/// <param name="SW">Дескриптор файла карты</param>
 		/// <param name="RelativePosition">Относительная позиция точки создания</param>
 		/// <param name="Texture">Текстура стены для рамы</param>
-		public static void WriteMapWindow (StreamWriter SW, Point RelativePosition, string Texture)
+		public static void WriteMapWindow (/*StreamWriter SW,*/ Point RelativePosition, string Texture)
 			{
-			WriteMapBarrier (SW, RelativePosition, BarrierTypes.WindowFrameTop, Texture);
-			WriteMapBarrier (SW, RelativePosition, BarrierTypes.WindowFrameBottom, Texture);
+			WriteMapBarrier (RelativePosition, BarrierTypes.WindowFrameTop, Texture);
+			WriteMapBarrier (RelativePosition, BarrierTypes.WindowFrameBottom, Texture);
 			}
 
 		/// <summary>
-		/// Метод записывает стекло окна и звуковой эффект перехода между секциями на карту
+		/// Метод записывает разрушаемую часть окна и звуковой эффект перехода между секциями на карту
 		/// </summary>
-		/// <param name="SW">Дескриптор файла карты</param>
 		/// <param name="RelativePosition">Относительная позиция точки создания</param>
-		public static void WriteMapWindow (StreamWriter SW, Point RelativePosition, MapBarriersTypes MapBarrier)
+		/// <param name="MapBarrier">Тип материала разрушаемой части</param>
+		public static void WriteMapWindow (/*StreamWriter SW,*/ Point RelativePosition, MapBarriersTypes MapBarrier)
 			{
 			// Запись преграды
 			bool glass;
@@ -94,37 +89,36 @@ namespace RD_AAOW
 					break;
 				}
 
-			SW.Write ("{\n");
-			MapSupport.AddEntity (SW, "func_breakable");
+			MapSupport.Write ("{\n");
+			MapSupport.AddEntity (MapClasses.Breakable);
 
 			if (glass)
 				{
-				SW.Write ("\"rendermode\" \"2\"\n");
-				SW.Write ("\"renderamt\" \"80\"\n");
-				SW.Write ("\"material\" \"0\"\n");
+				MapSupport.Write ("\"rendermode\" \"2\"\n");
+				MapSupport.Write ("\"renderamt\" \"80\"\n");
+				MapSupport.Write ("\"material\" \"0\"\n");
 				}
 			else
 				{
-				SW.Write ("\"rendermode\" \"0\"\n");
-				SW.Write ("\"renderamt\" \"0\"\n");
-				SW.Write ("\"material\" \"3\"\n");
+				MapSupport.Write ("\"rendermode\" \"0\"\n");
+				MapSupport.Write ("\"renderamt\" \"0\"\n");
+				MapSupport.Write ("\"material\" \"9\"\n");
 				}
-			SW.Write ("\"health\" \"20\"\n");
+			MapSupport.Write ("\"health\" \"20\"\n");
 
-			WriteMapBarrier (SW, RelativePosition, glass ? BarrierTypes.GlassWindow :
+			WriteMapBarrier (RelativePosition, glass ? BarrierTypes.GlassWindow :
 				BarrierTypes.FabricWindow, null);
 
-			SW.Write ("}\n");
+			MapSupport.Write ("}\n");
 			}
 
 		/// <summary>
 		/// Метод записывает звуковой эффект перехода между секциями на карту
 		/// </summary>
-		/// <param name="SW">Дескриптор файла карты</param>
 		/// <param name="RelativePosition">Относительная позиция точки создания</param>
 		/// <param name="Sections">Инициализированные секции карты</param>
 		/// <param name="WallsAreRare">Флаг, указывающий на редкость стен (большие внутренние пространства)</param>
-		public static void WriteMapTransitSFX (StreamWriter SW, Point RelativePosition, Section[] Sections,
+		public static void WriteMapTransitSFX (/*StreamWriter SW,*/ Point RelativePosition, Section[] Sections,
 			bool WallsAreRare)
 			{
 			// Определение необходимости установки звукового триггера
@@ -164,11 +158,11 @@ namespace RD_AAOW
 			else
 				rightRT = (byte)(17 + offset);
 
-			MapSupport.WriteMapSoundTrigger (SW, RelativePosition, true, leftRT, rightRT);
+			MapSupport.WriteMapSoundTrigger (RelativePosition, true, leftRT, rightRT);
 			}
 
 		// Универсальный метод формирования шлюза
-		private static void WriteGate (StreamWriter SW, Point RelativePosition, bool Frame, bool Finish)
+		private static void WriteGate (/*StreamWriter SW,*/ Point RelativePosition, bool Frame, bool Finish)
 			{
 			// Расчёт параметров
 			string tex = Finish ? "MetalGate07" : "MetalGate06";
@@ -176,25 +170,25 @@ namespace RD_AAOW
 			// Запись рамы
 			if (Frame)
 				{
-				WriteMapBarrier (SW, RelativePosition, BarrierTypes.GateFrameTop, tex);
+				WriteMapBarrier (RelativePosition, BarrierTypes.GateFrameTop, tex);
 				return;
 				}
 
 			// Запись шлюза
-			SW.Write ("{\n");
-			MapSupport.AddEntity (SW, "func_door");
-			SW.Write ("\"angles\" \"90 0 0\"\n");
-			SW.Write ("\"speed\" \"100\"\n");
-			SW.Write ("\"movesnd\" \"3\"\n");
-			SW.Write ("\"stopsnd\" \"1\"\n");
-			SW.Write ("\"wait\" \"-1\"\n");
-			SW.Write ("\"lip\" \"9\"\n");
+			MapSupport.Write ("{\n");
+			MapSupport.AddEntity (MapClasses.Door);
+			MapSupport.Write ("\"angles\" \"90 0 0\"\n");
+			MapSupport.Write ("\"speed\" \"100\"\n");
+			MapSupport.Write ("\"movesnd\" \"3\"\n");
+			MapSupport.Write ("\"stopsnd\" \"1\"\n");
+			MapSupport.Write ("\"wait\" \"-1\"\n");
+			MapSupport.Write ("\"lip\" \"9\"\n");
 			if (Finish)
-				SW.Write ("\"targetname\" \"Gate" + MapSupport.BuildMapName () + "\"\n");
+				MapSupport.Write ("\"targetname\" \"" + MapSupport.FirstGateName + "\"\n");
 
-			WriteMapBarrier (SW, RelativePosition, BarrierTypes.Gate, tex);
+			WriteMapBarrier (RelativePosition, BarrierTypes.Gate, tex);
 
-			SW.Write ("}\n");
+			MapSupport.Write ("}\n");
 			}
 
 		// Возможные типы препятствий
@@ -222,7 +216,7 @@ namespace RD_AAOW
 
 		// Общий метод для стен и препятствий
 		private static WallsNeighborsTypes neighborLeft, neighborRight;
-		private static void WriteMapBarrier (StreamWriter SW, Point RelativePosition, BarrierTypes Type,
+		private static void WriteMapBarrier (/*StreamWriter SW,*/ Point RelativePosition, BarrierTypes Type,
 			string Texture)
 			{
 			// Расчёт параметров
@@ -329,7 +323,7 @@ namespace RD_AAOW
 				}
 
 			// Запись
-			SW.Write ("{\n");
+			MapSupport.Write ("{\n");
 
 			// Вертикальная
 			if (IsWallVertical (RelativePosition))
@@ -347,21 +341,21 @@ namespace RD_AAOW
 				yd = y2.ToString ();
 
 				// Нижний и верхний торцы
-				SW.Write ("( " + xc + " " + yc + " " + z2 + " ) " +
+				MapSupport.Write ("( " + xc + " " + yc + " " + z2 + " ) " +
 					"( " + xc + " " + yb + " " + z2 + " ) " +
 					"( " + xb + " " + ya + " " + z2 + " ) " +
 					textures[0] + " [ 1 0 0 0 ] [ 0 -1 0 0 ] 0 1 1 \n");
-				SW.Write ("( " + xa + " " + yc + " " + z1 + " ) " +
+				MapSupport.Write ("( " + xa + " " + yc + " " + z1 + " ) " +
 					"( " + xa + " " + yb + " " + z1 + " ) " +
 					"( " + xb + " " + ya + " " + z1 + " ) " +
 					textures[1] + " [ 1 0 0 0 ] [ 0 -1 0 0 ] 0 1 1 \n");
 
 				// Лицевая и задняя сторона
-				SW.Write ("( " + xa + " " + yb + " " + z1 + " ) " +
+				MapSupport.Write ("( " + xa + " " + yb + " " + z1 + " ) " +
 					"( " + xa + " " + yc + " " + z1 + " ) " +
 					"( " + xa + " " + yc + " " + z2 + " ) " +
 					textures[2] + " [ 0 1 0 0 ] [ 0 0 -1 0 ] 0 1 1 \n");
-				SW.Write ("( " + xc + " " + yc + " " + z1 + " ) " +
+				MapSupport.Write ("( " + xc + " " + yc + " " + z1 + " ) " +
 					"( " + xc + " " + yb + " " + z1 + " ) " +
 					"( " + xc + " " + yb + " " + z2 + " ) " +
 					textures[3] + " [ 0 1 0 0 ] [ 0 0 -1 0 ] 0 1 1 \n");
@@ -369,18 +363,18 @@ namespace RD_AAOW
 				// Верхний торец
 				if (lDelta == 0)
 					{
-					SW.Write ("( " + xc + " " + ya + " " + z1 + " ) " +
+					MapSupport.Write ("( " + xc + " " + ya + " " + z1 + " ) " +
 						"( " + xa + " " + yb + " " + z1 + " ) " +
 						"( " + xa + " " + yb + " " + z2 + " ) " +
 						textures[4] + " [ 1 0 0 0 ] [ 0 0 -1 0 ] 0 1 1 \n");
 					}
 				else
 					{
-					SW.Write ("( " + xb + " " + ya + " " + z1 + " ) " +
+					MapSupport.Write ("( " + xb + " " + ya + " " + z1 + " ) " +
 						"( " + xa + " " + yb + " " + z1 + " ) " +
 						"( " + xa + " " + yb + " " + z2 + " ) " +
 						textures[4] + " [ 0 1 0 0 ] [ 0 0 -1 0 ] 0 1 1 \n");
-					SW.Write ("( " + xc + " " + yb + " " + z1 + " ) " +
+					MapSupport.Write ("( " + xc + " " + yb + " " + z1 + " ) " +
 						"( " + xb + " " + ya + " " + z1 + " ) " +
 						"( " + xb + " " + ya + " " + z2 + " ) " +
 						textures[5] + " [ 0 1 0 0 ] [ 0 0 -1 0 ] 0 1 1 \n");
@@ -389,18 +383,18 @@ namespace RD_AAOW
 				// Нижний торец
 				if (rDelta == 0)
 					{
-					SW.Write ("( " + xa + " " + yd + " " + z1 + " ) " +
+					MapSupport.Write ("( " + xa + " " + yd + " " + z1 + " ) " +
 						"( " + xc + " " + yc + " " + z1 + " ) " +
 						"( " + xc + " " + yc + " " + z2 + " ) " +
 						textures[6] + " [ 1 0 0 0 ] [ 0 0 -1 0 ] 0 1 1 \n");
 					}
 				else
 					{
-					SW.Write ("( " + xb + " " + yd + " " + z1 + " ) " +
+					MapSupport.Write ("( " + xb + " " + yd + " " + z1 + " ) " +
 						"( " + xc + " " + yc + " " + z1 + " ) " +
 						"( " + xc + " " + yc + " " + z2 + " ) " +
 						textures[6] + " [ 0 1 0 0 ] [ 0 0 -1 0 ] 0 1 1 \n");
-					SW.Write ("( " + xa + " " + yc + " " + z1 + " ) " +
+					MapSupport.Write ("( " + xa + " " + yc + " " + z1 + " ) " +
 						"( " + xb + " " + yd + " " + z1 + " ) " +
 						"( " + xb + " " + yd + " " + z2 + " ) " +
 						textures[7] + " [ 0 1 0 0 ] [ 0 0 -1 0 ] 0 1 1 \n");
@@ -423,21 +417,21 @@ namespace RD_AAOW
 				yc = (y1 + mDelta).ToString ();
 
 				// Нижний и верхний торец
-				SW.Write ("( " + xc + " " + ya + " " + z2 + " ) " +
+				MapSupport.Write ("( " + xc + " " + ya + " " + z2 + " ) " +
 					"( " + xb + " " + ya + " " + z2 + " ) " +
 					"( " + xa + " " + yb + " " + z2 + " ) " +
 					textures[0] + " [ 1 0 0 0 ] [ 0 -1 0 0 ] 0 1 1 \n");
-				SW.Write ("( " + xc + " " + yc + " " + z1 + " ) " +
+				MapSupport.Write ("( " + xc + " " + yc + " " + z1 + " ) " +
 					"( " + xb + " " + yc + " " + z1 + " ) " +
 					"( " + xa + " " + yb + " " + z1 + " ) " +
 					textures[1] + " [ 1 0 0 0 ] [ 0 -1 0 0 ] 0 1 1 \n");
 
 				// Лицевая и задняя сторона
-				SW.Write ("( " + xb + " " + yc + " " + z1 + " ) " +
+				MapSupport.Write ("( " + xb + " " + yc + " " + z1 + " ) " +
 					"( " + xc + " " + yc + " " + z1 + " ) " +
 					"( " + xc + " " + yc + " " + z2 + " ) " +
 					textures[2] + " [ 1 0 0 0 ] [ 0 0 -1 0 ] 0 1 1 \n");
-				SW.Write ("( " + xc + " " + ya + " " + z1 + " ) " +
+				MapSupport.Write ("( " + xc + " " + ya + " " + z1 + " ) " +
 					"( " + xb + " " + ya + " " + z1 + " ) " +
 					"( " + xb + " " + ya + " " + z2 + " ) " +
 					textures[3] + " [ 1 0 0 0 ] [ 0 0 -1 0 ] 0 1 1 \n");
@@ -445,18 +439,18 @@ namespace RD_AAOW
 				// Левый торец
 				if (lDelta == 0)
 					{
-					SW.Write ("( " + xa + " " + ya + " " + z1 + " ) " +
+					MapSupport.Write ("( " + xa + " " + ya + " " + z1 + " ) " +
 						"( " + xb + " " + yc + " " + z1 + " ) " +
 						"( " + xb + " " + yc + " " + z2 + " ) " +
 						textures[4] + " [ 0 1 0 0 ] [ 0 0 -1 0 ] 0 1 1 \n");
 					}
 				else
 					{
-					SW.Write ("( " + xa + " " + yb + " " + z1 + " ) " +
+					MapSupport.Write ("( " + xa + " " + yb + " " + z1 + " ) " +
 						"( " + xb + " " + yc + " " + z1 + " ) " +
 						"( " + xb + " " + yc + " " + z2 + " ) " +
 						textures[4] + " [ 0 1 0 0 ] [ 0 0 -1 0 ] 0 1 1 \n");
-					SW.Write ("( " + xb + " " + ya + " " + z1 + " ) " +
+					MapSupport.Write ("( " + xb + " " + ya + " " + z1 + " ) " +
 						"( " + xa + " " + yb + " " + z1 + " ) " +
 						"( " + xa + " " + yb + " " + z2 + " ) " +
 						textures[5] + " [ 0 1 0 0 ] [ 0 0 -1 0 ] 0 1 1 \n");
@@ -465,25 +459,25 @@ namespace RD_AAOW
 				// Правый торец
 				if (rDelta == 0)
 					{
-					SW.Write ("( " + xd + " " + yc + " " + z1 + " ) " +
+					MapSupport.Write ("( " + xd + " " + yc + " " + z1 + " ) " +
 						"( " + xc + " " + ya + " " + z1 + " ) " +
 						"( " + xc + " " + ya + " " + z2 + " ) " +
 						textures[6] + " [ 0 1 0 0 ] [ 0 0 -1 0 ] 0 1 1 \n");
 					}
 				else
 					{
-					SW.Write ("( " + xd + " " + yb + " " + z1 + " ) " +
+					MapSupport.Write ("( " + xd + " " + yb + " " + z1 + " ) " +
 						"( " + xc + " " + ya + " " + z1 + " ) " +
 						"( " + xc + " " + ya + " " + z2 + " ) " +
 						textures[6] + " [ 0 1 0 0 ] [ 0 0 -1 0 ] 0 1 1 \n");
-					SW.Write ("( " + xc + " " + yc + " " + z1 + " ) " +
+					MapSupport.Write ("( " + xc + " " + yc + " " + z1 + " ) " +
 						"( " + xd + " " + yb + " " + z1 + " ) " +
 						"( " + xd + " " + yb + " " + z2 + " ) " +
 						textures[7] + " [ 0 1 0 0 ] [ 0 0 -1 0 ] 0 1 1 \n");
 					}
 				}
 
-			SW.Write ("}\n");
+			MapSupport.Write ("}\n");
 			}
 		}
 

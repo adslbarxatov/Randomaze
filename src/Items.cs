@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
-using System.IO;
 
 namespace RD_AAOW
 	{
@@ -12,36 +11,35 @@ namespace RD_AAOW
 		/// <summary>
 		/// Метод добавляет собираемые объекты на карту
 		/// </summary>
-		/// <param name="SW">Дескриптор файла карты</param>
 		/// <param name="RelativePosition">Относительная позиция точки создания</param>
 		/// <param name="AllowSecondFloor">Флаг, разрешающий размещение на внутренних площадках</param>
 		/// <param name="Probabilities">Набор вероятностей для видов предметов</param>
 		/// <param name="ForceFloorPlacement">Флаг указывает на необходимость расположения
 		/// прямо на полу (для исключения «застревания» во враге)</param>
-		public static void WriteMapItem (StreamWriter SW, Point RelativePosition,
+		public static void WriteMapItem (/*StreamWriter SW,*/ Point RelativePosition,
 			bool AllowSecondFloor, bool ForceFloorPlacement, byte[] Probabilities)
 			{
 			// Расчёт параметров
 			Point p = MapSupport.EvaluateAbsolutePosition (RelativePosition);
 
 			// Запись
-			SW.Write ("{\n");
+			MapSupport.Write ("{\n");
 
 			// Обходной вариант с собираемым объектом
 			if (!hiddenObjectWritten && (MapSupport.MapNumber % 10 == 0))
 				{
 				hiddenObjectWritten = true;
-				MapSupport.AddEntity (SW, "item_antidote");
+				MapSupport.AddEntity (MapClasses.HiddenObject);
 
 				int limit = (MapSupport.MapsLimit / 10) * 10;
 				if (MapSupport.MapNumber == limit)
 					{
-					SW.Write ("\"spawnflags\" \"4\"\n");
-					SW.Write ("\"MinimumToTrigger\" \"" + (limit / 10).ToString () + "\"\n");
+					MapSupport.Write ("\"spawnflags\" \"4\"\n");
+					MapSupport.Write ("\"MinimumToTrigger\" \"" + (limit / 10).ToString () + "\"\n");
 					}
 				else
 					{
-					SW.Write ("\"MinimumToTrigger\" \"1\"\n");
+					MapSupport.Write ("\"MinimumToTrigger\" \"1\"\n");
 					}
 
 				goto finishItem;
@@ -82,60 +80,30 @@ namespace RD_AAOW
 				// Документы
 				default:
 				case 255:
-					MapSupport.AddEntity (SW, "item_security");
+					MapSupport.AddEntity (MapClasses.Document);
 					break;
 
-				// Аптечки
 				case i_hek:
-					/*MapSupport.AddEntity (SW, items[i_hek]);
-					break;*/
-
-				// Броня
 				case i_bat:
-					/*MapSupport.AddEntity (SW, items[i_bat]);
-					break;*/
-
-				// Гранаты
 				case i_gre:
-					/*MapSupport.AddEntity (SW, items[i_gre]);
-					break;*/
-
-				// Пистолет
 				case i_hnd:
-					/*MapSupport.AddEntity (SW, items[i_hnd]);
-					break;*/
-
-				// Гранаты с радиоуправлением
 				case i_sat:
-					/*MapSupport.AddEntity (SW, items[i_sat]);
-					break;*/
-
-				// .357
 				case i_357:
-					/*MapSupport.AddEntity (SW, items[i_357]);
-					break;*/
-
-				// Арбалет
 				case i_crs:
-					/*MapSupport.AddEntity (SW, items[i_crs]);
-					break;*/
-
-				// Гаусс
 				case i_gau:
-					/*MapSupport.AddEntity (SW, items[i_gau]);*/
-					MapSupport.AddEntity (SW, items[crItem]);
+					MapSupport.AddEntity (items[crItem]);
 					break;
 				}
 
-			finishItem:
+		finishItem:
 			int z = ForceFloorPlacement ? 0 : 40;
 			if (AllowSecondFloor)
 				z += (RDGenerics.RND.Next (2) * MapSupport.DefaultWallHeight);
 
-			SW.Write ("\"angles\" \"0 " + RDGenerics.RND.Next (360) + " 0\"\n");
-			SW.Write ("\"origin\" \"" + p.X.ToString () + " " + p.Y.ToString () + " " +
+			MapSupport.Write ("\"angles\" \"0 " + RDGenerics.RND.Next (360) + " 0\"\n");
+			MapSupport.Write ("\"origin\" \"" + p.X.ToString () + " " + p.Y.ToString () + " " +
 				z.ToString () + "\"\n");   // На некоторой высоте над полом
-			SW.Write ("}\n");
+			MapSupport.Write ("}\n");
 			}
 
 		// Флаг наличия записи об объекте-достижении
@@ -153,9 +121,19 @@ namespace RD_AAOW
 			}
 
 		// Набор имён классов предметов
-		private static string[] items = new string[] {
+		private static MapClasses[] items = new MapClasses[] {
 			// Прямая генерация
-			"item_healthkit",
+			MapClasses.HealthKit,
+			MapClasses.Armor,
+			MapClasses.HandGrenade,
+			MapClasses.HandGun,
+			MapClasses.Satchel,
+			MapClasses.Python,
+			MapClasses.Crossbow,
+			MapClasses.Gauss,
+			MapClasses.Crowbar,
+			MapClasses.HornetGun,
+			/*"item_healthkit",
 			"item_battery",
 			"weapon_handgrenade",
 			"weapon_9mmhandgun",
@@ -164,16 +142,23 @@ namespace RD_AAOW
 			"weapon_crossbow",
 			"weapon_gauss",
 			"weapon_crowbar",
-			"weapon_hornetgun",
+			"weapon_hornetgun",*/
 
 			// Ящики
-			"weapon_9mmAR",		// Требует отключения солдат
+			/*"weapon_9mmAR",		// Требует отключения солдат
 			"weapon_shotgun",	// Требует отключения солдат
 			"weapon_rpg",
 			"weapon_tripmine",
 			"weapon_snark",
 			"weapon_egon",
-			"weapon_axe"
+			"weapon_axe"*/
+			MapClasses.MachineGun,
+			MapClasses.Shotgun,
+			MapClasses.RPG,
+			MapClasses.TripMineWeapon,
+			MapClasses.Snark,
+			MapClasses.Egon,
+			MapClasses.Axe,
 			};
 		private const int i_hek = 0;
 		private const int i_bat = 1;

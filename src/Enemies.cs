@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
-using System.IO;
 
 namespace RD_AAOW
 	{
@@ -12,14 +11,13 @@ namespace RD_AAOW
 		/// <summary>
 		/// Метод добавляет врагов на карту
 		/// </summary>
-		/// <param name="SW">Дескриптор файла карты</param>
 		/// <param name="RelativePosition">Относительная позиция точки создания</param>
 		/// <param name="Probabilities">Список вероятностей генерации врагов</param>
 		/// <param name="AllowSecondFloor">Флаг разрешения установки врага на внутренней площадке</param>
 		/// <param name="CeilingNotAllowed">Флаг указывает на невозможность ориентации на потолке</param>
 		/// <param name="AllowMonsterMakers">Флаг разрешения монстр-мейкеров</param>
 		/// <param name="WaterLevel">Флаг указывает, что воды достаточно для плавающих монстров</param>
-		public static void WriteMapEnemy (StreamWriter SW, Point RelativePosition,
+		public static void WriteMapEnemy (/*StreamWriter SW,*/ Point RelativePosition,
 			byte[] Probabilities, bool AllowSecondFloor, bool CeilingNotAllowed,
 			bool AllowMonsterMakers, uint WaterLevel)
 			{
@@ -61,7 +59,7 @@ namespace RD_AAOW
 				}
 
 			// Запись
-			SW.Write ("{\n");
+			MapSupport.Write ("{\n");
 
 			// Добавление
 			int z;
@@ -91,12 +89,12 @@ namespace RD_AAOW
 					if (WaterLevel > 0)
 						{
 						z = 4;  // Чуть выше пола для разблокировки плавания
-						InitMonster (SW, false, enemies[m_lee]);
+						InitMonster (false, enemies[m_lee]);
 						}
 					else
 						{
 						z = 0;  // Только на полу
-						InitMonster (SW, false, rats[RDGenerics.RND.Next (rats.Count)]);
+						InitMonster (false, /*rats[RDGenerics.RND.Next (rats.Count)]*/ MapClasses.Rat);
 						}
 
 					// Не могут быть монстрмейкерами
@@ -107,28 +105,28 @@ namespace RD_AAOW
 					break;
 
 				case m_gru:
-					InitMonster (SW, mMaker, enemies[m_gru]);
+					InitMonster (mMaker, enemies[m_gru]);
 					countEnemy = true;
 
 					if (!mMaker)
-						SW.Write ("\"weapons\" \"" +
+						MapSupport.Write ("\"weapons\" \"" +
 							gruntWeapons[RDGenerics.RND.Next (gruntWeapons.Length)] + "\"\n");
 					break;
 
 				// Зомби
 				case m_zom:
 					z = 0;  // Только на полу
-					InitMonster (SW, mMaker, enemies[m_zom]);
+					InitMonster (mMaker, enemies[m_zom]);
 					countEnemy = true;
 
 					if (!mMaker)
-						SW.Write ("\"skin\" \"" + RDGenerics.RND.Next (2).ToString () + "\"\n");
+						MapSupport.Write ("\"skin\" \"" + RDGenerics.RND.Next (2).ToString () + "\"\n");
 					break;
 
 				// Крабы
 				case m_hed:
 					z = 0;  // Только на полу
-					InitMonster (SW, mMaker, enemies[m_hed]);
+					InitMonster (mMaker, enemies[m_hed]);
 					countEnemy = true;
 					break;
 
@@ -140,21 +138,21 @@ namespace RD_AAOW
 				case m_asn:
 				// Солдаты алиенов
 				case m_agr:
-					InitMonster (SW, mMaker, enemies[crEnemy]);
+					InitMonster (mMaker, enemies[crEnemy]);
 					countEnemy = true;
 					break;
 
 				// Турель
 				case m_tur:
-					int t = RDGenerics.RND.Next (turrets.Count);
-					InitMonster (SW, false, turrets[t]);
+					int t = RDGenerics.RND.Next (turrets.Length);
+					InitMonster (false, turrets[t]);
 					bool turret = (t < 2);
 
 					if (!MapSupport.TwoFloors)
 						{
 						z = 0;
 						if (turret)
-							SW.Write ("\"orientation\" \"0\"\n");
+							MapSupport.Write ("\"orientation\" \"0\"\n");
 						}
 					else
 						{
@@ -162,7 +160,7 @@ namespace RD_AAOW
 						if (turret && !CeilingNotAllowed && chance)
 							{
 							z = MapSupport.WallHeight;
-							SW.Write ("\"orientation\" \"1\"\n");
+							MapSupport.Write ("\"orientation\" \"1\"\n");
 							}
 						else if (!turret && AllowSecondFloor && chance)
 							{
@@ -172,41 +170,41 @@ namespace RD_AAOW
 							{
 							z = 0;
 							if (turret)
-								SW.Write ("\"orientation\" \"0\"\n");
+								MapSupport.Write ("\"orientation\" \"0\"\n");
 							}
 						}
 
-					SW.Write ("\"spawnflags\" \"32\"\n");
+					MapSupport.Write ("\"spawnflags\" \"32\"\n");
 					countEnemy = true;
 					break;
 
 				// Контроллеры
 				case m_con:
 					z = MapSupport.WallHeight - 96;    // Ближе к потолку
-					InitMonster (SW, mMaker, enemies[m_con]);
+					InitMonster (mMaker, enemies[m_con]);
 					countEnemy = true;
 					break;
 
 				// Собаки
 				case m_hou:
 					z = 0;  // Только на полу
-					InitMonster (SW, mMaker, enemies[m_hou]);
+					InitMonster (mMaker, enemies[m_hou]);
 					countEnemy = true;
 					break;
 
 				// Барнаклы
 				case m_brn:
 					z = MapSupport.WallHeight;  // Только на потолке
-					InitMonster (SW, false, enemies[m_brn]);
+					InitMonster (false, enemies[m_brn]);
 					countEnemy = true;
 					break;
 
 				// Мины
 				case m_min:
-					InitMonster (SW, false, enemies[m_min]);
+					InitMonster (false, enemies[m_min]);
 					noMM = true;
 
-					SW.Write ("\"spawnflags\" \"1\"\n");
+					MapSupport.Write ("\"spawnflags\" \"1\"\n");
 					z = 16 + RDGenerics.RND.Next (2) * 48;
 					int off = MapSupport.WallLength / 2 - 16;
 
@@ -245,29 +243,29 @@ namespace RD_AAOW
 					nextMMName = "MM" + MapSupport.BuildMapName () + "T" +
 						availableMMNumber.ToString ("D3");
 
-					SW.Write ("\"TriggerTarget\" \"" + nextMMName + "\"\n");
+					MapSupport.Write ("\"TriggerTarget\" \"" + nextMMName + "\"\n");
 					awaitingNextMM = true;
 
-					SW.Write ("\"TriggerCondition\" \"4\"\n");
+					MapSupport.Write ("\"TriggerCondition\" \"4\"\n");
 					}
 				else if (countEnemy || countRat)
 					{
-					SW.Write ("\"TriggerTarget\" \"Achi" + MapSupport.BuildMapName () +
-						 (countRat ? "C2" : "C1") + "\"\n");
+					MapSupport.Write ("\"TriggerTarget\" \"" + (countRat ? SecondCounterName : FirstCounterName) +
+						"\"\n");
 
 					if (countEnemy)
 						realEnemiesQuantity++;
 					if (countRat)
 						realRatsQuantity++;
 
-					SW.Write ("\"TriggerCondition\" \"4\"\n");
+					MapSupport.Write ("\"TriggerCondition\" \"4\"\n");
 					}
 				}
 
 			// Общие параметры
-			SW.Write ("\"angles\" \"0 " + r.ToString () + " 0\"\n");
-			SW.Write ("\"origin\" \"" + p.X.ToString () + " " + p.Y.ToString () + " " + z.ToString () + "\"\n");
-			SW.Write ("}\n");
+			MapSupport.Write ("\"angles\" \"0 " + r.ToString () + " 0\"\n");
+			MapSupport.Write ("\"origin\" \"" + p.X.ToString () + " " + p.Y.ToString () + " " + z.ToString () + "\"\n");
+			MapSupport.Write ("}\n");
 
 			// Финализация монстр-мейкера (имя было сброшено методом записи)
 			if (mMaker && string.IsNullOrWhiteSpace (nextMMName))
@@ -280,36 +278,92 @@ namespace RD_AAOW
 		private static string nextMMName;
 
 		// Метод обрабоатывает вилку между монстром и монст-мейкером
-		private static void InitMonster (StreamWriter SW, bool AsMonsterMaker, string MonsterType)
+		private static void InitMonster (bool AsMonsterMaker, MapClasses MonsterType)
 			{
 			// Как реальный NPC
 			if (!AsMonsterMaker)
 				{
-				MapSupport.AddEntity (SW, MonsterType);
+				MapSupport.AddEntity (MonsterType);
 				return;
 				}
 
 			// Как монстрмейкер
-			MapSupport.AddEntity (SW, "monstermaker");
-			SW.Write ("\"targetname\" \"" + nextMMName + "\"\n");
-			SW.Write ("\"monstercount\" \"1\"\n");
-			SW.Write ("\"delay\" \"-1\"\n");
-			SW.Write ("\"m_imaxlivechildren\" \"1\"\n");
-			SW.Write ("\"monstertype\" \"" + MonsterType + "\"\n");
-			SW.Write ("\"teleport_sound\" \"ambience/teleport1.wav\"\n");
-			SW.Write ("\"teleport_sprite\" \"sprites/portal1.spr\"\n");
+			MapSupport.AddEntity (MapClasses.MonsterMaker);
+			MapSupport.Write ("\"targetname\" \"" + nextMMName + "\"\n");
+			MapSupport.Write ("\"monstercount\" \"1\"\n");
+			MapSupport.Write ("\"delay\" \"-1\"\n");
+			MapSupport.Write ("\"m_imaxlivechildren\" \"1\"\n");
+			MapSupport.Write ("\"monstertype\" \"" + MapSupport.GetClassName (MonsterType) + "\"\n");
+			MapSupport.Write ("\"teleport_sound\" \"ambience/teleport1.wav\"\n");
+			MapSupport.Write ("\"teleport_sprite\" \"sprites/portal1.spr\"\n");
 
 			nextMMName = "";    // Имя использовано
 			}
 
 		/// <summary>
+		/// Возвращает имя объекта для первого счётчика достижений
+		/// </summary>
+		public static string FirstCounterName
+			{
+			get
+				{
+				return "Achi" + MapSupport.BuildMapName () + "C1";
+				}
+			}
+
+		/// <summary>
+		/// Возвращает имя объекта для второго счётчика достижений
+		/// </summary>
+		public static string SecondCounterName
+			{
+			get
+				{
+				return "Achi" + MapSupport.BuildMapName () + "C2";
+				}
+			}
+
+		/// <summary>
+		/// Возвращает имя монстрмейкера для случая прямого вызова от второго счётчика
+		/// </summary>
+		public static string DirectMMNameForSecondCounter
+			{
+			get
+				{
+				return "Achi" + MapSupport.BuildMapName () + "R2";
+				}
+			}
+
+		/// <summary>
+		/// Возвращает имя монстрмейкера для случая вызова от второго шлюза
+		/// после сбора всех крыс по факту нажатия кнопки
+		/// </summary>
+		public static string IndirectGateMMNameForSecondCounter
+			{
+			get
+				{
+				return "Achi" + MapSupport.BuildMapName () + "R2D";
+				}
+			}
+
+		/// <summary>
+		/// Возвращает имя монстрмейкера для случая вызова от второго счётчика
+		/// по факту сбора всех крыс при уже нажатой кнопке
+		/// </summary>
+		public static string IndirectCounterMMNameForSecondCounter
+			{
+			get
+				{
+				return "Achi" + MapSupport.BuildMapName () + "R2R";
+				}
+			}
+
+		/// <summary>
 		/// Метод добавляет триггер достижения на карту
 		/// </summary>
-		/// <param name="SW">Дескриптор файла карты</param>
 		/// <param name="RelativePosition">Относительная позиция точки создания</param>
 		/// <param name="TwoButtons">Флаг указывает на наличие второй кнопки</param>
 		/// <param name="Water">Флаг наличия воды на карте</param>
-		public static void WriteMapAchievement (StreamWriter SW, Point RelativePosition,
+		public static void WriteMapAchievement (/*StreamWriter SW,*/ Point RelativePosition,
 			bool TwoButtons, bool Water)
 			{
 			// Расчёт параметров
@@ -321,91 +375,107 @@ namespace RD_AAOW
 
 			if (realEnemiesQuantity > 0)
 				{
-				SW.Write ("{\n");
-				MapSupport.AddEntity (SW, "game_counter");
-				SW.Write ("\"targetname\" \"Achi" + mn + "C1\"\n");
-				SW.Write ("\"target\" \"Achi" + mn + "R1\"\n");
-				SW.Write ("\"health\" \"" + realEnemiesQuantity.ToString () + "\"\n");
-				SW.Write ("\"origin\" \"" + p.X.ToString () + " " + p.Y.ToString () + " 64\"\n");
+				MapSupport.Write ("{\n");
+				MapSupport.AddEntity (MapClasses.Counter);
+				MapSupport.Write ("\"targetname\" \"" + FirstCounterName + "\"\n");
+				MapSupport.Write ("\"target\" \"Achi" + mn + "R1\"\n");
+				MapSupport.Write ("\"health\" \"" + realEnemiesQuantity.ToString () + "\"\n");
+				MapSupport.Write ("\"origin\" \"" + p.X.ToString () + " " + p.Y.ToString () + " 64\"\n");
 
-				SW.Write ("}\n{\n");
-				MapSupport.AddEntity (SW, "game_player_set_health");
-				SW.Write ("\"targetname\" \"Achi" + mn + "R1\"\n");
-				SW.Write ("\"dmg\" \"200\"\n");
-				SW.Write ("\"origin\" \"" + p.X.ToString () + " " + p.Y.ToString () + " 72\"\n");
+				MapSupport.Write ("}\n{\n");
+				MapSupport.AddEntity (MapClasses.HealthSetter);
+				MapSupport.Write ("\"targetname\" \"Achi" + mn + "R1\"\n");
+				MapSupport.Write ("\"dmg\" \"200\"\n");
+				MapSupport.Write ("\"origin\" \"" + p.X.ToString () + " " + p.Y.ToString () + " 72\"\n");
 
-				SW.Write ("}\n{\n");
-				MapSupport.AddEntity (SW, "env_message");
-				SW.Write ("\"spawnflags\" \"2\"\n");
-				SW.Write ("\"targetname\" \"Achi" + mn + "R1\"\n");
-				SW.Write ("\"messagesound\" \"items/suitchargeok1.wav\"\n");
-				SW.Write ("\"messagevolume\" \"10\"\n");
-				SW.Write ("\"messageattenuation\" \"3\"\n");
-				SW.Write ("\"origin\" \"" + p.X.ToString () + " " + p.Y.ToString () + " 76\"\n");
+				MapSupport.Write ("}\n{\n");
+				MapSupport.AddEntity (MapClasses.Message);
+				MapSupport.Write ("\"spawnflags\" \"2\"\n");
+				MapSupport.Write ("\"targetname\" \"Achi" + mn + "R1\"\n");
+				MapSupport.Write ("\"messagesound\" \"items/suitchargeok1.wav\"\n");
+				MapSupport.Write ("\"messagevolume\" \"10\"\n");
+				MapSupport.Write ("\"messageattenuation\" \"3\"\n");
+				MapSupport.Write ("\"origin\" \"" + p.X.ToString () + " " + p.Y.ToString () + " 76\"\n");
 
 				if (availableMMNumber > 0)
-					SW.Write ("\"message\" \"ACHI_ESRM_03\"\n");
+					MapSupport.Write ("\"message\" \"ACHI_ESRM_03\"\n");
 				else
-					SW.Write ("\"message\" \"ACHI_ESRM_01\"\n");
+					MapSupport.Write ("\"message\" \"ACHI_ESRM_01\"\n");
 
-				SW.Write ("}\n");
+				MapSupport.Write ("}\n");
 				}
 
 			if (realRatsQuantity > 0)
 				{
-				SW.Write ("{\n");
+				MapSupport.Write ("{\n");
 
-				MapSupport.AddEntity (SW, "game_counter");
-				SW.Write ("\"targetname\" \"Achi" + mn + "C2\"\n");
-				SW.Write ("\"target\" \"Achi" + mn + "R2\"\n");
-				SW.Write ("\"health\" \"" + realRatsQuantity.ToString () + "\"\n");
-				SW.Write ("\"origin\" \"" + p.X.ToString () + " " + p.Y.ToString () + " 80\"\n");
+				MapSupport.AddEntity (/*"game_counter"*/ MapClasses.Counter);
+				MapSupport.Write ("\"targetname\" \"" + SecondCounterName + "\"\n");
+				MapSupport.Write ("\"target\" \"" + DirectMMNameForSecondCounter + "\"\n");
+				MapSupport.Write ("\"health\" \"" + realRatsQuantity.ToString () + "\"\n");
+				MapSupport.Write ("\"origin\" \"" + p.X.ToString () + " " + p.Y.ToString () + " 80\"\n");
 
-				SW.Write ("}\n");
-
-				SW.Write ("{\n");
-				MapSupport.AddEntity (SW, "monstermaker");
-				SW.Write ("\"monstercount\" \"1\"\n");
-				SW.Write ("\"delay\" \"-1\"\n");
-				SW.Write ("\"m_imaxlivechildren\" \"1\"\n");
-				SW.Write ("\"monstertype\" \"monster_barney\"\n");
-				SW.Write ("\"teleport_sound\" \"ambience/teleport1.wav\"\n");
-				SW.Write ("\"teleport_sprite\" \"sprites/portal1.spr\"\n");
-				SW.Write ("\"angles\" \"0 " + RDGenerics.RND.Next (360).ToString () + " 0\"\n");
-				SW.Write ("\"origin\" \"" + p.X.ToString () + " " + p.Y.ToString () + " 0\"\n");
+				MapSupport.Write ("}\n{\n");
+				MapSupport.AddEntity (/*"monstermaker"*/ MapClasses.MonsterMaker);
+				MapSupport.Write ("\"monstercount\" \"1\"\n");
+				MapSupport.Write ("\"delay\" \"-1\"\n");
+				MapSupport.Write ("\"m_imaxlivechildren\" \"1\"\n");
+				MapSupport.Write ("\"monstertype\" \"monster_barney\"\n");
+				MapSupport.Write ("\"teleport_sound\" \"ambience/teleport1.wav\"\n");
+				MapSupport.Write ("\"teleport_sprite\" \"sprites/portal1.spr\"\n");
+				MapSupport.Write ("\"angles\" \"0 " + RDGenerics.RND.Next (360).ToString () + " 0\"\n");
+				MapSupport.Write ("\"origin\" \"" + p.X.ToString () + " " + p.Y.ToString () + " 0\"\n");
 
 				if (TwoButtons)
 					{
 					// Иначе Барни застрянет во втором шлюзе
-					SW.Write ("\"targetname\" \"Achi" + mn + "R2D\"\n");
+					MapSupport.Write ("\"target\" \"Achi" + mn + "R2M\"\n");
+					MapSupport.Write ("\"targetname\" \"" + IndirectGateMMNameForSecondCounter + "\"\n");
 
-					SW.Write ("}\n{\n");
-					MapSupport.AddEntity (SW, "trigger_changetarget");
-					SW.Write ("\"targetname\" \"Achi" + mn + "R2\"\n");
-					SW.Write ("\"target\" \"MGate" + mn + "\"\n");
-					SW.Write ("\"m_iszNewTarget\" \"Achi" + mn + "R2D\"\n");
-					SW.Write ("\"origin\" \"" + p.X.ToString () + " " + p.Y.ToString () + " 92\"\n");
+					// Триггер на случай, если кнопка найдена ПОСЛЕ сбора всех крыс.
+					// Тогда второй шлюз при нажатии кнопки инициирует мейкер,
+					// а страховочный триггер отсекается
+					MapSupport.Write ("}\n{\n");
+					MapSupport.AddEntity (MapClasses.ChangeTarget);
+					MapSupport.Write ("\"targetname\" \"" + DirectMMNameForSecondCounter + "\"\n");
+					MapSupport.Write ("\"target\" \"" + MapSupport.SecondGateName + "\"\n");
+					MapSupport.Write ("\"m_iszNewTarget\" \"" + IndirectGateMMNameForSecondCounter + "\"\n");
+					MapSupport.Write ("\"origin\" \"" + p.X.ToString () + " " + p.Y.ToString () + " 92\"\n");
+
+					// Триггер на случай, если кнопка найдена ДО сбора всех крыс.
+					// Тогда счётчик крыс инициирует мейкер, а первый триггер отсекается
+					MapSupport.Write ("}\n{\n");
+					MapSupport.AddEntity (/*"trigger_changetarget"*/ MapClasses.ChangeTarget);
+					MapSupport.Write ("\"targetname\" \"" + IndirectCounterMMNameForSecondCounter + "\"\n");
+					MapSupport.Write ("\"target\" \"" + SecondCounterName + "\"\n");
+					MapSupport.Write ("\"m_iszNewTarget\" \"" + IndirectGateMMNameForSecondCounter + "\"\n");
+					MapSupport.Write ("\"origin\" \"" + p.X.ToString () + " " + p.Y.ToString () + " 96\"\n");
 					}
 				else
 					{
-					SW.Write ("\"targetname\" \"Achi" + mn + "R2\"\n");
+					MapSupport.Write ("\"targetname\" \"" + DirectMMNameForSecondCounter + "\"\n");
 					}
 
-				SW.Write ("}\n{\n");
-				MapSupport.AddEntity (SW, "env_message");
-				SW.Write ("\"spawnflags\" \"2\"\n");
-				SW.Write ("\"targetname\" \"Achi" + mn + "R2\"\n");
-				SW.Write ("\"messagesound\" \"items/suitchargeok1.wav\"\n");
-				SW.Write ("\"messagevolume\" \"10\"\n");
-				SW.Write ("\"messageattenuation\" \"3\"\n");
-				SW.Write ("\"origin\" \"" + p.X.ToString () + " " + p.Y.ToString () + " 88\"\n");
+				MapSupport.Write ("}\n{\n");
+				MapSupport.AddEntity (/*"env_message"*/ MapClasses.Message);
+				MapSupport.Write ("\"spawnflags\" \"2\"\n");
+
+				if (TwoButtons)
+					MapSupport.Write ("\"targetname\" \"Achi" + mn + "R2M\"\n");
+				else
+					MapSupport.Write ("\"targetname\" \"" + DirectMMNameForSecondCounter + "\"\n");
+
+				MapSupport.Write ("\"messagesound\" \"items/suitchargeok1.wav\"\n");
+				MapSupport.Write ("\"messagevolume\" \"10\"\n");
+				MapSupport.Write ("\"messageattenuation\" \"3\"\n");
+				MapSupport.Write ("\"origin\" \"" + p.X.ToString () + " " + p.Y.ToString () + " 88\"\n");
 
 				if (Water)
-					SW.Write ("\"message\" \"ACHI_ESRM_02_W\"\n");
+					MapSupport.Write ("\"message\" \"ACHI_ESRM_02_W\"\n");
 				else
-					SW.Write ("\"message\" \"ACHI_ESRM_02\"\n");
+					MapSupport.Write ("\"message\" \"ACHI_ESRM_02\"\n");
 
-				SW.Write ("}\n");
+				MapSupport.Write ("}\n");
 				}
 			}
 
@@ -424,20 +494,35 @@ namespace RD_AAOW
 			}
 
 		// Набор названий классов для врагов
-		private static string[] enemies = new string[] {
-			"monster_human_assassin",
+		private static MapClasses[] enemies = new MapClasses[] {
+			/*"monster_human_assassin",
 			"monster_bullchicken",
 			"monster_alien_controller",
 			"monster_houndeye",
-			"monster_human_grunt",
-			"monster_headcrab",
+			"monster_human_grunt",*/
+			MapClasses.Assassin,
+			MapClasses.Bullsquid,
+			MapClasses.AlienController,
+			MapClasses.Houndeye,
+			MapClasses.Soldier,
+
+			/*"monster_headcrab",
 			"monster_leech",
 			"monster_tripmine",
 			"monster_barnacle",
-			"monster_alien_grunt",
-			"monster_alien_slave",
+			"monster_alien_grunt",*/
+			MapClasses.HeadCrab,
+			MapClasses.Leech,
+			MapClasses.TripMineEnemy,
+			MapClasses.Barnacle,
+			MapClasses.AlienGrunt,
+
+			/*"monster_alien_slave",
 			"",	// Турели, ручная подстановка
-			"monster_zombie"
+			"monster_zombie"*/
+			MapClasses.Vortigaunt,
+			MapClasses.Turret,	// Подменяются при создании
+			MapClasses.Zombie,
 			};
 		private const int m_asn = 0;
 		private const int m_bul = 1;
@@ -512,14 +597,17 @@ namespace RD_AAOW
 			}
 
 		// Перечень монстров-заглушек
-		private static List<string> rats = new List<string> {
+		/*private static List<string> rats = new List<string> {
 			"monster_rat" ,
 			//"monster_cockroach",
-			};
-		private static List<string> turrets = new List<string> {
-			"monster_turret",
+			};*/
+		private static MapClasses[] turrets = new MapClasses[] {
+			/*"monster_turret",
 			"monster_miniturret",
-			"monster_sentry",
+			"monster_sentry",*/
+			MapClasses.Turret,
+			MapClasses.MiniTurret,
+			MapClasses.Sentry,
 			};
 
 		/// <summary>
