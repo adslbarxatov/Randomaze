@@ -5,6 +5,7 @@ ToDo:
 - More textures and environment
 - Switchable textures groups
 - Show counters for achievements
+- Nodes are not experimental anymore
 
 Version 6.1.5:
 • Engine: debris of destructible object now reacts to the force of
