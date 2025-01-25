@@ -17,7 +17,7 @@ namespace RD_AAOW
 		/// <param name="CeilingNotAllowed">Флаг указывает на невозможность ориентации на потолке</param>
 		/// <param name="AllowMonsterMakers">Флаг разрешения монстр-мейкеров</param>
 		/// <param name="WaterLevel">Флаг указывает, что воды достаточно для плавающих монстров</param>
-		public static void WriteMapEnemy (/*StreamWriter SW,*/ Point RelativePosition,
+		public static void WriteMapEnemy (Point RelativePosition,
 			byte[] Probabilities, bool AllowSecondFloor, bool CeilingNotAllowed,
 			bool AllowMonsterMakers, uint WaterLevel)
 			{
@@ -94,7 +94,7 @@ namespace RD_AAOW
 					else
 						{
 						z = 0;  // Только на полу
-						InitMonster (false, /*rats[RDGenerics.RND.Next (rats.Count)]*/ MapClasses.Rat);
+						InitMonster (false, MapClasses.Rat);
 						}
 
 					// Не могут быть монстрмейкерами
@@ -363,8 +363,7 @@ namespace RD_AAOW
 		/// <param name="RelativePosition">Относительная позиция точки создания</param>
 		/// <param name="TwoButtons">Флаг указывает на наличие второй кнопки</param>
 		/// <param name="Water">Флаг наличия воды на карте</param>
-		public static void WriteMapAchievement (/*StreamWriter SW,*/ Point RelativePosition,
-			bool TwoButtons, bool Water)
+		public static void WriteMapAchievement (Point RelativePosition, bool TwoButtons, bool Water)
 			{
 			// Расчёт параметров
 			Point p = MapSupport.EvaluateAbsolutePosition (RelativePosition);
@@ -380,6 +379,8 @@ namespace RD_AAOW
 				MapSupport.Write ("\"targetname\" \"" + FirstCounterName + "\"\n");
 				MapSupport.Write ("\"target\" \"Achi" + mn + "R1\"\n");
 				MapSupport.Write ("\"health\" \"" + realEnemiesQuantity.ToString () + "\"\n");
+				MapSupport.Write ("\"spawnflags\" \"4\"\n");
+				MapSupport.Write ("\"message\" \"Enemies to go\"\n");
 				MapSupport.Write ("\"origin\" \"" + p.X.ToString () + " " + p.Y.ToString () + " 64\"\n");
 
 				MapSupport.Write ("}\n{\n");
@@ -409,18 +410,20 @@ namespace RD_AAOW
 				{
 				MapSupport.Write ("{\n");
 
-				MapSupport.AddEntity (/*"game_counter"*/ MapClasses.Counter);
+				MapSupport.AddEntity (MapClasses.Counter);
 				MapSupport.Write ("\"targetname\" \"" + SecondCounterName + "\"\n");
 				MapSupport.Write ("\"target\" \"" + DirectMMNameForSecondCounter + "\"\n");
 				MapSupport.Write ("\"health\" \"" + realRatsQuantity.ToString () + "\"\n");
+				MapSupport.Write ("\"spawnflags\" \"4\"\n");
+				MapSupport.Write ("\"message\" \"" + (Water ? "Leeches" : "Rats") + " to go\"\n");
 				MapSupport.Write ("\"origin\" \"" + p.X.ToString () + " " + p.Y.ToString () + " 80\"\n");
 
 				MapSupport.Write ("}\n{\n");
-				MapSupport.AddEntity (/*"monstermaker"*/ MapClasses.MonsterMaker);
+				MapSupport.AddEntity (MapClasses.MonsterMaker);
 				MapSupport.Write ("\"monstercount\" \"1\"\n");
 				MapSupport.Write ("\"delay\" \"-1\"\n");
 				MapSupport.Write ("\"m_imaxlivechildren\" \"1\"\n");
-				MapSupport.Write ("\"monstertype\" \"monster_barney\"\n");
+				MapSupport.Write ("\"monstertype\" \"" + MapSupport.GetClassName (MapClasses.Barney) + "\"\n");
 				MapSupport.Write ("\"teleport_sound\" \"ambience/teleport1.wav\"\n");
 				MapSupport.Write ("\"teleport_sprite\" \"sprites/portal1.spr\"\n");
 				MapSupport.Write ("\"angles\" \"0 " + RDGenerics.RND.Next (360).ToString () + " 0\"\n");
@@ -445,7 +448,7 @@ namespace RD_AAOW
 					// Триггер на случай, если кнопка найдена ДО сбора всех крыс.
 					// Тогда счётчик крыс инициирует мейкер, а первый триггер отсекается
 					MapSupport.Write ("}\n{\n");
-					MapSupport.AddEntity (/*"trigger_changetarget"*/ MapClasses.ChangeTarget);
+					MapSupport.AddEntity (MapClasses.ChangeTarget);
 					MapSupport.Write ("\"targetname\" \"" + IndirectCounterMMNameForSecondCounter + "\"\n");
 					MapSupport.Write ("\"target\" \"" + SecondCounterName + "\"\n");
 					MapSupport.Write ("\"m_iszNewTarget\" \"" + IndirectGateMMNameForSecondCounter + "\"\n");
@@ -457,7 +460,7 @@ namespace RD_AAOW
 					}
 
 				MapSupport.Write ("}\n{\n");
-				MapSupport.AddEntity (/*"env_message"*/ MapClasses.Message);
+				MapSupport.AddEntity (MapClasses.Message);
 				MapSupport.Write ("\"spawnflags\" \"2\"\n");
 
 				if (TwoButtons)
@@ -495,31 +498,16 @@ namespace RD_AAOW
 
 		// Набор названий классов для врагов
 		private static MapClasses[] enemies = new MapClasses[] {
-			/*"monster_human_assassin",
-			"monster_bullchicken",
-			"monster_alien_controller",
-			"monster_houndeye",
-			"monster_human_grunt",*/
 			MapClasses.Assassin,
 			MapClasses.Bullsquid,
 			MapClasses.AlienController,
 			MapClasses.Houndeye,
 			MapClasses.Soldier,
-
-			/*"monster_headcrab",
-			"monster_leech",
-			"monster_tripmine",
-			"monster_barnacle",
-			"monster_alien_grunt",*/
 			MapClasses.HeadCrab,
 			MapClasses.Leech,
 			MapClasses.TripMineEnemy,
 			MapClasses.Barnacle,
 			MapClasses.AlienGrunt,
-
-			/*"monster_alien_slave",
-			"",	// Турели, ручная подстановка
-			"monster_zombie"*/
 			MapClasses.Vortigaunt,
 			MapClasses.Turret,	// Подменяются при создании
 			MapClasses.Zombie,
@@ -597,14 +585,7 @@ namespace RD_AAOW
 			}
 
 		// Перечень монстров-заглушек
-		/*private static List<string> rats = new List<string> {
-			"monster_rat" ,
-			//"monster_cockroach",
-			};*/
 		private static MapClasses[] turrets = new MapClasses[] {
-			/*"monster_turret",
-			"monster_miniturret",
-			"monster_sentry",*/
 			MapClasses.Turret,
 			MapClasses.MiniTurret,
 			MapClasses.Sentry,

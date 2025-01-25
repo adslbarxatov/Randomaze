@@ -378,11 +378,18 @@ namespace RD_AAOW
 		/// Автоматический пулемёт (враг)
 		/// </summary>
 		Sentry,
+		
+
 
 		/// <summary>
-		/// Крыса (заглушка)
+		/// Крыса (нейтрал)
 		/// </summary>
 		Rat,
+
+		/// <summary>
+		/// Барни (друг)
+		/// </summary>
+		Barney,
 		};
 
 	/// <summary>
@@ -470,32 +477,12 @@ namespace RD_AAOW
 			environmentAdded = false;
 			}
 
-		/*/// <summary>
-		/// Метод добавляет одну сущность в счётчик
-		/// </summary>
-		/// <param name="ClassName">Название класса сущности</param>
-		public static void AddEntity (StreamWriter SW, string ClassName)
-			{
-			AddEntity (ClassName, true);
-			}
-
-		/// <summary>
-		/// Метод добавляет одну сущность в счётчик
-		/// </summary>
-		/// <param name="ClassName">Название класса сущности</param>
-		/// <param name="Count">Флаг указывает на необходимость нарастить счётчик сущностей
-		/// при создании этого экземпляра</param>
-		public static void AddEntity (StreamWriter SW, string ClassName, bool Count)*/
-
 		/// <summary>
 		/// Метод добавляет класс объекта на карту и обновляет счётчик, если необходимо
 		/// </summary>
 		/// <param name="MapClass">Тип объекта карты</param>
 		public static void AddEntity (MapClasses MapClass)
 			{
-			/*Write ("\"class name\" \"" + ClassName + "\"\n");
-			if (Count)
-				entitiesQuantity++;*/
 			string[] cls = classes[(int)MapClass];
 			Write ("\"classname\" \"" + cls[0] + "\"\n");
 
@@ -504,8 +491,6 @@ namespace RD_AAOW
 			}
 
 		// Список поддерживаемых классов объектов
-		/*private const string CountAlias = "C";
-		private const string NotCountAlias = "N";*/
 		private static string[][] classes = new string[][] {
 			// Общие классы
 			new string[] { "worldspawn", "NC" },
@@ -587,6 +572,7 @@ namespace RD_AAOW
 			new string[] { "monster_sentry", null },
 
 			new string[] { "monster_rat", null },
+			new string[] { "monster_barney", null },
 			};
 
 		/// <summary>
@@ -640,70 +626,6 @@ namespace RD_AAOW
 			return BuildMapName (0);
 			}
 
-		/*/// <summary>
-		/// Метод записывает заголовок карты
-		/// </summary>
-		/// <param name="Lightness">Уровень затемнения неба (0.0 – 1.0)</param>
-		/// <param name="TwoFloors">Инициализация двухэтажной карты</param>
-		public static void WriteMapHeader (StreamWriter SW, float Lightness, bool TwoFloors)
-			{
-			// Начало карты
-			Write ("{\n");
-			Write ("\"class name\" \"worldspawn\"\n");
-			Write ("\"message\" \"ES: Randomaze map " + BuildMapName () + " by FDL\"\n");
-			Write ("\"mapversion\" \"220\"\n");
-
-			// Инициализация неба
-			skyIndex = RDGenerics.RND.Next (skyTypes.Length / 2);
-
-			float inc = Lightness;
-			if (inc < 0.0f)
-				inc = 0.0f;
-			if (inc > 1.0f)
-				inc = 1.0f;
-			inc = (1.0f - inc) * skyTypes.Length / 2.0f;
-
-			skyIndex += (int)inc;
-			Write ("\"skyname\" \"" + skyTypes[skyIndex] + "\"\n");
-
-			// Параметры карты
-			Write ("\"MaxRange\" \"3000\"\n");
-			Write ("\"light\" \"1\"\n");
-			Write ("\"sounds\" \"1\"\n");
-			Write ("\"WaveHeight\" \"0.1\"\n");
-			Write ("\"newunit\" \"1\"\n");
-			Write ("\"wad\" \"" + RandomazeForm.MainWAD + "\"\n");
-
-			// Параметры первой карты
-			if (MapNumber == 1)
-				{
-				Write ("\"chaptertitle\" \"" + ProgramDescription.AssemblyTitle + "\"\n");
-				Write ("\"startdark\" \"1\"\n");
-				Write ("\"gametitle\" \"1\"\n");
-				}
-			else
-				{
-				Write ("\"chaptertitle\" \"Map #" + MapNumber.ToString ("D3") + "\"\n");
-				}
-
-			// Создание цвета ламп
-			if (string.IsNullOrWhiteSpace (lightColor))
-				{
-				lightColor = "\"_light\" \"" + (224 + RDGenerics.RND.Next (32)).ToString () + " " +
-					(224 + RDGenerics.RND.Next (32)).ToString () + " " +
-					(112 + RDGenerics.RND.Next (32)).ToString () + " " + (TwoFloors ? "200" : "150") + "\"\n";
-				subLightColor = "\"_light\" \"" + (224 + RDGenerics.RND.Next (32)).ToString () + " " +
-					(224 + RDGenerics.RND.Next (32)).ToString () + " " +
-					(112 + RDGenerics.RND.Next (32)).ToString () + " 100\"\n";
-				}
-
-			// Выбор высоты карты
-			if (TwoFloors)
-				wallHeight = DoubleWallHeight;
-			else
-				wallHeight = DefaultWallHeight;
-			}*/
-
 		/// <summary>
 		/// Метод записывает закрывающий элемент статической геометрии карты
 		/// </summary>
@@ -722,7 +644,7 @@ namespace RD_AAOW
 			}
 
 		// Метод записывает точку выхода с карты
-		private static void WriteMapEndPoint_Finish (/*StreamWriter SW,*/ Point RelativePosition)
+		private static void WriteMapEndPoint_Finish (Point RelativePosition)
 			{
 			// Расчёт параметров
 			Point p = EvaluateAbsolutePosition (RelativePosition);
@@ -778,7 +700,7 @@ namespace RD_AAOW
 		/// </summary>
 		/// <param name="RelativePosition">Относительная позиция точки выхода</param>
 		/// <param name="TwoButtons">Флаг указывает на наличие второй кнопки</param>
-		public static void WriteMapEndPoint (/*StreamWriter SW,*/ Point RelativePosition, bool TwoButtons)
+		public static void WriteMapEndPoint (Point RelativePosition, bool TwoButtons)
 			{
 			// Защита
 			if (MapNumber >= MapsLimit)
@@ -828,7 +750,7 @@ namespace RD_AAOW
 				return;
 
 			Write ("{\n");
-			AddEntity (/*"func_door"*/ MapClasses.Door);
+			AddEntity (MapClasses.Door);
 			Write ("\"angles\" \"90 0 0\"\n");
 			Write ("\"speed\" \"70\"\n");
 			Write ("\"movesnd\" \"2\"\n");
@@ -879,7 +801,7 @@ namespace RD_AAOW
 			}
 
 		// Метод создаёт портал на карте
-		private static void WriteMapPortal (/*StreamWriter SW,*/ Point RelativePosition, bool Exit)
+		private static void WriteMapPortal (Point RelativePosition, bool Exit)
 			{
 			// Расчёт параметров
 			Point p = EvaluateAbsolutePosition (RelativePosition);
@@ -917,19 +839,19 @@ namespace RD_AAOW
 			Write ("\"origin\" \"" + xs + " " + ys + " 32\"\n");
 			Write ("}\n{\n");
 
-			AddEntity (/*"weapon_9mmAR"*/ MapClasses.MachineGun);
+			AddEntity (MapClasses.MachineGun);
 			Write ("\"origin\" \"" + xs + " " + ys + " 36\"\n");
 			Write ("}\n{\n");
 
-			AddEntity (/*"weapon_shotgun"*/ MapClasses.Shotgun);
+			AddEntity (MapClasses.Shotgun);
 			Write ("\"origin\" \"" + xs + " " + ys + " 40\"\n");
 			Write ("}\n{\n");
 
-			AddEntity (/*"weapon_handgrenade"*/ MapClasses.HandGrenade);
+			AddEntity (MapClasses.HandGrenade);
 			Write ("\"origin\" \"" + xs + " " + ys + " 44\"\n");
 			Write ("}\n{\n");
 
-			AddEntity (/*"weapon_handgrenade"*/ MapClasses.HandGrenade);
+			AddEntity (MapClasses.HandGrenade);
 			Write ("\"origin\" \"" + xs + " " + ys + " 48\"\n");
 			Write ("}\n{\n");
 
@@ -941,7 +863,7 @@ namespace RD_AAOW
 			Write ("\"origin\" \"" + xs + " " + ys + " 56\"\n");
 			Write ("}\n{\n");
 
-			AddEntity (/*"game_player_set_health"*/ MapClasses.HealthSetter);
+			AddEntity (MapClasses.HealthSetter);
 			Write ("\"targetname\" \"Preset\"\n");
 			Write ("\"dmg\" \"200\"\n");
 			Write ("\"origin\" \"" + xs + " " + ys + " 64\"\n");
@@ -956,7 +878,7 @@ namespace RD_AAOW
 		/// <param name="IsUnderSky">Флаг указывает, расположена ли точка входа под небом</param>
 		/// <param name="FogLevel">Уровень тумана на карте (10 = 100%)</param>
 		/// <param name="WallsAreRare">Флаг указывает на редкость стен на карте</param>
-		public static void WriteMapEntryPoint (/*StreamWriter SW,*/ Point RelativePosition,
+		public static void WriteMapEntryPoint (Point RelativePosition,
 			uint GravityLevel, uint FogLevel, bool IsUnderSky, bool WallsAreRare)
 			{
 			// Расчёт параметров
@@ -975,12 +897,12 @@ namespace RD_AAOW
 			else
 				{
 				Write ("{\n");
-				AddEntity (/*"info_landmark"*/ MapClasses.Landmark);
+				AddEntity (MapClasses.Landmark);
 				Write ("\"targetname\" \"" + BuildMapName () + "m\"\n");
 				Write ("\"origin\" \"" + xs + " " + ys + " 40\"\n");
 
 				Write ("}\n{\n");
-				AddEntity (/*"trigger_changelevel"*/ MapClasses.ChangeLevel);
+				AddEntity (MapClasses.ChangeLevel);
 				Write ("\"map\" \"" + BuildMapName (-1) + "\"\n");
 				Write ("\"landmark\" \"" + BuildMapName () + "m\"\n");
 
@@ -1038,7 +960,7 @@ namespace RD_AAOW
 			}
 
 		// Метод записывает блок по указанным коориданатм
-		private static void WriteBlock (/*StreamWriter SW,*/ string X1, string Y1, string Z1,
+		private static void WriteBlock (string X1, string Y1, string Z1,
 			string X2, string Y2, string Z2, string[] Textures, BlockTypes BlockType)
 			{
 			// Расчёт параметров
@@ -1107,7 +1029,7 @@ namespace RD_AAOW
 		/// <param name="ForWindow">Флаг двунаправленного триггера для окон</param>
 		/// <param name="RoomTypeLeft">Тип окружения слева (для всех)</param>
 		/// <param name="RoomTypeRight">Тип окружения справа (для оконных)</param>
-		public static void WriteMapSoundTrigger (/*StreamWriter SW,*/ Point RelativePosition, bool ForWindow,
+		public static void WriteMapSoundTrigger (Point RelativePosition, bool ForWindow,
 			byte RoomTypeLeft, byte RoomTypeRight)
 			{
 			// Расчёт параметров
@@ -1165,7 +1087,7 @@ namespace RD_AAOW
 		/// <param name="NearbyWalls">Список окружающих стен</param>
 		/// <param name="RelativePosition">Относительная позиция точки выхода</param>
 		/// <param name="SecondButton">Флаг, указывающий на формирование второй (дополнительной) кнопки</param>
-		public static void WriteMapButton (/*StreamWriter SW,*/ Point RelativePosition, List<CPResults> NearbyWalls,
+		public static void WriteMapButton (Point RelativePosition, List<CPResults> NearbyWalls,
 			bool SecondButton)
 			{
 			// Расчёт параметров
@@ -1196,7 +1118,7 @@ namespace RD_AAOW
 				NearbyWalls, GreenMetalTexture);
 
 			Write ("}\n{\n");
-			AddEntity (/*"trigger_autosave"*/ MapClasses.Autosave);
+			AddEntity (MapClasses.Autosave);
 
 			WriteBlock ((p.X - 32).ToString (), (p.Y - 32).ToString (), "12",
 				(p.X + 32).ToString (), (p.Y + 32).ToString (), "16",
@@ -1213,7 +1135,7 @@ namespace RD_AAOW
 		/// </summary>
 		/// <param name="RelativePosition">Относительная позиция точки создания</param>
 		/// <param name="Texture">Текстура двери</param>
-		public static void WriteMapDoor (/*StreamWriter SW,*/ Point RelativePosition, string Texture)
+		public static void WriteMapDoor (Point RelativePosition, string Texture)
 			{
 			// Расчёт параметров
 			Point p = EvaluateAbsolutePosition (RelativePosition);
@@ -1247,7 +1169,7 @@ namespace RD_AAOW
 		/// <param name="CratesBalance">Баланс ящиков между предметами и взрывчаткой</param>
 		/// <param name="ItemPermissions">Строка разрешений для объектов в ящиках</param>
 		/// <param name="EnemiesPermissions">Строка разрешений для врагов в ящиках (крабы, снарки)</param>
-		public static void WriteMapCrate (/*StreamWriter SW,*/ Point RelativePosition,
+		public static void WriteMapCrate (Point RelativePosition,
 			int CratesBalance, byte[] ItemPermissions, byte[] EnemiesPermissions)
 			{
 			// Расчёт параметров
@@ -1334,7 +1256,7 @@ namespace RD_AAOW
 		/// <param name="RelativePosition">Относительная позиция точки создания</param>
 		/// <param name="Ambient">Тип эмбиента</param>
 		/// <param name="Sound">Звук</param>
-		public static void WriteMapSound (/*StreamWriter SW,*/ Point RelativePosition, string Sound,
+		public static void WriteMapSound (Point RelativePosition, string Sound,
 			AmbientTypes Ambient)
 			{
 			// Расчёт параметров
@@ -1415,7 +1337,7 @@ namespace RD_AAOW
 		/// </summary>
 		/// <param name="RelativePosition">Относительная позиция точки создания</param>
 		/// <param name="StartOrFinish">Флаг указывает на начальную или конечную точку пути</param>
-		public static void WriteMapPathStone (/*StreamWriter SW,*/ Point RelativePosition, bool StartOrFinish)
+		public static void WriteMapPathStone (Point RelativePosition, bool StartOrFinish)
 			{
 			// Расчёт параметров
 			Point p = EvaluateAbsolutePosition (RelativePosition);
@@ -1466,7 +1388,7 @@ namespace RD_AAOW
 		/// <param name="RoofTexture">Текстура потолка</param>
 		/// <param name="RelativeMapHeight">Относительная ширина карты</param>
 		/// <param name="RelativeMapWidth">Относительная длина карты</param>
-		public static void WriteMapCeilingAndFloor (/*StreamWriter SW,*/ byte Section, int RelativeMapWidth,
+		public static void WriteMapCeilingAndFloor (byte Section, int RelativeMapWidth,
 			int RelativeMapHeight, string RoofTexture, string FloorTexture)
 			{
 			// Расчёт параметров
@@ -1497,7 +1419,7 @@ namespace RD_AAOW
 		/// <param name="WaterLevel">Уровень воды (в долях от единицы)</param>
 		/// <param name="RelativeMapHeight">Относительная ширина карты</param>
 		/// <param name="RelativeMapWidth">Относительная длина карты</param>
-		public static void WriteMapWater (/*StreamWriter SW,*/ float WaterLevel, int RelativeMapWidth,
+		public static void WriteMapWater (float WaterLevel, int RelativeMapWidth,
 			int RelativeMapHeight)
 			{
 			// Расчёт параметров
@@ -1572,7 +1494,7 @@ namespace RD_AAOW
 		/// <param name="AddingTheBulb">Флаг указывает, что добавляется лампочка, а не источник света</param>
 		/// <param name="SubFloor">Флаг указывает, что свет добавляется к внутренней площадке</param>
 		/// <returns>Возвращает true, если добавлен действующий источник света</returns>
-		public static bool WriteMapLight (/*StreamWriter SW,*/ Point RelativePosition, string RoofTexture,
+		public static bool WriteMapLight (Point RelativePosition, string RoofTexture,
 			bool AddingTheBulb, bool SubFloor)
 			{
 			// Защита
@@ -1587,7 +1509,7 @@ namespace RD_AAOW
 			if (!AddingTheBulb && IsSkyTexture (RoofTexture))
 				{
 				Write ("{\n");
-				AddEntity (MapClasses.Sun/*, false*/);
+				AddEntity (MapClasses.Sun);
 				Write ("\"_fade\" \"1.0\"\n");
 
 				Write ("\"angles\" \"" + sunAngles[skyIndex] + "\"\n");
@@ -1611,7 +1533,7 @@ namespace RD_AAOW
 			if (!AddingTheBulb)
 				{
 				Write ("{\n");
-				AddEntity (MapClasses.LightSource/*, false*/);
+				AddEntity (MapClasses.LightSource);
 				Write (SubFloor ? subLightColor : lightColor);
 				Write ("\"_fade\" \"1.0\"\n");
 				Write ("\"origin\" \"" + p.X.ToString () + " " + p.Y.ToString () + " " +
@@ -1658,7 +1580,7 @@ namespace RD_AAOW
 		/// <param name="NearbyWalls">Доступные (с указанной позиции) стены</param>
 		/// <param name="WallTexture">Текстура окружающей стены</param>
 		/// <param name="FurnitureType">Индекс мебели</param>
-		public static void WriteMapFurniture (/*StreamWriter SW,*/ Point RelativePosition, FurnitureTypes FurnitureType,
+		public static void WriteMapFurniture (Point RelativePosition, FurnitureTypes FurnitureType,
 			List<CPResults> NearbyWalls, string WallTexture)
 			{
 			// Расчёт параметров
@@ -1696,7 +1618,7 @@ namespace RD_AAOW
 		/// </summary>
 		/// <param name="RelativePosition">Относительная позиция точки создания</param>
 		/// <param name="SubFloorTexture">Текстура внутренней площадки</param>
-		public static void WriteMapSubFloor (/*StreamWriter SW,*/ Point RelativePosition, string SubFloorTexture)
+		public static void WriteMapSubFloor (Point RelativePosition, string SubFloorTexture)
 			{
 			WriteSubFloor (RelativePosition, SubFloorTexture, null);
 			}
@@ -1705,14 +1627,14 @@ namespace RD_AAOW
 		/// Метод записывает зацеп к внутренней площадке на карту
 		/// </summary>
 		/// <param name="RelativePosition">Относительная позиция точки создания</param>
-		public static void WriteMapSubFloor (/*StreamWriter SW,*/ Point RelativePosition,
+		public static void WriteMapSubFloor (Point RelativePosition,
 			List<CPResults> SurroundingWalls)
 			{
 			WriteSubFloor (RelativePosition, null, SurroundingWalls);
 			}
 
 		// Универсальный метод записи внутренней площадки
-		private static void WriteSubFloor (/*StreamWriter SW,*/ Point RelativePosition, string SubFloorTexture,
+		private static void WriteSubFloor (Point RelativePosition, string SubFloorTexture,
 			List<CPResults> SurroundingWalls)
 			{
 			// Расчёт параметров
@@ -1738,12 +1660,6 @@ namespace RD_AAOW
 			List<int> offsets = new List<int> ();
 			if (!SurroundingWalls.Contains (CPResults.Left))
 				{
-				/*Write ("{\n");
-				AddEntity ("func_ladder");
-				WriteBlock ((p.X - 60).ToString (), (p.Y - 56).ToString (), (DefaultWallHeight - 32).ToString (),
-					(p.X - 56).ToString (), (p.Y + 56).ToString (), (DefaultWallHeight - 16).ToString (),
-					tex, BlockTypes.Door);
-				Write ("}\n");*/
 				offsets.Add (-60);
 				offsets.Add (-56);
 				offsets.Add (-56);
@@ -1752,12 +1668,6 @@ namespace RD_AAOW
 
 			if (!SurroundingWalls.Contains (CPResults.Right))
 				{
-				/*SW.Write ("{\n");
-				AddEntity (SW, "func_ladder");
-				WriteBlock (SW, (p.X + 56).ToString (), (p.Y - 56).ToString (), (DefaultWallHeight - 32).ToString (),
-					(p.X + 60).ToString (), (p.Y + 56).ToString (), (DefaultWallHeight - 16).ToString (),
-					tex, BlockTypes.Door);
-				SW.Write ("}\n");*/
 				offsets.Add (56);
 				offsets.Add (-56);
 				offsets.Add (60);
@@ -1766,12 +1676,6 @@ namespace RD_AAOW
 
 			if (!SurroundingWalls.Contains (CPResults.Down))
 				{
-				/*SW.Write ("{\n");
-				AddEntity (SW, "func_ladder");
-				WriteBlock (SW, (p.X - 56).ToString (), (p.Y - 60).ToString (), (DefaultWallHeight - 32).ToString (),
-					(p.X + 56).ToString (), (p.Y - 56).ToString (), (DefaultWallHeight - 16).ToString (),
-					tex, BlockTypes.Door);
-				SW.Write ("}\n");*/
 				offsets.Add (-56);
 				offsets.Add (-60);
 				offsets.Add (56);
@@ -1780,12 +1684,6 @@ namespace RD_AAOW
 
 			if (!SurroundingWalls.Contains (CPResults.Up))
 				{
-				/*SW.Write ("{\n");
-				AddEntity (SW, "func_ladder");
-				WriteBlock (SW, (p.X - 56).ToString (), (p.Y + 56).ToString (), (DefaultWallHeight - 32).ToString (),
-					(p.X + 56).ToString (), (p.Y + 60).ToString (), (DefaultWallHeight - 16).ToString (),
-					tex, BlockTypes.Door);
-				SW.Write ("}\n");*/
 				offsets.Add (-56);
 				offsets.Add (56);
 				offsets.Add (56);
@@ -1849,7 +1747,7 @@ namespace RD_AAOW
 		/// Метод записывает межстенный заполнитель (для удаления недоступных пространств из компилируемой зоны)
 		/// </summary>
 		/// <param name="RelativePosition">Относительная позиция точки выхода</param>
-		public static void WriteMapFiller (/*StreamWriter SW,*/ Point RelativePosition)
+		public static void WriteMapFiller (Point RelativePosition)
 			{
 			// Расчёт параметров
 			Point p = EvaluateAbsolutePosition (RelativePosition);
@@ -1862,13 +1760,13 @@ namespace RD_AAOW
 		/// Метод записывает точку навигационной сетки на карту
 		/// </summary>
 		/// <param name="RelativePosition">Относительная позиция точки выхода</param>
-		public static void WriteMapNode (/*StreamWriter SW,*/ Point RelativePosition)
+		public static void WriteMapNode (Point RelativePosition)
 			{
 			// Расчёт параметров
 			Point p = EvaluateAbsolutePosition (RelativePosition);
 
 			Write ("{\n");
-			AddEntity (/*, true*/ MapClasses.Node);
+			AddEntity (MapClasses.Node);
 			Write ("\"origin\" \"" + p.X.ToString () + " " + p.Y.ToString () + " 16\"\n");
 			Write ("}\n");
 			}
@@ -1911,12 +1809,8 @@ namespace RD_AAOW
 			SW2 = new StreamWriter (FS2, RDGenerics.GetEncoding (RDEncodings.UTF8));
 			mapOpened = true;
 
-			/*WriteMapHeader ((AppSettings.OutsideLightingCoefficient - 1.0f) /
-				(ESRMSettings.MaximumOutsideLightingCoefficient - 1.0f), AppSettings.TwoFloors);*/
-
 			// Начало карты
 			Write ("{\n");
-			/*Write ("\"class name\" \"worldspawn\"\n");*/
 			AddEntity (MapClasses.World);
 			Write ("\"message\" \"ES: Randomaze map " + BuildMapName () + " by FDL\"\n");
 			Write ("\"mapversion\" \"220\"\n");

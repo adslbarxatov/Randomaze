@@ -8,7 +8,6 @@ namespace RD_AAOW
 	/// </summary>
 	public class Program
 		{
-
 		/// <summary>
 		/// Точка входа приложения
 		/// </summary>
@@ -29,9 +28,9 @@ namespace RD_AAOW
 				return -1;
 
 			// Отображение справки и запроса на принятие Политики
-			if (!RDGenerics.AcceptEULA ())
+			if (!RDInterface.AcceptEULA ())
 				return -2;
-			RDGenerics.ShowAbout (true);
+			RDInterface.ShowAbout (true);
 
 			if (!RDGenerics.AppHasAccessRights (true, false))
 				return -4;

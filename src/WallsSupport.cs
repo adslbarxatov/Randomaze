@@ -22,7 +22,7 @@ namespace RD_AAOW
 		/// </summary>
 		/// <param name="RelativePosition">Относительная позиция точки создания</param>
 		/// <param name="Frame">Флаг указывает, что записывается рама шлюза вместо него самого</param>
-		public static void WriteMapFinishGate (/*StreamWriter SW,*/ Point RelativePosition, bool Frame)
+		public static void WriteMapFinishGate (Point RelativePosition, bool Frame)
 			{
 			WriteGate (RelativePosition, Frame, true);
 			}
@@ -32,7 +32,7 @@ namespace RD_AAOW
 		/// </summary>
 		/// <param name="RelativePosition">Относительная позиция точки создания</param>
 		/// <param name="Frame">Флаг указывает, что записывается рама шлюза вместо него самого</param>
-		public static void WriteMapGate (/*StreamWriter SW,*/ Point RelativePosition, bool Frame)
+		public static void WriteMapGate (Point RelativePosition, bool Frame)
 			{
 			WriteGate (RelativePosition, Frame, false);
 			}
@@ -41,27 +41,29 @@ namespace RD_AAOW
 		/// Метод записывает стену на карту
 		/// </summary>
 		/// <param name="RelativePosition">Относительная позиция точки создания</param>
-		/// <param name="Texture">Текстура стены</param>
+		/// <param name="FrontTexture">Лицевая текстура стены</param>
+		/// <param name="BackTexture">Задняя текстура стены</param>
 		/// <param name="LeftEnd">Тип левого торца стены</param>
 		/// <param name="RightEnd">Тип правого торца стены</param>
-		public static void WriteMapWall (/*StreamWriter SW,*/ Point RelativePosition, string Texture,
+		public static void WriteMapWall (Point RelativePosition, string FrontTexture, string BackTexture,
 			WallsNeighborsTypes LeftEnd, WallsNeighborsTypes RightEnd)
 			{
 			neighborLeft = LeftEnd;
 			neighborRight = RightEnd;
 
-			WriteMapBarrier (RelativePosition, BarrierTypes.DefaultWall, Texture);
+			WriteMapBarrier (RelativePosition, BarrierTypes.DefaultWall, FrontTexture, BackTexture);
 			}
 
 		/// <summary>
 		/// Метод записывает раму окна на карту
 		/// </summary>
 		/// <param name="RelativePosition">Относительная позиция точки создания</param>
-		/// <param name="Texture">Текстура стены для рамы</param>
-		public static void WriteMapWindow (/*StreamWriter SW,*/ Point RelativePosition, string Texture)
+		/// <param name="FrontTexture">Лицевая текстура стены для рамы</param>
+		/// <param name="BackTexture">Задняя текстура стены для рамы</param>
+		public static void WriteMapWindow (Point RelativePosition, string FrontTexture, string BackTexture)
 			{
-			WriteMapBarrier (RelativePosition, BarrierTypes.WindowFrameTop, Texture);
-			WriteMapBarrier (RelativePosition, BarrierTypes.WindowFrameBottom, Texture);
+			WriteMapBarrier (RelativePosition, BarrierTypes.WindowFrameTop, FrontTexture, BackTexture);
+			WriteMapBarrier (RelativePosition, BarrierTypes.WindowFrameBottom, FrontTexture, BackTexture);
 			}
 
 		/// <summary>
@@ -69,7 +71,7 @@ namespace RD_AAOW
 		/// </summary>
 		/// <param name="RelativePosition">Относительная позиция точки создания</param>
 		/// <param name="MapBarrier">Тип материала разрушаемой части</param>
-		public static void WriteMapWindow (/*StreamWriter SW,*/ Point RelativePosition, MapBarriersTypes MapBarrier)
+		public static void WriteMapWindow (Point RelativePosition, MapBarriersTypes MapBarrier)
 			{
 			// Запись преграды
 			bool glass;
@@ -107,7 +109,7 @@ namespace RD_AAOW
 			MapSupport.Write ("\"health\" \"20\"\n");
 
 			WriteMapBarrier (RelativePosition, glass ? BarrierTypes.GlassWindow :
-				BarrierTypes.FabricWindow, null);
+				BarrierTypes.FabricWindow, null, null);
 
 			MapSupport.Write ("}\n");
 			}
@@ -118,8 +120,7 @@ namespace RD_AAOW
 		/// <param name="RelativePosition">Относительная позиция точки создания</param>
 		/// <param name="Sections">Инициализированные секции карты</param>
 		/// <param name="WallsAreRare">Флаг, указывающий на редкость стен (большие внутренние пространства)</param>
-		public static void WriteMapTransitSFX (/*StreamWriter SW,*/ Point RelativePosition, Section[] Sections,
-			bool WallsAreRare)
+		public static void WriteMapTransitSFX (Point RelativePosition, Section[] Sections, bool WallsAreRare)
 			{
 			// Определение необходимости установки звукового триггера
 			bool leftSideIsUnderSky, rightSideIsUnderSky;
@@ -162,7 +163,7 @@ namespace RD_AAOW
 			}
 
 		// Универсальный метод формирования шлюза
-		private static void WriteGate (/*StreamWriter SW,*/ Point RelativePosition, bool Frame, bool Finish)
+		private static void WriteGate (Point RelativePosition, bool Frame, bool Finish)
 			{
 			// Расчёт параметров
 			string tex = Finish ? "MetalGate07" : "MetalGate06";
@@ -170,7 +171,7 @@ namespace RD_AAOW
 			// Запись рамы
 			if (Frame)
 				{
-				WriteMapBarrier (RelativePosition, BarrierTypes.GateFrameTop, tex);
+				WriteMapBarrier (RelativePosition, BarrierTypes.GateFrameTop, tex, tex);
 				return;
 				}
 
@@ -186,7 +187,7 @@ namespace RD_AAOW
 			if (Finish)
 				MapSupport.Write ("\"targetname\" \"" + MapSupport.FirstGateName + "\"\n");
 
-			WriteMapBarrier (RelativePosition, BarrierTypes.Gate, tex);
+			WriteMapBarrier (RelativePosition, BarrierTypes.Gate, tex, tex);
 
 			MapSupport.Write ("}\n");
 			}
@@ -216,13 +217,15 @@ namespace RD_AAOW
 
 		// Общий метод для стен и препятствий
 		private static WallsNeighborsTypes neighborLeft, neighborRight;
-		private static void WriteMapBarrier (/*StreamWriter SW,*/ Point RelativePosition, BarrierTypes Type,
-			string Texture)
+		private static void WriteMapBarrier (Point RelativePosition, BarrierTypes Type, string FrontTexture,
+			string BackTexture)
 			{
 			// Расчёт параметров
 			int x1, y1, x2, y2;
 			string xa, xb, xc, xd, ya, yb, yc, yd, z1, z2;
 			string[] textures;
+			string fTex = FrontTexture;
+			string bTex = BackTexture;
 
 			int lDelta = 8, rDelta = 8, mDelta = 8;
 			switch (Type)
@@ -232,7 +235,8 @@ namespace RD_AAOW
 					z1 = "0";
 					z2 = (MapSupport.WallHeight + 16).ToString ();
 
-					string lTex = Texture;
+					string lTex = fTex;
+					string rTex = fTex;
 					if (neighborLeft == WallsNeighborsTypes.Gate)
 						{
 						lTex = "BorderRub01";
@@ -251,7 +255,6 @@ namespace RD_AAOW
 						lDelta = 0;
 						}
 
-					string rTex = Texture;
 					if (neighborRight == WallsNeighborsTypes.Gate)
 						{
 						rTex = "BorderRub01";
@@ -270,15 +273,15 @@ namespace RD_AAOW
 						rDelta = 0;
 						}
 
-					textures = new string[] { MapSupport.SkyTexture, Texture, Texture, Texture,
+					textures = new string[] { MapSupport.SkyTexture, fTex, fTex, bTex,
 						lTex, lTex, rTex, rTex };
 					break;
 
 				case BarrierTypes.Gate:
 					z1 = "0";
 					z2 = "120";
-					textures = new string[] { MapSupport.BlueMetalTexture, Texture, Texture, Texture,
-						Texture, Texture, Texture, Texture };
+					textures = new string[] { MapSupport.BlueMetalTexture, fTex, fTex, fTex,
+						fTex, fTex, fTex, fTex };
 					break;
 
 				case BarrierTypes.GlassWindow:
@@ -306,8 +309,8 @@ namespace RD_AAOW
 						z1 = "120";
 					z2 = (MapSupport.WallHeight + 16).ToString ();
 
-					textures = new string[] { MapSupport.SkyTexture, MapSupport.BlueMetalTexture, Texture, Texture,
-						Texture, Texture, Texture, Texture };
+					textures = new string[] { MapSupport.SkyTexture, MapSupport.BlueMetalTexture, fTex, bTex,
+						fTex, bTex, fTex, bTex };
 
 					if (Type == BarrierTypes.WindowFrameTop)
 						rDelta = lDelta = 0;
@@ -316,8 +319,8 @@ namespace RD_AAOW
 				case BarrierTypes.WindowFrameBottom:
 					z1 = "0";
 					z2 = "8";
-					textures = new string[] { MapSupport.BlueMetalTexture, Texture, Texture, Texture,
-						Texture, Texture, Texture, Texture };
+					textures = new string[] { MapSupport.BlueMetalTexture, fTex, fTex, bTex,
+						fTex, bTex, fTex, bTex };
 					rDelta = lDelta = 0;
 					break;
 				}

@@ -1,11 +1,12 @@
 Randomaze: changes log
 
-ToDo:
-- In-section openable doors
-- More textures and environment
-- Switchable textures groups
-- Show counters for achievements
-- Nodes are not experimental anymore
+Version 6.2:
+• Current engine updates have been applied;
+• Engine is now able to display the current state of game_counter
+  (“Enemies to go”, “Rats to go”);
+• The randomazer now properly applies the set of wall textures to the walls
+  on edges of map sections;
+• Adjusted some text tips
 
 Version 6.1.5:
 • Engine: debris of destructible object now reacts to the force of

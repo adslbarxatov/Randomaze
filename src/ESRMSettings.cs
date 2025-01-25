@@ -28,8 +28,6 @@ namespace RD_AAOW
 					// Флаги
 					case twoFloorsPar:
 					case allowItemsForSecondFloorPar:
-					/*case allowExplosiveCratesPar:
-					case allowItemsCratesPar:*/
 					case allowMonsterMakersPar:
 
 					// Значения, начинающиеся с нуля
@@ -58,8 +56,6 @@ namespace RD_AAOW
 			_ = OutsideLightingCoefficient;
 			_ = SectionType;
 			_ = TwoFloors;
-			/*_ = AllowExplosiveCrates;
-			_ = AllowItemsCrates;*/
 			_ = AllowItemsForSecondFloor;
 			_ = ItemsPermissionLine;
 			_ = GravityCoefficient;
@@ -657,44 +653,6 @@ namespace RD_AAOW
 			}
 		private int allowItemsForSecondFloor = int.MaxValue;
 		private const string allowItemsForSecondFloorPar = "SF";
-
-
-
-		/*/// <summary>
-		/// Возвращает или задаёт флаг разрешения ящиков с жуками и собираемыми предметами
-		/// </summary>
-		public bool AllowItemsCrates
-			{
-			get
-				{
-				return GetSettingsValue (allowItemsCratesPar, 2, 2, ref allowItemsCrates) > 1;
-				}
-			set
-				{
-				SetSettingsValue (allowItemsCratesPar, ref allowItemsCrates, (uint)(value ? 2 : 1));
-				}
-			}
-		private int allowItemsCrates = int.MaxValue;
-		private const string allowItemsCratesPar = "IC";
-
-
-
-		/// <summary>
-		/// Возвращает или задаёт флаг разрешения ящиков со взрывчаткой
-		/// </summary>
-		public bool AllowExplosiveCrates
-			{
-			get
-				{
-				return GetSettingsValue (allowExplosiveCratesPar, 2, 2, ref allowExplosiveCrates) > 1;
-				}
-			set
-				{
-				SetSettingsValue (allowExplosiveCratesPar, ref allowExplosiveCrates, (uint)(value ? 2 : 1));
-				}
-			}
-		private int allowExplosiveCrates = int.MaxValue;
-		private const string allowExplosiveCratesPar = "XC";*/
 
 
 

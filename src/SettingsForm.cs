@@ -42,16 +42,20 @@ namespace RD_AAOW
 			AbortButton.Text = RDLocale.GetDefaultText (RDLDefaultTexts.Button_Cancel);
 			ApplyButton.Text = RDLocale.GetDefaultText (RDLDefaultTexts.Button_OK);
 
-			GenericTab.Text = RDLocale.GetControlText (this.Name, GenericTab.Name);
+			/*GenericTab.Text = RDLocale.GetControlText (this.Name, GenericTab.Name);*/
+			GenericTab.Text = RDLocale.GetText (this.Name + "_" + GenericTab.Name);
 			RDLocale.SetControlsText (GenericTab);
 
-			Generic2Tab.Text = RDLocale.GetControlText (this.Name, Generic2Tab.Name);
+			/*Generic2Tab.Text = RDLocale.GetControlText (this.Name, Generic2Tab.Name);*/
+			Generic2Tab.Text = RDLocale.GetText (this.Name + "_" + Generic2Tab.Name);
 			RDLocale.SetControlsText (Generic2Tab);
 
-			EnemiesTab.Text = RDLocale.GetControlText (this.Name, EnemiesTab.Name);
+			/*EnemiesTab.Text = RDLocale.GetControlText (this.Name, EnemiesTab.Name);*/
+			EnemiesTab.Text = RDLocale.GetText (this.Name + "_" + EnemiesTab.Name);
 			RDLocale.SetControlsText (EnemiesTab);
 
-			ItemsTab.Text = RDLocale.GetControlText (this.Name, ItemsTab.Name);
+			/*ItemsTab.Text = RDLocale.GetControlText (this.Name, ItemsTab.Name);*/
+			ItemsTab.Text = RDLocale.GetText (this.Name + "_" + ItemsTab.Name);
 			RDLocale.SetControlsText (ItemsTab);
 
 			MazeSizeFlag.Text = EnemiesDensityFlag.Text = ItemsDensityFlag.Text =
@@ -174,14 +178,10 @@ namespace RD_AAOW
 			RandomizeFloorsFlag.Checked = settings.RandomizeFloorsQuantity;
 			TwoFloorsFlag_CheckedChanged (null, null);
 
-			/*CratesDensityTrack.Minimum = 0;*/
 			CratesDensityTrack.Maximum = (int)ESRMSettings.MaximumCratesDensityCoefficient2;
 			CratesDensityTrack.Value = (int)settings.CratesDensityCoefficient2+1;
 			CratesDensityFlag.Checked = settings.RandomCratesDensityCoefficient2;
 
-			/*AllowExplosiveCratesFlag.Checked = settings.AllowExplosiveCrates;
-			AllowItemsCratesFlag.Checked = settings.AllowItemsCrates;
-			AllowExplosiveCratesFlag_CheckedChanged (null, null);*/
 			CratesBalanceTrack.Minimum = -ESRMSettings.CratesBalanceRange;
 			CratesBalanceTrack.Maximum = ESRMSettings.CratesBalanceRange;
 			CratesBalanceTrack.Value = settings.CratesBalance;
@@ -254,8 +254,6 @@ namespace RD_AAOW
 			settings.AllowItemsForSecondFloor = AllowItemsForSecondFloor.Checked;
 			settings.RandomizeFloorsQuantity = RandomizeFloorsFlag.Checked;
 
-			/*settings.AllowExplosiveCrates = AllowExplosiveCratesFlag.Checked;
-			settings.AllowItemsCrates = AllowItemsCratesFlag.Checked;*/
 			settings.CratesDensityCoefficient2 = (uint)CratesDensityTrack.Value - 1;
 			settings.RandomCratesDensityCoefficient2 = CratesDensityFlag.Checked;
 			settings.CratesBalance = CratesBalanceTrack.Value;
@@ -294,8 +292,7 @@ namespace RD_AAOW
 
 		private void CratesDensityFlag_CheckedChanged (object sender, EventArgs e)
 			{
-			CratesDensityTrack.Enabled = !CratesDensityFlag.Checked /*&& (AllowExplosiveCratesFlag.Checked ||
-				AllowItemsCratesFlag.Checked)*/;
+			CratesDensityTrack.Enabled = !CratesDensityFlag.Checked;
 			CratesDensityTrack.BackColor = CratesDensityTrack.Enabled ? enabledColor : disabledColor;
 			}
 
@@ -347,14 +344,6 @@ namespace RD_AAOW
 				MazeSizeTrack.Value = limit - sizeWallsDifferenceLimit -
 					((int)ESRMSettings.MaximumWallsDensityCoefficient - WallsDensityTrack.Value);
 			}
-
-		/*// Включение / выключение ящиков
-		private void AllowExplosiveCratesFlag_CheckedChanged (object sender, EventArgs e)
-			{
-			Label05.Enabled = CratesDensityFlag.Enabled = (AllowExplosiveCratesFlag.Checked ||
-				AllowItemsCratesFlag.Checked);
-			CratesDensityFlag_CheckedChanged (null, null);
-			}*/
 
 		// Включение дополнительных монстров
 		private void TwoFloorsFlag_CheckedChanged (object sender, EventArgs e)

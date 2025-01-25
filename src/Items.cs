@@ -16,7 +16,7 @@ namespace RD_AAOW
 		/// <param name="Probabilities">Набор вероятностей для видов предметов</param>
 		/// <param name="ForceFloorPlacement">Флаг указывает на необходимость расположения
 		/// прямо на полу (для исключения «застревания» во враге)</param>
-		public static void WriteMapItem (/*StreamWriter SW,*/ Point RelativePosition,
+		public static void WriteMapItem (Point RelativePosition,
 			bool AllowSecondFloor, bool ForceFloorPlacement, byte[] Probabilities)
 			{
 			// Расчёт параметров
@@ -133,25 +133,8 @@ namespace RD_AAOW
 			MapClasses.Gauss,
 			MapClasses.Crowbar,
 			MapClasses.HornetGun,
-			/*"item_healthkit",
-			"item_battery",
-			"weapon_handgrenade",
-			"weapon_9mmhandgun",
-			"weapon_satchel",
-			"weapon_357",
-			"weapon_crossbow",
-			"weapon_gauss",
-			"weapon_crowbar",
-			"weapon_hornetgun",*/
 
 			// Ящики
-			/*"weapon_9mmAR",		// Требует отключения солдат
-			"weapon_shotgun",	// Требует отключения солдат
-			"weapon_rpg",
-			"weapon_tripmine",
-			"weapon_snark",
-			"weapon_egon",
-			"weapon_axe"*/
 			MapClasses.MachineGun,
 			MapClasses.Shotgun,
 			MapClasses.RPG,
