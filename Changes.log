@@ -1,5 +1,8 @@
 Randomaze: changes log
 
+ToDo:
+- Требуется добавить фурнитурные элементы, создающие мини-помещения на улице и мини-окна в помещениях
+
 Version 6.2:
 • Current engine updates have been applied;
 • Engine is now able to display the current state of game_counter
