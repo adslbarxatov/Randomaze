@@ -4,6 +4,9 @@ ToDo:
 - Требуется добавить фурнитурные элементы, создающие мини-помещения на улице и мини-окна в помещениях
 - Вспышка света от искр, аналогичная таковой у вортигонта, только более короткая
 
+Version 6.2.1:
+• Current engine updates have been applied
+
 Version 6.2:
 • Current engine updates have been applied;
 • Engine is now able to display the current state of game_counter

@@ -379,7 +379,6 @@ namespace RD_AAOW
 				MapSupport.Write ("\"targetname\" \"" + FirstCounterName + "\"\n");
 				MapSupport.Write ("\"target\" \"Achi" + mn + "R1\"\n");
 				MapSupport.Write ("\"health\" \"" + realEnemiesQuantity.ToString () + "\"\n");
-				MapSupport.Write ("\"spawnflags\" \"4\"\n");
 				MapSupport.Write ("\"message\" \"Enemies to go\"\n");
 				MapSupport.Write ("\"origin\" \"" + p.X.ToString () + " " + p.Y.ToString () + " 64\"\n");
 
@@ -414,7 +413,6 @@ namespace RD_AAOW
 				MapSupport.Write ("\"targetname\" \"" + SecondCounterName + "\"\n");
 				MapSupport.Write ("\"target\" \"" + DirectMMNameForSecondCounter + "\"\n");
 				MapSupport.Write ("\"health\" \"" + realRatsQuantity.ToString () + "\"\n");
-				MapSupport.Write ("\"spawnflags\" \"4\"\n");
 				MapSupport.Write ("\"message\" \"" + (Water ? "Leeches" : "Rats") + " to go\"\n");
 				MapSupport.Write ("\"origin\" \"" + p.X.ToString () + " " + p.Y.ToString () + " 80\"\n");
 

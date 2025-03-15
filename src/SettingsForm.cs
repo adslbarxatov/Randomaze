@@ -42,19 +42,15 @@ namespace RD_AAOW
 			AbortButton.Text = RDLocale.GetDefaultText (RDLDefaultTexts.Button_Cancel);
 			ApplyButton.Text = RDLocale.GetDefaultText (RDLDefaultTexts.Button_OK);
 
-			/*GenericTab.Text = RDLocale.GetControlText (this.Name, GenericTab.Name);*/
 			GenericTab.Text = RDLocale.GetText (this.Name + "_" + GenericTab.Name);
 			RDLocale.SetControlsText (GenericTab);
 
-			/*Generic2Tab.Text = RDLocale.GetControlText (this.Name, Generic2Tab.Name);*/
 			Generic2Tab.Text = RDLocale.GetText (this.Name + "_" + Generic2Tab.Name);
 			RDLocale.SetControlsText (Generic2Tab);
 
-			/*EnemiesTab.Text = RDLocale.GetControlText (this.Name, EnemiesTab.Name);*/
 			EnemiesTab.Text = RDLocale.GetText (this.Name + "_" + EnemiesTab.Name);
 			RDLocale.SetControlsText (EnemiesTab);
 
-			/*ItemsTab.Text = RDLocale.GetControlText (this.Name, ItemsTab.Name);*/
 			ItemsTab.Text = RDLocale.GetText (this.Name + "_" + ItemsTab.Name);
 			RDLocale.SetControlsText (ItemsTab);
 
