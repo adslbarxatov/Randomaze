@@ -1,8 +1,10 @@
 Randomaze: changes log
 
-ToDo:
-- Требуется добавить фурнитурные элементы, создающие мини-помещения на улице и мини-окна в помещениях
-- Вспышка света от искр, аналогичная таковой у вортигонта, только более короткая
+Version 6.2.4:
+• Added some new furniture elements;
+• Added the light effect for the spark entity;
+• Maximum water level has been decreased to 25%;
+• Implemented the ability to add neon lights on too dark sections
 
 Version 6.2.1:
 • Current engine updates have been applied

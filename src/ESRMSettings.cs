@@ -65,6 +65,7 @@ namespace RD_AAOW
 			_ = CleanupOldMaps;
 			_ = WaterLevel;
 			_ = CratesBalance;
+			_ = UseNeonLights;
 
 			// Защита
 			if (!TwoFloors && !RandomizeFloorsQuantity)
@@ -809,9 +810,9 @@ namespace RD_AAOW
 			}
 
 		/// <summary>
-		/// Возвращает ограничение уровня воды (45% максимум)
+		/// Возвращает ограничение уровня воды (25% максимум)
 		/// </summary>
-		public const uint MaximumWaterLevel = 10;
+		public const uint MaximumWaterLevel = 6;
 
 
 
@@ -922,6 +923,25 @@ namespace RD_AAOW
 		/// Возвращает ограничение коэффициента преобразования врагов в ящики
 		/// </summary>
 		public const uint MaximumCratesDensityCoefficient2 = 6;
+
+
+
+		/// <summary>
+		/// Возвращает или задаёт флаг добавления неоновых ламп на карты
+		/// </summary>
+		public bool UseNeonLights
+			{
+			get
+				{
+				return GetSettingsValue (useNeonLightsPar, 2, 1, ref useNeonLights) > 1;
+				}
+			set
+				{
+				SetSettingsValue (useNeonLightsPar, ref useNeonLights, (uint)(value ? 2 : 1));
+				}
+			}
+		private int useNeonLights = int.MaxValue;
+		private const string useNeonLightsPar = "NL";
 		}
 
 	/// <summary>

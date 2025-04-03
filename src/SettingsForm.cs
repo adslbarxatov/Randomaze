@@ -97,6 +97,8 @@ namespace RD_AAOW
 			OutsideLightingFlag.Checked = settings.RandomOutsideLightingCoefficient;
 			OutsideLightingFlag_CheckedChanged (null, null);
 
+			NeonFlag.Checked = settings.UseNeonLights;
+
 			GravityTrack.Maximum = (int)ESRMSettings.MaximumGravityCoefficient;
 			GravityTrack.Value = (int)settings.GravityCoefficient;
 			GravityFlag.Checked = settings.RandomGravityCoefficient;
@@ -228,6 +230,8 @@ namespace RD_AAOW
 
 			settings.OutsideLightingCoefficient = (uint)OutsideLightingTrack.Value;
 			settings.RandomOutsideLightingCoefficient = OutsideLightingFlag.Checked;
+
+			settings.UseNeonLights = NeonFlag.Checked;
 
 			settings.GravityCoefficient = (uint)GravityTrack.Value;
 			settings.RandomGravityCoefficient = GravityFlag.Checked;
