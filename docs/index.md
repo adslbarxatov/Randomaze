@@ -58,6 +58,7 @@ The tool requires next compilation tools, directories and files for work:
 | Walls density coefficient | The larger the value, the fewer “branches” the maze will have | 1 – 12 | No | `WD` | `esrm_walls` |
 | Lamps lighting coefficient | Affects quantity of enabled lamp lights | 1 – 10 | Yes | `LI` | `esrm_inlight` |
 | Sun lighting coefficient | Affects outdoor brightness and the type of sky | 1 – 6 | Yes | `LO` | `esrm_outlight` |
+| Use neon lighting flag | Allows addition of neon lamps on too dark sections | 0 / 1 | No | `NL` | `esrm_neon` |
 | Crates density coefficient | Describes, how much enemies will be replaced with crates with bugs or explosives | 0 – 5 | Yes | `CD` | `esrm_crates` |
 | Gravity coefficient | Affects the gravity percentage for all objects on the map | 1 – 20 (10 = 100%) | Yes | `GR` | `esrm_gravity` |
 | Button mode | Adds the button(s) that should be found and pressed to open the exit gate | Quantity, 1 / 2 / 3 | No | `BM` | `esrm_button` |
@@ -67,6 +68,6 @@ The tool requires next compilation tools, directories and files for work:
 | Allow monster makers flag | Allows replacement of some monsters with monster makers | 0 / 1 | No | `MM` | `esrm_makers` |
 | Map barrier types | Sets allowed types of barriers between map sections (*glass*, *fabric* or *both*) | 1 / 2 / 3 | No | `BT` | `esrm_barriers` |
 | Fog coefficient | Affects the fog density percentage on the map | 0 – 10 (0 = 0%, 10 = 100%) | Yes | `FC` | `esrm_fog` |
-| Water level | Affects the water level on the map | 0 – 9 (0 = 0%, 9 = 45%) | Yes | `WL` | `esrm_water` |
+| Water level | Affects the water level on the map | 0 – 9 (0 = 0%, 5 = 25%) | Yes | `WL` | `esrm_water` |
 | Enemies permissions list | Consists of probabilities for monsters on maps | (the line of **probabilities** (**0 – 5**) for assassins, bullchickens, controllers, houndeyes, human grunts, headcrabs, tripmines, barnacles, alien grunts, alien slaves, turrets and zombies) | No | `EP` | `esrm_enemies_list` |
 | Items permissions list | Consists of probabilities for weapons and items that will be allowed on maps (both on floors and in crates) | (the line of **probabilities** (**0 – 5**) for healthkits, batteries, grenades, 9mm handguns, satchels, .357 pythons, crossbows, gauss, crowbars, hornetguns, 9mm ARs, shotguns, RPGs, tripmines, snarks, egons and axes) | No | `IP` | `esrm_items_list` |
