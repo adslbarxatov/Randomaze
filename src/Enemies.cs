@@ -24,9 +24,8 @@ namespace RD_AAOW
 			// Расчёт параметров
 			Point p = MapSupport.EvaluateAbsolutePosition (RelativePosition);
 
-			List<CPResults> rWalls = RandomazeForm.GetSurroundingWalls (RelativePosition,
-				FurnitureTypes.Computer);
-			List<byte> enemiesProbabilityLine = new List<byte> ();
+			List<CPResults> rWalls = RandomazeForm.GetSurroundingWalls (RelativePosition, FurnitureTypes.Computer);
+			List<byte> enemiesProbabilityLine = [];
 			enemiesProbabilityLine.Add (255);   // Заглушка для крыс
 
 			for (int i = 0; i < Probabilities.Length; i++)
@@ -481,7 +480,7 @@ namespace RD_AAOW
 			}
 
 		// Подстановки номеров оружия для солдат
-		private static string[] gruntWeapons = new string[] { "1", "3", "5", "8", "10" };
+		private static string[] gruntWeapons = ["1", "3", "5", "8", "10"];
 
 		/// <summary>
 		/// Возвращает число доступных видов врагов
@@ -495,7 +494,7 @@ namespace RD_AAOW
 			}
 
 		// Набор названий классов для врагов
-		private static MapClasses[] enemies = new MapClasses[] {
+		private static MapClasses[] enemies = [
 			MapClasses.Assassin,
 			MapClasses.Bullsquid,
 			MapClasses.AlienController,
@@ -509,7 +508,7 @@ namespace RD_AAOW
 			MapClasses.Vortigaunt,
 			MapClasses.Turret,	// Подменяются при создании
 			MapClasses.Zombie,
-			};
+			];
 		private const int m_asn = 0;
 		private const int m_bul = 1;
 		private const int m_con = 2;
@@ -583,11 +582,11 @@ namespace RD_AAOW
 			}
 
 		// Перечень монстров-заглушек
-		private static MapClasses[] turrets = new MapClasses[] {
+		private static MapClasses[] turrets = [
 			MapClasses.Turret,
 			MapClasses.MiniTurret,
 			MapClasses.Sentry,
-			};
+			];
 
 		/// <summary>
 		/// Возвращает количество реально добавленных на карту крыс и тараканов

@@ -273,15 +273,13 @@ namespace RD_AAOW
 						rDelta = 0;
 						}
 
-					textures = new string[] { MapSupport.SkyTexture, fTex, fTex, bTex,
-						lTex, lTex, rTex, rTex };
+					textures = [MapSupport.SkyTexture, fTex, fTex, bTex, lTex, lTex, rTex, rTex];
 					break;
 
 				case BarrierTypes.Gate:
 					z1 = "0";
 					z2 = "120";
-					textures = new string[] { MapSupport.BlueMetalTexture, fTex, fTex, fTex,
-						fTex, fTex, fTex, fTex };
+					textures = [MapSupport.BlueMetalTexture, fTex, fTex, fTex, fTex, fTex, fTex, fTex];
 					break;
 
 				case BarrierTypes.GlassWindow:
@@ -296,7 +294,7 @@ namespace RD_AAOW
 
 					z1 = "8";
 					z2 = (MapSupport.WallHeight - 8).ToString ();
-					textures = new string[] { tex, tex, tex, tex, tex, tex, tex, tex };
+					textures = [tex, tex, tex, tex, tex, tex, tex, tex];
 					rDelta = lDelta = 0;
 					mDelta = 4;
 					break;
@@ -309,8 +307,7 @@ namespace RD_AAOW
 						z1 = "120";
 					z2 = (MapSupport.WallHeight + 16).ToString ();
 
-					textures = new string[] { MapSupport.SkyTexture, MapSupport.BlueMetalTexture, fTex, bTex,
-						fTex, bTex, fTex, bTex };
+					textures = [MapSupport.SkyTexture, MapSupport.BlueMetalTexture, fTex, bTex, fTex, bTex, fTex, bTex];
 
 					if (Type == BarrierTypes.WindowFrameTop)
 						rDelta = lDelta = 0;
@@ -319,8 +316,7 @@ namespace RD_AAOW
 				case BarrierTypes.WindowFrameBottom:
 					z1 = "0";
 					z2 = "8";
-					textures = new string[] { MapSupport.BlueMetalTexture, fTex, fTex, bTex,
-						fTex, bTex, fTex, bTex };
+					textures = [MapSupport.BlueMetalTexture, fTex, fTex, bTex, fTex, bTex, fTex, bTex];
 					rDelta = lDelta = 0;
 					break;
 				}

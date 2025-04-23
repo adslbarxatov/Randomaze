@@ -1,5 +1,8 @@
 Randomaze: changes log
 
+Version 6.3:
+• The application has been migrated to .NET 9.0 from .NET Framework 4.8.1
+
 Version 6.2.4:
 • Added some new furniture elements;
 • Added the light effect for the spark entity;

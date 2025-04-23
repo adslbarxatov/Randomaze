@@ -18,6 +18,7 @@ namespace RD_AAOW
 			// Инициализация
 			Application.EnableVisualStyles ();
 			Application.SetCompatibleTextRenderingDefault (false);
+			RDLocale.InitEncodings ();
 
 			// Проверка запуска единственной копии
 			if (!RDGenerics.IsAppInstanceUnique (false))

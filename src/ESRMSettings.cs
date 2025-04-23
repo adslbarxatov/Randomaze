@@ -143,7 +143,7 @@ namespace RD_AAOW
 			}
 
 		// Метод сохраняет настройку
-		private void SetSettingsValue (string ValueToken, ref int Value, uint NewValue)
+		private static void SetSettingsValue (string ValueToken, ref int Value, uint NewValue)
 			{
 			if (NewValue < uint.MaxValue)
 				{
@@ -172,7 +172,7 @@ namespace RD_AAOW
 			}
 
 		// Метод сохраняет рандомизацию настройки
-		private void SetSettingsValue (string ValueToken, ref int Value, bool Randomize)
+		private static void SetSettingsValue (string ValueToken, ref int Value, bool Randomize)
 			{
 			Value = Math.Abs (Value) * (Randomize ? -1 : 1);
 			SetSettingsValue (ValueToken, ref Value, uint.MaxValue);
@@ -322,7 +322,9 @@ namespace RD_AAOW
 		private const string buttonModePar = "BM";
 		private int buttonMode = int.MaxValue;
 
-
+		// Доступ к следующим элементам должен быть именно через экземпляр настроек,
+		// чтобы не нарушать визуальную логику хранения настроек
+		#pragma warning disable CA1822
 
 		/// <summary>
 		/// Возвращает или задаёт набор вероятностей генерации врагов
@@ -336,7 +338,8 @@ namespace RD_AAOW
 					return enemiesPermissionLine.ToArray ();
 
 				// Присвоение с перезаписью
-				string line = "";
+				/*string line = "";*/
+				string line;
 				if (settingFromEngineToken == enemiesPermissionLinePar)
 					{
 					line = settingFromEngineValue;
@@ -358,7 +361,7 @@ namespace RD_AAOW
 					}
 
 				// Сплит
-				enemiesPermissionLine = new List<byte> ();
+				enemiesPermissionLine = [];
 				for (int i = 0; i < EnemiesSupport.AvailableEnemiesTypes; i++)
 					{
 					try
@@ -427,7 +430,8 @@ namespace RD_AAOW
 					return itemsPermissionLine.ToArray ();
 
 				// Присвоение с перезаписью
-				string line = "";
+				/*string line = "";*/
+				string line;
 				if (settingFromEngineToken == itemsPermissionLinePar)
 					{
 					line = settingFromEngineValue;
@@ -449,7 +453,7 @@ namespace RD_AAOW
 					}
 
 				// Сплит
-				itemsPermissionLine = new List<byte> ();
+				itemsPermissionLine = [];
 				for (int i = 0; i < ItemsSupport.AvailableItemsTypes; i++)
 					{
 					try
@@ -500,7 +504,7 @@ namespace RD_AAOW
 		/// </summary>
 		public const byte MaximumItemsProbability = 5;
 
-
+		#pragma warning restore CA1822
 
 		/// <summary>
 		/// Возвращает или задаёт коэффициент искусственного освещения карты

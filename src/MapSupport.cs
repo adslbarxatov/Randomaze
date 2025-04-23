@@ -378,7 +378,7 @@ namespace RD_AAOW
 		/// Автоматический пулемёт (враг)
 		/// </summary>
 		Sentry,
-		
+
 
 
 		/// <summary>
@@ -491,89 +491,89 @@ namespace RD_AAOW
 			}
 
 		// Список поддерживаемых классов объектов
-		private static string[][] classes = new string[][] {
+		private static string[][] classes = [
 			// Общие классы
-			new string[] { "worldspawn", "NC" },
+			[ "worldspawn", "NC" ],
 
-			new string[] { "func_breakable", null },
-			new string[] { "func_door", null },
-			new string[] { "func_button", null },
-			new string[] { "func_pushable", null },
-			new string[] { "func_water", null },
-			new string[] { "func_ladder", null },
-			new string[] { "monstermaker", null },
-			new string[] { "game_counter", null },
-			new string[] { "game_player_set_health", null },
-			new string[] { "env_message", null },
-			new string[] { "trigger_changetarget", null },
-			new string[] { "game_end", null },
-			new string[] { "player_loadsaved", null },
-			new string[] { "multi_manager", null },
-			new string[] { "trigger_once", null },
-			new string[] { "info_landmark", null },
-			new string[] { "trigger_changelevel", null },
-			new string[] { "trigger_autosave", null },
-			new string[] { "env_sprite", null },
-			new string[] { "info_player_start", null },
-			new string[] { "trigger_gravity", null },
-			new string[] { "trigger_fog", null },
-			new string[] { "trigger_sound", null },
-			new string[] { "ambient_generic", null },
-			new string[] { "light_environment", "NC" },
-			new string[] { "light", "NC" },
-			new string[] { "info_node", null },
-			new string[] { "infodecal", null },
+			[ "func_breakable", null ],
+			[ "func_door", null ],
+			[ "func_button", null ],
+			[ "func_pushable", null ],
+			[ "func_water", null ],
+			[ "func_ladder", null ],
+			[ "monstermaker", null ],
+			[ "game_counter", null ],
+			[ "game_player_set_health", null ],
+			[ "env_message", null ],
+			[ "trigger_changetarget", null ],
+			[ "game_end", null ],
+			[ "player_loadsaved", null ],
+			[ "multi_manager", null ],
+			[ "trigger_once", null ],
+			[ "info_landmark", null ],
+			[ "trigger_changelevel", null ],
+			[ "trigger_autosave", null ],
+			[ "env_sprite", null ],
+			[ "info_player_start", null ],
+			[ "trigger_gravity", null ],
+			[ "trigger_fog", null ],
+			[ "trigger_sound", null ],
+			[ "ambient_generic", null ],
+			[ "light_environment", "NC" ],
+			[ "light", "NC" ],
+			[ "info_node", null ],
+			[ "infodecal", null ],
 
 			// Особые объекты
-			new string[] { "item_antidote", null },
-			new string[] { "item_security", null },
-			new string[] { "item_suit", null },
+			[ "item_antidote", null ],
+			[ "item_security", null ],
+			[ "item_suit", null ],
 
 			// Предметы
-			new string[] { "item_healthkit", null },
-			new string[] { "item_battery", null },
-			new string[] { "weapon_handgrenade", null },
-			new string[] { "weapon_9mmhandgun", null },
-			new string[] { "weapon_satchel", null },
-			new string[] { "weapon_357", null },
-			new string[] { "weapon_crossbow", null },
-			new string[] { "weapon_gauss", null },
-			new string[] { "weapon_crowbar", null },
-			new string[] { "weapon_hornetgun", null },
+			[ "item_healthkit", null ],
+			[ "item_battery", null ],
+			[ "weapon_handgrenade", null ],
+			[ "weapon_9mmhandgun", null ],
+			[ "weapon_satchel", null ],
+			[ "weapon_357", null ],
+			[ "weapon_crossbow", null ],
+			[ "weapon_gauss", null ],
+			[ "weapon_crowbar", null ],
+			[ "weapon_hornetgun", null ],
 
 			// Предметы в ящиках
-			new string[] { "weapon_9mmAR", null },
-			new string[] { "weapon_shotgun", null },
-			new string[] { "weapon_rpg", null },
-			new string[] { "weapon_tripmine", null },
-			new string[] { "weapon_snark", null },
-			new string[] { "weapon_egon", null },
-			new string[] { "weapon_axe", null },
+			[ "weapon_9mmAR", null ],
+			[ "weapon_shotgun", null ],
+			[ "weapon_rpg", null ],
+			[ "weapon_tripmine", null ],
+			[ "weapon_snark", null ],
+			[ "weapon_egon", null ],
+			[ "weapon_axe", null ],
 
-			new string[] { "ammo_9mmbox", null },
-			new string[] { "ammo_buckshot", null },
+			[ "ammo_9mmbox", null ],
+			[ "ammo_buckshot", null ],
 
 			// Враги
-			new string[] { "monster_human_assassin", null },
-			new string[] { "monster_bullchicken", null },
-			new string[] { "monster_alien_controller", null },
-			new string[] { "monster_houndeye", null },
-			new string[] { "monster_human_grunt", null },
-			new string[] { "monster_headcrab", null },
-			new string[] { "monster_leech", null },
-			new string[] { "monster_tripmine", null },
-			new string[] { "monster_barnacle", null },
-			new string[] { "monster_alien_grunt", null },
-			new string[] { "monster_alien_slave", null },
-			new string[] { "monster_zombie", null },
+			[ "monster_human_assassin", null ],
+			[ "monster_bullchicken", null ],
+			[ "monster_alien_controller", null ],
+			[ "monster_houndeye", null ],
+			[ "monster_human_grunt", null ],
+			[ "monster_headcrab", null ],
+			[ "monster_leech", null ],
+			[ "monster_tripmine", null ],
+			[ "monster_barnacle", null ],
+			[ "monster_alien_grunt", null ],
+			[ "monster_alien_slave", null ],
+			[ "monster_zombie", null ],
 
-			new string[] { "monster_turret", null },
-			new string[] { "monster_miniturret", null },
-			new string[] { "monster_sentry", null },
+			[ "monster_turret", null ],
+			[ "monster_miniturret", null ],
+			[ "monster_sentry", null ],
 
-			new string[] { "monster_rat", null },
-			new string[] { "monster_barney", null },
-			};
+			[ "monster_rat", null ],
+			[ "monster_barney", null ],
+			];
 
 		/// <summary>
 		/// Метод возвращает настоящее имя класса по его типу
@@ -686,14 +686,14 @@ namespace RD_AAOW
 			AddEntity (MapClasses.OnceTarget);
 			Write ("\"target\" \"DevM\"\n");
 
-			WriteBlock (x1, y1, z1, x2, y2, z2,
-				new string[] { TriggerTexture, TriggerTexture, TriggerTexture, TriggerTexture,
-					TriggerTexture, TriggerTexture }, BlockTypes.Default);
+			WriteBlock (x1, y1, z1, x2, y2, z2, triggerBox, BlockTypes.Default);
 
 			Write ("}\n");
 
 			WriteMapPortal (RelativePosition, true);
 			}
+		private static readonly string[] triggerBox = [TriggerTexture, TriggerTexture, TriggerTexture, TriggerTexture,
+			TriggerTexture, TriggerTexture];
 
 		/// <summary>
 		/// Метод записывает точку выхода с карты
@@ -724,21 +724,18 @@ namespace RD_AAOW
 			Write ("\"map\" \"" + mapName + "\"\n");
 			Write ("\"landmark\" \"" + mapName + "m\"\n");
 
+			/*string[] trigger = [Trigger Texture, Trigger Texture, Trigger Texture, Trigger Texture,
+				Trigger Texture, Trigger Texture];*/
 			WriteBlock ((p.X - 8).ToString (), (p.Y - 8).ToString (), "16",
 				(p.X + 8).ToString (), (p.Y + 8).ToString (), (wallHeight - 16).ToString (),
-
-				new string[] { TriggerTexture, TriggerTexture, TriggerTexture, TriggerTexture,
-					TriggerTexture, TriggerTexture },
-
-				BlockTypes.Default);
+				triggerBox, BlockTypes.Default);
 
 			Write ("}\n{\n");
 			AddEntity (MapClasses.Autosave);
 
 			WriteBlock ((p.X - 32).ToString (), (p.Y - 32).ToString (), "12",
 				(p.X + 32).ToString (), (p.Y + 32).ToString (), "16",
-				new string[] { TriggerTexture, TriggerTexture, TriggerTexture, TriggerTexture,
-						TriggerTexture, TriggerTexture }, BlockTypes.Default);
+				triggerBox, BlockTypes.Default);
 
 			Write ("}\n");
 
@@ -761,19 +758,21 @@ namespace RD_AAOW
 			if (MapNumber <= MapsLimit)
 				Write ("\"targetname\" \"" + SecondGateName + "\"\n");
 
-			string tex = GreenMetalTexture;
+			/*string tex = GreenMetalTexture;*/
+			string[] tex6 = [GreenMetalTexture, GreenMetalTexture, GreenMetalTexture,
+				GreenMetalTexture, GreenMetalTexture, GreenMetalTexture];
 			WriteBlock ((p.X - 12).ToString (), (p.Y - 12).ToString (), "0",
 				(p.X - 8).ToString (), (p.Y - 8).ToString (), WallHeight.ToString (),
-				new string[] { tex, tex, tex, tex, tex, tex }, BlockTypes.Default);
+				tex6, BlockTypes.Default);
 			WriteBlock ((p.X + 8).ToString (), (p.Y - 12).ToString (), "0",
 				(p.X + 12).ToString (), (p.Y - 8).ToString (), WallHeight.ToString (),
-				new string[] { tex, tex, tex, tex, tex, tex }, BlockTypes.Default);
+				tex6, BlockTypes.Default);
 			WriteBlock ((p.X - 12).ToString (), (p.Y + 8).ToString (), "0",
 				(p.X - 8).ToString (), (p.Y + 12).ToString (), WallHeight.ToString (),
-				new string[] { tex, tex, tex, tex, tex, tex }, BlockTypes.Default);
+				tex6, BlockTypes.Default);
 			WriteBlock ((p.X + 8).ToString (), (p.Y + 8).ToString (), "0",
 				(p.X + 12).ToString (), (p.Y + 12).ToString (), WallHeight.ToString (),
-				new string[] { tex, tex, tex, tex, tex, tex }, BlockTypes.Default);
+				tex6, BlockTypes.Default);
 
 			Write ("}\n");
 			}
@@ -887,6 +886,9 @@ namespace RD_AAOW
 			string xs = p.X.ToString ();
 			string ys = p.Y.ToString ();
 
+			/*string[] trigger = [Trigger Texture, Trigger Texture, Trigger Texture, Trigger Texture,
+					Trigger Texture, Trigger Texture];*/
+
 			// Первая карта
 			if (MapNumber == 1)
 				{
@@ -908,8 +910,7 @@ namespace RD_AAOW
 
 				WriteBlock ((p.X - 8).ToString (), (p.Y - 8).ToString (), "-2",
 					(p.X + 8).ToString (), (p.Y + 8).ToString (), "-1",
-					new string[] { TriggerTexture, TriggerTexture, TriggerTexture, TriggerTexture,
-						TriggerTexture, TriggerTexture }, BlockTypes.Default);
+					triggerBox, BlockTypes.Default);
 
 				Write ("}\n");
 				}
@@ -921,8 +922,7 @@ namespace RD_AAOW
 
 			WriteBlock ((p.X - 32).ToString (), (p.Y - 32).ToString (), "24",
 				(p.X + 32).ToString (), (p.Y + 32).ToString (), "28",
-				new string[] { TriggerTexture, TriggerTexture, TriggerTexture, TriggerTexture,
-						TriggerTexture, TriggerTexture }, BlockTypes.Default);
+				triggerBox, BlockTypes.Default);
 
 			Write ("}\n");
 
@@ -937,8 +937,7 @@ namespace RD_AAOW
 
 			WriteBlock ((p.X - 32).ToString (), (p.Y - 32).ToString (), "32",
 				(p.X + 32).ToString (), (p.Y + 32).ToString (), "36",
-				new string[] { TriggerTexture, TriggerTexture, TriggerTexture, TriggerTexture,
-						TriggerTexture, TriggerTexture }, BlockTypes.Default);
+				triggerBox, BlockTypes.Default);
 
 			Write ("}\n");
 
@@ -1075,8 +1074,7 @@ namespace RD_AAOW
 				}
 
 			// Запись
-			WriteBlock (x1, y1, z1, x2, y2, z2, new string[] { TriggerTexture, TriggerTexture,
-				TriggerTexture, TriggerTexture, TriggerTexture, TriggerTexture }, BlockTypes.Default);
+			WriteBlock (x1, y1, z1, x2, y2, z2, triggerBox, BlockTypes.Default);
 
 			Write ("}\n");
 			}
@@ -1120,10 +1118,11 @@ namespace RD_AAOW
 			Write ("}\n{\n");
 			AddEntity (MapClasses.Autosave);
 
+			/*string[] trigger = [Trigger Texture, Trigger Texture, Trigger Texture, Trigger Texture,
+				Trigger Texture, Trigger Texture];*/
 			WriteBlock ((p.X - 32).ToString (), (p.Y - 32).ToString (), "12",
 				(p.X + 32).ToString (), (p.Y + 32).ToString (), "16",
-				new string[] { TriggerTexture, TriggerTexture, TriggerTexture, TriggerTexture,
-						TriggerTexture, TriggerTexture }, BlockTypes.Default);
+				triggerBox, BlockTypes.Default);
 
 			Write ("}\n");
 
@@ -1158,8 +1157,9 @@ namespace RD_AAOW
 				}
 
 			// Запись
-			WriteBlock (x1, y1, "0", x2, y2, "96", new string[] { Texture, Texture, Texture,
-				Texture, Texture, Texture }, BlockTypes.Door);
+			WriteBlock (x1, y1, "0", x2, y2, "96",
+				[Texture, Texture, Texture, Texture, Texture, Texture],
+				BlockTypes.Door);
 			}
 
 		/// <summary>
@@ -1203,7 +1203,7 @@ namespace RD_AAOW
 				{
 				bool factor1 = EnemiesSupport.IsHeadcrabAllowed (EnemiesPermissions);
 				int r = RDGenerics.RND.Next (factor1 ? 5 : 4);
-				int idx;
+				/*int idx;*/
 
 				// Враги (при запрете хедкрабов увеличивается число ящиков со взрывчаткой)
 				if (factor1 && (r < 3) || !factor1 && (r < 2))
@@ -1244,8 +1244,7 @@ namespace RD_AAOW
 					}
 				}
 
-			WriteBlock (x1, y1, "0", x2, y2, "64", new string[] { tex, tex, tex, tex, tex, tex },
-				BlockTypes.Crate);
+			WriteBlock (x1, y1, "0", x2, y2, "64", [tex, tex, tex, tex, tex, tex], BlockTypes.Crate);
 
 			Write ("}\n");
 			}
@@ -1350,34 +1349,34 @@ namespace RD_AAOW
 
 			WriteBlock ((p.X - 8).ToString (), (p.Y - 8).ToString (), "-8",
 				(p.X + 8).ToString (), (p.Y + 8).ToString (), "0",
-				new string[] { tex, tex, tex, tex, tex, tex }, BlockTypes.Default);
+				[tex, tex, tex, tex, tex, tex], BlockTypes.Default);
 			}
 
 		// Параметры неба
-		private static string[] skyTypes = new string[] {
+		private static string[] skyTypes = [
 			"eshq_citday_",
 			"eshq_desday_",
 			"eshq_desmor_",
 			"eshq_out_",
 			"eshq_seanig_",
-			"eshq_firmor_"
-			};
-		private static string[] sunColors = new string[] {
+			"eshq_firmor_",
+			];
+		private static string[] sunColors = [
 			"255 255 128 180",
 			"255 255 128 180",
 			"224 192 128 120",
 			"96 64 32 90",
 			"32 64 96 120",
 			"64 64 64 120",
-			};
-		private static string[] sunAngles = new string[] {
+			];
+		private static string[] sunAngles = [
 			"280 170 0",
 			"290 160 0",
 			"330 175 0",
 			"340 135 0",
 			"90 0 0",
-			"90 0 0"
-			};
+			"90 0 0",
+			];
 		private static int skyIndex;
 
 		/// <summary>
@@ -1406,11 +1405,13 @@ namespace RD_AAOW
 			string h1 = (IsSkyTexture (RoofTexture) ? (wallHeight + 16) : wallHeight).ToString ();
 
 			// Запись
-			WriteBlock (x1, y1, "-16", x2, y2, "0", new string[] { FloorTexture, FloorTexture, FloorTexture,
-				FloorTexture, FloorTexture, FloorTexture }, BlockTypes.Default);
+			WriteBlock (x1, y1, "-16", x2, y2, "0",
+				[FloorTexture, FloorTexture, FloorTexture, FloorTexture, FloorTexture, FloorTexture],
+				BlockTypes.Default);
 
-			WriteBlock (x1, y1, h1, x2, y2, h2, new string[] { RoofTexture, RoofTexture, RoofTexture,
-				RoofTexture, RoofTexture, RoofTexture }, BlockTypes.Default);
+			WriteBlock (x1, y1, h1, x2, y2, h2,
+				[RoofTexture, RoofTexture, RoofTexture, RoofTexture, RoofTexture, RoofTexture],
+				BlockTypes.Default);
 			}
 
 		/// <summary>
@@ -1451,8 +1452,7 @@ namespace RD_AAOW
 				Write ("\"skin\" \"-3\"\n");
 				Write ("\"WaveHeight\" \"0.1\"\n");
 
-				WriteBlock (x1, y1, "0", x2, y2, h, new string[] { tex, tex, tex,
-					tex, tex, tex }, BlockTypes.Default);
+				WriteBlock (x1, y1, "0", x2, y2, h, [tex, tex, tex, tex, tex, tex], BlockTypes.Default);
 
 				Write ("}\n");
 				}
@@ -1548,10 +1548,7 @@ namespace RD_AAOW
 
 				WriteBlock ((p.X - d).ToString (), (p.Y - d).ToString (), (z - 0).ToString (),
 					(p.X + d).ToString (), (p.Y + d).ToString (), (z + 4).ToString (),
-
-					new string[] { RoofTexture, RoofTexture, RoofTexture, RoofTexture, RoofTexture,
-						SubFloor ? "~PATH01" : "~LAMP07" },
-
+					[RoofTexture, RoofTexture, RoofTexture, RoofTexture, RoofTexture, SubFloor ? "~PATH01" : "~LAMP07"],
 					BlockTypes.Default);
 
 				return false;
@@ -1641,13 +1638,22 @@ namespace RD_AAOW
 			Point p = EvaluateAbsolutePosition (RelativePosition);
 
 			// Сборка линии текстур
-			string[] tex = new string[6];
+			/*string[] tex = new string[6];
 			for (int i = 0; i < tex.Length; i++)
-				tex[i] = (SurroundingWalls != null) ? TriggerTexture : SubFloorTexture;
-
-			// Запись площадки
-			if (SurroundingWalls == null)
+				tex[i] = (SurroundingWalls != null) ? Trigger Texture : SubFloorTexture;*/
+			string[] tex;
+			if (SurroundingWalls != null)
 				{
+				tex = triggerBox;
+				}
+			else
+				{
+				tex = [SubFloorTexture, SubFloorTexture, SubFloorTexture, SubFloorTexture,
+					SubFloorTexture, SubFloorTexture];
+
+				// Запись площадки
+				/*if (SurroundingWalls == null)
+				{*/
 				WriteBlock ((p.X - 56).ToString (), (p.Y - 56).ToString (), (DefaultWallHeight - 32).ToString (),
 					(p.X + 56).ToString (), (p.Y + 56).ToString (), (DefaultWallHeight - 16).ToString (),
 					tex, BlockTypes.Door);
@@ -1657,7 +1663,7 @@ namespace RD_AAOW
 			// Запись лестницы.
 			// Обработка функцией для SurroundingWalls имеет скрытое ограничение, заключающееся в том, что
 			// такая площадка может появиться над дверью в стене, только если она окружена тремя стенами
-			List<int> offsets = new List<int> ();
+			List<int> offsets = [];
 			if (!SurroundingWalls.Contains (CPResults.Left))
 				{
 				offsets.Add (-60);
@@ -1711,7 +1717,8 @@ namespace RD_AAOW
 		public static bool WriteGameScript (string MapName)
 			{
 			// Создание файла
-			FileStream FSsc = null;
+			/*FileStream FSsc = null;*/
+			FileStream FSsc;
 			try
 				{
 				FSsc = new FileStream (RDGenerics.AppStartupPath + "liblist.gam", FileMode.Create);
@@ -1753,7 +1760,7 @@ namespace RD_AAOW
 			Point p = EvaluateAbsolutePosition (RelativePosition);
 			WriteBlock ((p.X - WallLength / 2).ToString (), (p.Y - WallLength / 2).ToString (), "0",
 				(p.X + WallLength / 2).ToString (), (p.Y + WallLength / 2).ToString (), (WallHeight + 32).ToString (),
-				new string[] { "BLACK", "BLACK", "BLACK", "BLACK", "BLACK", "BLACK" }, BlockTypes.Default);
+				["BLACK", "BLACK", "BLACK", "BLACK", "BLACK", "BLACK"], BlockTypes.Default);
 			}
 
 		/// <summary>
@@ -1914,7 +1921,7 @@ namespace RD_AAOW
 		public static void DisableClosingButton (IntPtr WindowHandle)
 			{
 			// SC_CLOSE, MF_GRAYED
-			EnableMenuItem (GetSystemMenu (WindowHandle, false), 0xF060, 0x0001);
+			_ = EnableMenuItem (GetSystemMenu (WindowHandle, false), 0xF060, 0x0001);
 			}
 
 		// Текстуры
@@ -1941,13 +1948,12 @@ namespace RD_AAOW
 
 			return woodTextures[0];
 			}
-		private static string[] woodTextures = new string[]
-			{
+		private static string[] woodTextures = [
 			"Wood01",
 			"Wood02",
 			"Wood03",
 			"Wood04",
-			};
+			];
 
 		/// <summary>
 		/// Возвращает текстуру красного металла
@@ -1986,13 +1992,12 @@ namespace RD_AAOW
 
 			return fabricTextures[0];
 			}
-		private static string[] fabricTextures = new string[]
-			{
+		private static string[] fabricTextures = [
 			"Fabric01",
 			"Fabric02",
 			"Fabric03",
 			"Fabric04",
-			};
+			];
 
 		/// <summary>
 		/// Возвращает текстуру стекла
@@ -2006,17 +2011,16 @@ namespace RD_AAOW
 
 			return glassTextures[0];
 			}
-		private static string[] glassTextures = new string[]
-			{
+		private static string[] glassTextures = [
 			"Glass01",
 			"Glass03",
-			};
+			];
 
-		private static string[] waterTextures = new string[] {
+		private static string[] waterTextures = [
 			"!_DirtyWater01",
 			"!_ToxWater02",
 			"!_Water01",
 			"!_Water02",
-			};
+			];
 		}
 	}

@@ -14,17 +14,17 @@ namespace RD_AAOW
 		private ESRMSettings settings;
 
 		// Переменные
-		private List<Label> enemiesLabels = new List<Label> ();
-		private List<TrackBar> enemiesTracks = new List<TrackBar> ();
-		private List<string> enemiesNames = new List<string> ();
+		private List<Label> enemiesLabels = [];
+		private List<TrackBar> enemiesTracks = [];
+		private List<string> enemiesNames = [];
 		private byte[] enemies;
-		private List<bool> enemiesLocks = new List<bool> ();
+		private List<bool> enemiesLocks = [];
 
-		private List<Label> itemsLabels = new List<Label> ();
-		private List<TrackBar> itemsTracks = new List<TrackBar> ();
-		private List<string> itemsNames = new List<string> ();
+		private List<Label> itemsLabels = [];
+		private List<TrackBar> itemsTracks = [];
+		private List<string> itemsNames = [];
 		private byte[] items;
-		private List<bool> itemsLocks = new List<bool> ();
+		private List<bool> itemsLocks = [];
 
 		private Color enabledColor = Color.FromArgb (0, 200, 0);
 		private Color disabledColor = Color.FromArgb (200, 200, 200);

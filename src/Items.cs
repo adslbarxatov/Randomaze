@@ -45,7 +45,7 @@ namespace RD_AAOW
 				goto finishItem;
 				}
 
-			List<byte> itemsProbabilityLine = new List<byte> ();
+			List<byte> itemsProbabilityLine = [];
 			itemsProbabilityLine.Add (255);
 
 			for (int i = 0; i < Probabilities.Length; i++)
@@ -121,7 +121,7 @@ namespace RD_AAOW
 			}
 
 		// Набор имён классов предметов
-		private static MapClasses[] items = new MapClasses[] {
+		private static MapClasses[] items = [
 			// Прямая генерация
 			MapClasses.HealthKit,
 			MapClasses.Armor,
@@ -142,7 +142,7 @@ namespace RD_AAOW
 			MapClasses.Snark,
 			MapClasses.Egon,
 			MapClasses.Axe,
-			};
+			];
 		private const int i_hek = 0;
 		private const int i_bat = 1;
 		private const int i_gre = 2;
@@ -168,7 +168,7 @@ namespace RD_AAOW
 		public static uint GetRandomItemForCrate (byte[] Probabilities)
 			{
 			// Определение доступных вариантов
-			List<byte> itemsProbabilityLine = new List<byte> ();
+			List<byte> itemsProbabilityLine = [];
 			for (int i = 0; i < Probabilities.Length; i++)
 				for (int j = 0; j < Probabilities[i]; j++)
 					itemsProbabilityLine.Add ((byte)i);
@@ -187,28 +187,28 @@ namespace RD_AAOW
 			return itemIndices[crItem][RDGenerics.RND.Next (itemIndices[crItem].Length)];
 			}
 
-		private static uint[][] itemIndices = new uint[][] {
-			new uint[] { 2 },
-			new uint[] { 1 },
-			new uint[] { 17 },
-			new uint[] { 3, 4 },
-			new uint[] { 19 },
+		private static uint[][] itemIndices = [
+			[ 2 ],
+			[ 1 ],
+			[ 17 ],
+			[ 3, 4 ],
+			[ 19 ],
 
-			new uint[] { 12, 13 },
-			new uint[] { 10, 11 },
-			new uint[] { 23, 16 },
-			new uint[] { 22 },
-			new uint[] { 21 },
+			[ 12, 13 ],
+			[ 10, 11 ],
+			[ 23, 16 ],
+			[ 22 ],
+			[ 21 ],
 
-			new uint[] { 5, 6 },
-			new uint[] { 8, 9 },
-			new uint[] { 14, 15 },
-			new uint[] { 18 },
-			new uint[] { 20 },
+			[ 5, 6 ],
+			[ 8, 9 ],
+			[ 14, 15 ],
+			[ 18 ],
+			[ 20 ],
 
-			new uint[] { 24 },
-			new uint[] { 26 },
-			};
+			[ 24 ],
+			[ 26 ],
+			];
 
 		/// <summary>
 		/// Возвращает список предметов, доступных только в ящиках
@@ -220,7 +220,7 @@ namespace RD_AAOW
 				return new List<int> (itemsOnlyFromCrates);
 				}
 			}
-		private static int[] itemsOnlyFromCrates = new int[] {
+		private static int[] itemsOnlyFromCrates = [
 			i_sho,
 			i_rpg,
 			i_axe,
@@ -230,6 +230,6 @@ namespace RD_AAOW
 			i_9ar,
 			i_hor,
 			i_bar,
-			};
+			];
 		}
 	}
