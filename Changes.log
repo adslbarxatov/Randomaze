@@ -1,7 +1,8 @@
 Randomaze: changes log
 
-ToDo:
-- lock the manual update from App about form
+Version 6.3.1:
+• Added support for new offline help provider;
+• Removed the disabled update link
 
 Version 6.3:
 • The application has been migrated to .NET 9.0 from .NET Framework 4.8.1
