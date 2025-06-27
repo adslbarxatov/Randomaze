@@ -1,5 +1,8 @@
 Randomaze: changes log
 
+Version 6.3.2:
+• Internal assemblies have been updated
+
 Version 6.3.1:
 • Added support for new offline help provider;
 • Removed the disabled update link
