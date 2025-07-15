@@ -3,8 +3,7 @@ Randomaze: changes log
 Version 6.3.3:
 • Removed extraneous sequence from hgrunt model (to prevent it from staying under
   player's attack);
-• Neon lights are now available for maps with 75% lighting (indoors);
-• 
+• Neon lights are now available for maps with 75% lighting (indoors)
 
 Version 6.3.2:
 • Internal assemblies have been updated
