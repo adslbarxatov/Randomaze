@@ -1,5 +1,9 @@
 Randomaze: changes log
 
+ToDo:
+- Требуется добавить подрежим почти полного разделения уровней
+- Требуется замедлить открывание выходного шлюза
+
 Version 6.3.3:
 • Removed extraneous sequence from hgrunt model (to prevent it from staying under
   player's attack);
