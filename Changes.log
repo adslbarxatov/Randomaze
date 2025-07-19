@@ -3,6 +3,8 @@ Randomaze: changes log
 ToDo:
 - Требуется добавить подрежим почти полного разделения уровней
 - Требуется замедлить открывание выходного шлюза
+- Исправить отображение приветствия от компилятора
+- Попробовать отвязать плотность стен от размера карты
 
 Version 6.3.3:
 • Removed extraneous sequence from hgrunt model (to prevent it from staying under
