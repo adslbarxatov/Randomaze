@@ -1,10 +1,19 @@
 Randomaze: changes log
 
 ToDo:
-- Требуется добавить подрежим почти полного разделения уровней
-- Требуется замедлить открывание выходного шлюза
-- Исправить отображение приветствия от компилятора
-- Попробовать отвязать плотность стен от размера карты
+- Separate glasses for floors (required to properly detect blasts);
+- Separate walls density from the maze size;
+- Get rid of DWS-16
+- Controller stucks in the floor in 4th mode
+- Lighting coefficient should be applied to the first floor
+
+Version 7.0:
+• Implemented the complete floors separation. Now you can generate maps with two almost
+  isolated floors (both are accessible from each other);
+• Maps writing algorithm has been rebuilt: it is possible now to add furniture elements
+  that will replace floor or ceiling blocks (like windows or holes);
+• Fixed some old minor bugs;
+• Some dark textures have been replaced;
 
 Version 6.3.3:
 • Removed extraneous sequence from hgrunt model (to prevent it from staying under

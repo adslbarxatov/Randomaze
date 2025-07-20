@@ -56,7 +56,7 @@ namespace RD_AAOW
 
 			MazeSizeFlag.Text = EnemiesDensityFlag.Text = ItemsDensityFlag.Text =
 				CratesDensityFlag.Text = WallsDensityFlag.Text = InsideLightingFlag.Text =
-				GravityFlag.Text = RandomizeFloorsFlag.Text = FogFlag.Text = WaterFlag.Text =
+				GravityFlag.Text = /*RandomizeFloorsFlag.Text =*/ FogFlag.Text = WaterFlag.Text =
 				OutsideLightingFlag.Text = RDLocale.GetText ("SettingsForm_Random");
 
 			this.TopMost = true;
@@ -171,9 +171,17 @@ namespace RD_AAOW
 				ButtonCombo.Items.Add (RDLocale.GetText ("Generic2Tab_ButtonCombo" + i.ToString ("D2")));
 			ButtonCombo.SelectedIndex = (int)settings.ButtonMode;
 
-			AllowItemsForSecondFloor.Checked = settings.AllowItemsForSecondFloor;
+			for (int i = (int)MapFloorsTypes.SingleFloor; i <= (int)MapFloorsTypes.Random; i++)
+				FloorTypesCombo.Items.Add (RDLocale.GetText ("GenericTab_FloorTypesCombo" + i.ToString ("D2")));
+
+			if (settings.RandomizeFloorsType)
+				FloorTypesCombo.SelectedIndex = (int)MapFloorsTypes.Random - 1;
+			else
+				FloorTypesCombo.SelectedIndex = (int)settings.FloorsType - 1;
+
+			/*AllowItemsForSecondFloor.Checked = settings.AllowItemsForSecondFloor;
 			TwoFloorsFlag.Checked = settings.TwoFloors;
-			RandomizeFloorsFlag.Checked = settings.RandomizeFloorsQuantity;
+			RandomizeFloorsFlag.Checked = settings.RandomizeFloorsQuantity;*/
 			TwoFloorsFlag_CheckedChanged (null, null);
 
 			CratesDensityTrack.Maximum = (int)ESRMSettings.MaximumCratesDensityCoefficient2;
@@ -250,9 +258,10 @@ namespace RD_AAOW
 			settings.BarriersType = (MapBarriersTypes)(BarrierCombo.SelectedIndex + 1);
 			settings.ButtonMode = (MapButtonsTypes)ButtonCombo.SelectedIndex;
 
-			settings.TwoFloors = TwoFloorsFlag.Checked;
+			/*settings.TwoFloors = TwoFloorsFlag.Checked;
 			settings.AllowItemsForSecondFloor = AllowItemsForSecondFloor.Checked;
-			settings.RandomizeFloorsQuantity = RandomizeFloorsFlag.Checked;
+			settings.RandomizeFloorsQuantity = RandomizeFloorsFlag.Checked;*/
+			settings.FloorsType = (MapFloorsTypes)(FloorTypesCombo.SelectedIndex + 1);
 
 			settings.CratesDensityCoefficient2 = (uint)CratesDensityTrack.Value - 1;
 			settings.RandomCratesDensityCoefficient2 = CratesDensityFlag.Checked;
@@ -349,17 +358,25 @@ namespace RD_AAOW
 		private void TwoFloorsFlag_CheckedChanged (object sender, EventArgs e)
 			{
 			// barnacle зависит от высоты карты
-			if (TwoFloorsFlag.Checked || RandomizeFloorsFlag.Checked)
+			/*if (TwoFloorsFlag.Checked || RandomizeFloorsFlag.Checked)*/
+			switch (FloorTypesCombo.SelectedIndex)
 				{
-				enemiesLocks[8] = AllowItemsForSecondFloor.Enabled = true;
-				}
-			else
-				{
-				enemiesLocks[8] = AllowItemsForSecondFloor.Enabled = AllowItemsForSecondFloor.Checked = false;
-				enemies[8] = 0;
+				case 4:
+				case 1:
+				case 2:
+					enemiesLocks[8] = /*AllowItemsForSecondFloor.Enabled =*/ true;
+					break;
+				/*}
+				else
+				{*/
+
+				default:
+					enemiesLocks[8] = /*AllowItemsForSecondFloor.Enabled = AllowItemsForSecondFloor.Checked =*/ false;
+					enemies[8] = 0;
+					break;
 				}
 
-			TwoFloorsFlag.Enabled = !RandomizeFloorsFlag.Checked;
+			/*TwoFloorsFlag.Enabled = !RandomizeFloorsFlag.Checked;*/
 
 			// Подгрузка новых значений
 			EnemyScroll_Scroll (null, null);

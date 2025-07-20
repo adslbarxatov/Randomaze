@@ -60,10 +60,15 @@ namespace RD_AAOW
 		/// <param name="RelativePosition">Относительная позиция точки создания</param>
 		/// <param name="FrontTexture">Лицевая текстура стены для рамы</param>
 		/// <param name="BackTexture">Задняя текстура стены для рамы</param>
-		public static void WriteMapWindow (Point RelativePosition, string FrontTexture, string BackTexture)
+		/// <param name="FloorsIsolation">Флаг изоляции этажей</param>
+		public static void WriteMapWindow (Point RelativePosition, string FrontTexture, string BackTexture,
+			bool FloorsIsolation)
 			{
 			WriteMapBarrier (RelativePosition, BarrierTypes.WindowFrameTop, FrontTexture, BackTexture);
 			WriteMapBarrier (RelativePosition, BarrierTypes.WindowFrameBottom, FrontTexture, BackTexture);
+
+			if (FloorsIsolation)
+				WriteMapBarrier (RelativePosition, BarrierTypes.WindowFrameMiddle, FrontTexture, BackTexture);
 			}
 
 		/// <summary>
@@ -120,7 +125,9 @@ namespace RD_AAOW
 		/// <param name="RelativePosition">Относительная позиция точки создания</param>
 		/// <param name="Sections">Инициализированные секции карты</param>
 		/// <param name="WallsAreRare">Флаг, указывающий на редкость стен (большие внутренние пространства)</param>
-		public static void WriteMapTransitSFX (Point RelativePosition, Section[] Sections, bool WallsAreRare)
+		/// <param name="FloorsIsolation">Флаг изоляции этажей</param>
+		public static void WriteMapTransitSFX (Point RelativePosition, Section[] Sections,
+			bool WallsAreRare, bool FloorsIsolation)
 			{
 			// Определение необходимости установки звукового триггера
 			bool leftSideIsUnderSky, rightSideIsUnderSky;
@@ -143,8 +150,8 @@ namespace RD_AAOW
 				return;
 
 			// Запись звукового триггера
-			byte leftRT, rightRT;
-			byte offset = (byte)(MapSupport.TwoFloors ? 1 : 0);
+			/*byte leftRT, rightRT;
+			byte offset = (byte)((MapSupport.TwoFloors && !FloorsIsolation) ? 1 : 0);
 			if (leftSideIsUnderSky)
 				leftRT = 0;
 			else if (WallsAreRare)
@@ -157,9 +164,27 @@ namespace RD_AAOW
 			else if (WallsAreRare)
 				rightRT = (byte)(18 + offset);
 			else
-				rightRT = (byte)(17 + offset);
+				rightRT = (byte)(17 + offset);*/
+			MapEntryPointFlags f = MapEntryPointFlags.None;
+			if (leftSideIsUnderSky)
+				f |= MapEntryPointFlags.IsUnderSky;
+			if (WallsAreRare)
+				f |= MapEntryPointFlags.WallsAreRare;
+			if (FloorsIsolation)
+				f |= MapEntryPointFlags.FloorsIsolation;
+			MapSoundTriggerRooms rtl = MapSupport.GetRoomType (f);
 
-			MapSupport.WriteMapSoundTrigger (RelativePosition, true, leftRT, rightRT);
+			f = MapEntryPointFlags.None;
+			if (rightSideIsUnderSky)
+				f |= MapEntryPointFlags.IsUnderSky;
+			if (WallsAreRare)
+				f |= MapEntryPointFlags.WallsAreRare;
+			if (FloorsIsolation)
+				f |= MapEntryPointFlags.FloorsIsolation;
+			MapSoundTriggerRooms rtr = MapSupport.GetRoomType (f);
+
+			MapSupport.WriteMapSoundTrigger (RelativePosition,
+				FloorsIsolation ? MapSoundTriggerTypes.WindowOnSecondFloor : MapSoundTriggerTypes.Window, rtl, rtr);
 			}
 
 		// Универсальный метод формирования шлюза
@@ -179,7 +204,7 @@ namespace RD_AAOW
 			MapSupport.Write ("{\n");
 			MapSupport.AddEntity (MapClasses.Door);
 			MapSupport.Write ("\"angles\" \"90 0 0\"\n");
-			MapSupport.Write ("\"speed\" \"100\"\n");
+			MapSupport.Write ("\"speed\" \"70\"\n");
 			MapSupport.Write ("\"movesnd\" \"3\"\n");
 			MapSupport.Write ("\"stopsnd\" \"1\"\n");
 			MapSupport.Write ("\"wait\" \"-1\"\n");
@@ -206,6 +231,9 @@ namespace RD_AAOW
 
 			// Нижняя рама окна
 			WindowFrameBottom,
+
+			// Средняя рама окна (для изолированных этажей)
+			WindowFrameMiddle,
 
 			// Преграды
 			GlassWindow,
@@ -317,6 +345,14 @@ namespace RD_AAOW
 					z1 = "0";
 					z2 = "8";
 					textures = [MapSupport.BlueMetalTexture, fTex, fTex, bTex, fTex, bTex, fTex, bTex];
+					rDelta = lDelta = 0;
+					break;
+
+				case BarrierTypes.WindowFrameMiddle:
+					z1 = (MapSupport.DefaultWallHeight - 34).ToString ();
+					z2 = (MapSupport.DefaultWallHeight - 8).ToString ();
+					textures = [MapSupport.BlueMetalTexture, MapSupport.BlueMetalTexture,
+						fTex, bTex, fTex, bTex, fTex, bTex];
 					rDelta = lDelta = 0;
 					break;
 				}

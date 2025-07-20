@@ -26,8 +26,8 @@ namespace RD_AAOW
 				switch (settingFromEngineToken)
 					{
 					// Флаги
-					case twoFloorsPar:
-					case allowItemsForSecondFloorPar:
+					/*case twoFloorsPar:
+					case allowItemsForSecondFloorPar:*/
 					case allowMonsterMakersPar:
 
 					// Значения, начинающиеся с нуля
@@ -55,8 +55,9 @@ namespace RD_AAOW
 			_ = InsideLightingCoefficient;
 			_ = OutsideLightingCoefficient;
 			_ = SectionType;
-			_ = TwoFloors;
-			_ = AllowItemsForSecondFloor;
+			/*_ = TwoFloors;
+			_ = AllowItemsForSecondFloor;*/
+			_ = FloorsType;
 			_ = ItemsPermissionLine;
 			_ = GravityCoefficient;
 			_ = FogCoefficient;
@@ -68,7 +69,8 @@ namespace RD_AAOW
 			_ = UseNeonLights;
 
 			// Защита
-			if (!TwoFloors && !RandomizeFloorsQuantity)
+			/*if (!TwoFloors && !RandomizeFloorsQuantity)*/
+			if ((FloorsType == MapFloorsTypes.SingleFloor) || (FloorsType == MapFloorsTypes.TwoSeparatedFloors))
 				EnemiesSupport.RemoveBarnacle (ref enemiesPermissionLine);
 			if ((WaterLevel < 1) && !RandomWaterLevel)
 				EnemiesSupport.RemoveLeech (ref enemiesPermissionLine);
@@ -608,40 +610,46 @@ namespace RD_AAOW
 
 
 		/// <summary>
-		/// Возвращает или задаёт флаг двойной высоты карт
+		/// Возвращает или задаёт этажность карт
 		/// </summary>
-		public bool TwoFloors
+		public MapFloorsTypes FloorsType
 			{
 			get
 				{
-				return GetSettingsValue (twoFloorsPar, 2, 1, ref twoFloors) > 1;
+				return (MapFloorsTypes)GetSettingsValue (floorsTypePar,
+					(uint)MapFloorsTypes.TwoSeparatedFloors, (uint)MapFloorsTypes.SingleFloor,
+					ref floorsType);
 				}
 			set
 				{
-				SetSettingsValue (twoFloorsPar, ref twoFloors, (uint)(value ? 2 : 1));
+				if (value == MapFloorsTypes.Random)
+					{
+					SetSettingsValue (floorsTypePar, ref floorsType, true);
+					}
+				else
+					{
+					floorsType = 0;
+					SetSettingsValue (floorsTypePar, ref floorsType, (uint)value);
+					}
 				}
 			}
-		private int twoFloors = int.MaxValue;
-		private const string twoFloorsPar = "TF";
+		private int floorsType = int.MaxValue;
+		private const string floorsTypePar = "TF";
 
 		/// <summary>
-		/// Возвращает или задаёт флаг рандомизации двойной высоты карт
+		/// Возвращает флаг рандомизации этажности карт
 		/// </summary>
-		public bool RandomizeFloorsQuantity
+		public bool RandomizeFloorsType
 			{
 			get
 				{
-				return (twoFloors < 0);
-				}
-			set
-				{
-				SetSettingsValue (twoFloorsPar, ref twoFloors, value);
+				return (floorsType < 0);
 				}
 			}
 
 
 
-		/// <summary>
+		/*/// <summary>
 		/// Возвращает или задаёт флаг разрешения для собираемых объектов на внутренних площадках
 		/// </summary>
 		public bool AllowItemsForSecondFloor
@@ -657,7 +665,7 @@ namespace RD_AAOW
 				}
 			}
 		private int allowItemsForSecondFloor = int.MaxValue;
-		private const string allowItemsForSecondFloorPar = "SF";
+		private const string allowItemsForSecondFloorPar = "SF";*/
 
 
 
@@ -1009,5 +1017,36 @@ namespace RD_AAOW
 		/// Основная и дополнительная конпка
 		/// </summary>
 		MainAndAdditional = 2,
+		}
+
+	/// <summary>
+	/// Возможные варианты этажности карт
+	/// </summary>
+	public enum MapFloorsTypes
+		{
+		/// <summary>
+		/// Один уровень
+		/// </summary>
+		SingleFloor = 1,
+
+		/// <summary>
+		/// Два уровня с балконами без предметов
+		/// </summary>
+		TwoFloorsWithEmptyBalconies = 2,
+
+		/// <summary>
+		/// Два уровня с балконами и предметами на них
+		/// </summary>
+		TwoFloorsWithBalconiesAndItems = 3,
+
+		/// <summary>
+		/// Два разделённых уровня
+		/// </summary>
+		TwoSeparatedFloors = 4,
+
+		/// <summary>
+		/// Случайное определение
+		/// </summary>
+		Random = 5,
 		}
 	}

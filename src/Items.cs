@@ -4,6 +4,27 @@ using System.Drawing;
 namespace RD_AAOW
 	{
 	/// <summary>
+	/// Параметры добавления собираемых предметов
+	/// </summary>
+	public enum MapItemFlags
+		{
+		/// <summary>
+		/// Без параметров
+		/// </summary>
+		None = 0x00,
+
+		/// <summary>
+		/// Допускается размещение на втором этаже
+		/// </summary>
+		AllowSecondFloor = 0x01,
+
+		/// <summary>
+		/// Требуется прижать к полу
+		/// </summary>
+		ForceFloorPlacement = 0x02,
+		}
+
+	/// <summary>
 	/// Класс предоставляет обработчики для сущностей собираемых предметов
 	/// </summary>
 	public static class ItemsSupport
@@ -12,12 +33,10 @@ namespace RD_AAOW
 		/// Метод добавляет собираемые объекты на карту
 		/// </summary>
 		/// <param name="RelativePosition">Относительная позиция точки создания</param>
-		/// <param name="AllowSecondFloor">Флаг, разрешающий размещение на внутренних площадках</param>
+		/// <param name="Flags">Параметры добавления объектов</param>
 		/// <param name="Probabilities">Набор вероятностей для видов предметов</param>
-		/// <param name="ForceFloorPlacement">Флаг указывает на необходимость расположения
 		/// прямо на полу (для исключения «застревания» во враге)</param>
-		public static void WriteMapItem (Point RelativePosition,
-			bool AllowSecondFloor, bool ForceFloorPlacement, byte[] Probabilities)
+		public static void WriteMapItem (Point RelativePosition, byte[] Probabilities, MapItemFlags Flags)
 			{
 			// Расчёт параметров
 			Point p = MapSupport.EvaluateAbsolutePosition (RelativePosition);
@@ -96,9 +115,9 @@ namespace RD_AAOW
 				}
 
 		finishItem:
-			int z = ForceFloorPlacement ? 0 : 40;
-			if (AllowSecondFloor)
-				z += (RDGenerics.RND.Next (2) * MapSupport.DefaultWallHeight);
+			int z = Flags.HasFlag (MapItemFlags.ForceFloorPlacement) ? 0 : 40;
+			if (Flags.HasFlag (MapItemFlags.AllowSecondFloor))
+				z += (RDGenerics.RND.Next (2) * (MapSupport.DefaultWallHeight - 16));
 
 			MapSupport.Write ("\"angles\" \"0 " + RDGenerics.RND.Next (360) + " 0\"\n");
 			MapSupport.Write ("\"origin\" \"" + p.X.ToString () + " " + p.Y.ToString () + " " +

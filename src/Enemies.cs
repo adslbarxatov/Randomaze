@@ -4,6 +4,37 @@ using System.Drawing;
 namespace RD_AAOW
 	{
 	/// <summary>
+	/// Параметры добавления враго
+	/// </summary>
+	public enum MapEnemyFlags
+		{
+		/// <summary>
+		/// Без параметров (первый этаж, на полу, не мейкер)
+		/// </summary>
+		None = 0x00,
+
+		/// <summary>
+		/// Разрешение на размещение на втором этаже
+		/// </summary>
+		AllowSecondFloor = 0x01,
+
+		/// <summary>
+		/// Запрет на крепление к потолку
+		/// </summary>
+		DontAllowCeiling = 0x02,
+
+		/// <summary>
+		/// Разрешение на добавление в виде мейкера
+		/// </summary>
+		AllowMonsterMakers = 0x04,
+
+		/// <summary>
+		/// Изоляция этажей
+		/// </summary>
+		FloorsIsolation = 0x08,
+		}
+
+	/// <summary>
 	/// Класс предоставляет обработчики для сущностей противников
 	/// </summary>
 	public static class EnemiesSupport
@@ -13,13 +44,10 @@ namespace RD_AAOW
 		/// </summary>
 		/// <param name="RelativePosition">Относительная позиция точки создания</param>
 		/// <param name="Probabilities">Список вероятностей генерации врагов</param>
-		/// <param name="AllowSecondFloor">Флаг разрешения установки врага на внутренней площадке</param>
-		/// <param name="CeilingNotAllowed">Флаг указывает на невозможность ориентации на потолке</param>
-		/// <param name="AllowMonsterMakers">Флаг разрешения монстр-мейкеров</param>
+		/// <param name="Flags">Параметры добавления</param>
 		/// <param name="WaterLevel">Флаг указывает, что воды достаточно для плавающих монстров</param>
 		public static void WriteMapEnemy (Point RelativePosition,
-			byte[] Probabilities, bool AllowSecondFloor, bool CeilingNotAllowed,
-			bool AllowMonsterMakers, uint WaterLevel)
+			byte[] Probabilities, uint WaterLevel, MapEnemyFlags Flags)
 			{
 			// Расчёт параметров
 			Point p = MapSupport.EvaluateAbsolutePosition (RelativePosition);
@@ -27,6 +55,11 @@ namespace RD_AAOW
 			List<CPResults> rWalls = RandomazeForm.GetSurroundingWalls (RelativePosition, FurnitureTypes.Computer);
 			List<byte> enemiesProbabilityLine = [];
 			enemiesProbabilityLine.Add (255);   // Заглушка для крыс
+
+			bool secondFloor = Flags.HasFlag (MapEnemyFlags.AllowSecondFloor);
+			bool noCeiling = Flags.HasFlag (MapEnemyFlags.DontAllowCeiling);
+			bool canBeMM = Flags.HasFlag (MapEnemyFlags.AllowMonsterMakers);
+			bool isolated = Flags.HasFlag (MapEnemyFlags.FloorsIsolation);
 
 			for (int i = 0; i < Probabilities.Length; i++)
 				{
@@ -46,7 +79,7 @@ namespace RD_AAOW
 					continue;
 
 				if (i == m_brn)
-					if ((MapSupport.MapNumber < 12) || CeilingNotAllowed || !MapSupport.TwoFloors)
+					if ((MapSupport.MapNumber < 12) || noCeiling || isolated || !MapSupport.TwoFloors)
 						continue;
 
 				if (i == m_min)
@@ -62,7 +95,7 @@ namespace RD_AAOW
 
 			// Добавление
 			int z;
-			if (AllowSecondFloor && (RDGenerics.RND.Next (4) != 0))
+			if (secondFloor && (RDGenerics.RND.Next (4) != 0) || isolated && (RDGenerics.RND.Next (2) != 0))
 				z = MapSupport.DefaultWallHeight - 16;
 			else
 				z = 0;
@@ -114,7 +147,10 @@ namespace RD_AAOW
 
 				// Зомби
 				case m_zom:
-					z = 0;  // Только на полу
+					// Если этажи не изолированы, то только на полу
+					if (!isolated)
+						z = 0;
+
 					InitMonster (mMaker, enemies[m_zom]);
 					countEnemy = true;
 
@@ -124,7 +160,9 @@ namespace RD_AAOW
 
 				// Крабы
 				case m_hed:
-					z = 0;  // Только на полу
+					if (!isolated)
+						z = 0;
+
 					InitMonster (mMaker, enemies[m_hed]);
 					countEnemy = true;
 					break;
@@ -145,7 +183,7 @@ namespace RD_AAOW
 				case m_tur:
 					int t = RDGenerics.RND.Next (turrets.Length);
 					InitMonster (false, turrets[t]);
-					bool turret = (t < 2);
+					bool turret = (t < 2);	// Не sentry
 
 					if (!MapSupport.TwoFloors)
 						{
@@ -156,12 +194,12 @@ namespace RD_AAOW
 					else
 						{
 						bool chance = (RDGenerics.RND.Next (2) == 0);
-						if (turret && !CeilingNotAllowed && chance)
+						if (turret && !noCeiling && chance)
 							{
 							z = MapSupport.WallHeight;
 							MapSupport.Write ("\"orientation\" \"1\"\n");
 							}
-						else if (!turret && AllowSecondFloor && chance)
+						else if (!turret && secondFloor && chance)
 							{
 							z = MapSupport.DefaultWallHeight - 16;
 							}
@@ -179,21 +217,28 @@ namespace RD_AAOW
 
 				// Контроллеры
 				case m_con:
-					z = MapSupport.WallHeight - 96;    // Ближе к потолку
+					// Если этажи не изолированы, то ближе к потолку
+					if (!isolated)
+						z = MapSupport.WallHeight - 96;
+
 					InitMonster (mMaker, enemies[m_con]);
 					countEnemy = true;
 					break;
 
 				// Собаки
 				case m_hou:
-					z = 0;  // Только на полу
+					if (!isolated)
+						z = 0;
+
 					InitMonster (mMaker, enemies[m_hou]);
 					countEnemy = true;
 					break;
 
 				// Барнаклы
 				case m_brn:
-					z = MapSupport.WallHeight;  // Только на потолке
+					// Только на потолке, если ранее было получено разрешение
+					z = MapSupport.WallHeight;
+
 					InitMonster (false, enemies[m_brn]);
 					countEnemy = true;
 					break;
@@ -204,7 +249,11 @@ namespace RD_AAOW
 					noMM = true;
 
 					MapSupport.Write ("\"spawnflags\" \"1\"\n");
+					
 					z = 16 + RDGenerics.RND.Next (2) * 48;
+					if (isolated && (RDGenerics.RND.Next (2) != 0))
+						z += MapSupport.DefaultWallHeight - 16;
+
 					int off = MapSupport.WallLength / 2 - 16;
 
 					switch (rWalls[RDGenerics.RND.Next (rWalls.Count)])
@@ -236,7 +285,7 @@ namespace RD_AAOW
 			// Обработка монстр-мейкеров или создание ачивки
 			if (!mMaker)
 				{
-				if (AllowMonsterMakers && !noMM && (RDGenerics.RND.Next (3) == 0))
+				if (canBeMM && !noMM && (RDGenerics.RND.Next (3) == 0))
 					{
 					availableMMNumber++;
 					nextMMName = "MM" + MapSupport.BuildMapName () + "T" +

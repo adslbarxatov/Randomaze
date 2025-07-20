@@ -393,6 +393,110 @@ namespace RD_AAOW
 		};
 
 	/// <summary>
+	/// Флаги добавления освещения
+	/// </summary>
+	public enum MapLightFlags
+		{
+		/// <summary>
+		/// Без параметров (добавляется источник света на потолок)
+		/// </summary>
+		None = 0x00,
+
+		/// <summary>
+		/// Добавляется лампочка (а не источник света)
+		/// </summary>
+		Bulb = 0x01,
+
+		/// <summary>
+		/// Добавление применяется к площадке (а не к потолку)
+		/// </summary>
+		Balcony = 0x02,
+
+		/// <summary>
+		/// Этажи полностью изолированы
+		/// </summary>
+		FloorsIsolation = 0x04,
+		}
+
+	/// <summary>
+	/// Доступные варианты звуковых эффектов для переходов между секциями
+	/// </summary>
+	public enum MapSoundTriggerTypes
+		{
+		/// <summary>
+		/// Начало карты
+		/// </summary>
+		MapStart,
+
+		/// <summary>
+		/// Окно между секциями
+		/// </summary>
+		Window,
+
+		/// <summary>
+		/// Окно между секциями на втором этаже в случае изоляции
+		/// </summary>
+		WindowOnSecondFloor,
+
+		/// <summary>
+		/// Подъёмник
+		/// </summary>
+		Jumppad,
+		}
+
+	/// <summary>
+	/// Типы пространств для звукового эффекта
+	/// </summary>
+	public enum MapSoundTriggerRooms
+		{
+		/// <summary>
+		/// Открытый воздух
+		/// </summary>
+		None = 0,
+
+		/// <summary>
+		/// Малый коридор
+		/// </summary>
+		Small = 17,
+
+		/// <summary>
+		/// Средний коридор
+		/// </summary>
+		Medium = 18,
+
+		/// <summary>
+		/// Большой коридор
+		/// </summary>
+		Large = 19,
+		}
+
+	/// <summary>
+	/// Параметры создания точки входа на карту
+	/// </summary>
+	public enum MapEntryPointFlags
+		{
+		/// <summary>
+		/// Без параметров
+		/// </summary>
+		None = 0x00,
+
+		/// <summary>
+		/// Точка находится под открытым небом
+		/// </summary>
+		IsUnderSky = 0x01,
+
+		/// <summary>
+		/// На карте есть большие открытые пространства
+		/// </summary>
+		WallsAreRare = 0x02,
+
+		/// <summary>
+		/// Этажи изолированы друг от друга
+		/// </summary>
+		FloorsIsolation = 0x04,
+		}
+
+	/// <summary>
 	/// Класс обеспечивает вспомогательные методы для создания карт Xash3D
 	/// </summary>
 	public static class MapSupport
@@ -724,8 +828,6 @@ namespace RD_AAOW
 			Write ("\"map\" \"" + mapName + "\"\n");
 			Write ("\"landmark\" \"" + mapName + "m\"\n");
 
-			/*string[] trigger = [Trigger Texture, Trigger Texture, Trigger Texture, Trigger Texture,
-				Trigger Texture, Trigger Texture];*/
 			WriteBlock ((p.X - 8).ToString (), (p.Y - 8).ToString (), "16",
 				(p.X + 8).ToString (), (p.Y + 8).ToString (), (wallHeight - 16).ToString (),
 				triggerBox, BlockTypes.Default);
@@ -749,7 +851,7 @@ namespace RD_AAOW
 			Write ("{\n");
 			AddEntity (MapClasses.Door);
 			Write ("\"angles\" \"90 0 0\"\n");
-			Write ("\"speed\" \"70\"\n");
+			Write ("\"speed\" \"40\"\n");
 			Write ("\"movesnd\" \"2\"\n");
 			Write ("\"stopsnd\" \"11\"\n");
 			Write ("\"wait\" \"-1\"\n");
@@ -758,7 +860,6 @@ namespace RD_AAOW
 			if (MapNumber <= MapsLimit)
 				Write ("\"targetname\" \"" + SecondGateName + "\"\n");
 
-			/*string tex = GreenMetalTexture;*/
 			string[] tex6 = [GreenMetalTexture, GreenMetalTexture, GreenMetalTexture,
 				GreenMetalTexture, GreenMetalTexture, GreenMetalTexture];
 			WriteBlock ((p.X - 12).ToString (), (p.Y - 12).ToString (), "0",
@@ -772,6 +873,35 @@ namespace RD_AAOW
 				tex6, BlockTypes.Default);
 			WriteBlock ((p.X + 8).ToString (), (p.Y + 8).ToString (), "0",
 				(p.X + 12).ToString (), (p.Y + 12).ToString (), WallHeight.ToString (),
+				tex6, BlockTypes.Default);
+
+			Write ("}\n");
+			}
+
+		/// <summary>
+		/// Метод записывает этажный подъёмник на карту
+		/// </summary>
+		/// <param name="RelativePosition">Относительная позиция точки выхода</param>
+		public static void WriteMapJumppad (Point RelativePosition)
+			{
+			// Расчёт параметров
+			Point p = EvaluateAbsolutePosition (RelativePosition);
+
+			// Запись
+			Write ("{\n");
+			AddEntity (MapClasses.Door);
+			Write ("\"angles\" \"90 0 0\"\n");
+			Write ("\"speed\" \"70\"\n");
+			Write ("\"movesnd\" \"7\"\n");
+			Write ("\"stopsnd\" \"7\"\n");
+			Write ("\"wait\" \"-1\"\n");
+			Write ("\"lip\" \"4\"\n");
+			Write ("\"spawnflags\" \"33\"\n");
+
+			string[] tex6 = [GreenMetalTexture, "BorderRub01", "BorderRub01",
+				"BorderRub01", "BorderRub01", "BorderRub01"];
+			WriteBlock ((p.X - 16).ToString (), (p.Y - 16).ToString (), "0",
+				(p.X + 16).ToString (), (p.Y + 16).ToString (), (DefaultWallHeight - 16).ToString (),
 				tex6, BlockTypes.Default);
 
 			Write ("}\n");
@@ -874,20 +1004,20 @@ namespace RD_AAOW
 		/// </summary>
 		/// <param name="RelativePosition">Относительная позиция точки входа</param>
 		/// <param name="GravityLevel">Уровень гравитации на карте (10 = 100%)</param>
-		/// <param name="IsUnderSky">Флаг указывает, расположена ли точка входа под небом</param>
+		/// <param name="Flags">Параметры точки входа</param>
 		/// <param name="FogLevel">Уровень тумана на карте (10 = 100%)</param>
-		/// <param name="WallsAreRare">Флаг указывает на редкость стен на карте</param>
 		public static void WriteMapEntryPoint (Point RelativePosition,
-			uint GravityLevel, uint FogLevel, bool IsUnderSky, bool WallsAreRare)
+			uint GravityLevel, uint FogLevel, MapEntryPointFlags Flags)
 			{
 			// Расчёт параметров
 			Point p = EvaluateAbsolutePosition (RelativePosition);
 
+			/*bool underSky = Flags.HasFlag (MapEntryPointFlags.IsUnderSky);
+			bool rareWalls = Flags.HasFlag (MapEntryPointFlags.WallsAreRare);
+			bool isolated = Flags.HasFlag (MapEntryPointFlags.FloorsIsolation);*/
+
 			string xs = p.X.ToString ();
 			string ys = p.Y.ToString ();
-
-			/*string[] trigger = [Trigger Texture, Trigger Texture, Trigger Texture, Trigger Texture,
-					Trigger Texture, Trigger Texture];*/
 
 			// Первая карта
 			if (MapNumber == 1)
@@ -942,20 +1072,81 @@ namespace RD_AAOW
 			Write ("}\n");
 
 			// Звуковой триггер
-			byte rt;
+			/*byte rt;
 			byte offset = (byte)(TwoFloors ? 1 : 0);
 			if (IsUnderSky)
 				rt = 0;
 			else if (WallsAreRare)
 				rt = (byte)(18 + offset);
 			else
-				rt = (byte)(17 + offset);
+				rt = (byte)(17 + offset);*/
+			MapSoundTriggerRooms rt;
+			if (Flags.HasFlag (MapEntryPointFlags.FloorsIsolation))
+				rt = MapSoundTriggerRooms.Small;
+			else
+				rt = GetRoomType (Flags);
+			/*if (!isolated)
+				{
+				if (underSky)
+					{
+					rt = MapSoundTriggerRooms.None;
+					}
+				else
+					{
+					if (rareWalls)
+						rt = TwoFloors ? MapSoundTriggerRooms.Large : MapSoundTriggerRooms.Medium;
+					else
+						rt = TwoFloors ? MapSoundTriggerRooms.Medium : MapSoundTriggerRooms.Small;
+					}
+				}
+			else
+				{
+				if (rareWalls)
+					rt = MapSoundTriggerRooms.Medium;
+				else
+					rt = MapSoundTriggerRooms.Small;
+				}*/
 
-			WriteMapSoundTrigger (RelativePosition, false, rt, 0);
+			WriteMapSoundTrigger (RelativePosition, MapSoundTriggerTypes.MapStart, rt,
+				MapSoundTriggerRooms.None);
 
 			// Остальное
 			WriteMapPortal (RelativePosition, false);
 			WriteMapSound (RelativePosition, "Teleport1", AmbientTypes.None);
+			}
+
+		/// <summary>
+		/// Метод определяет тип комнаты по флага инициализации точки входа
+		/// </summary>
+		/// <param name="Flags">Параметры инициализации точки входа</param>
+		public static MapSoundTriggerRooms GetRoomType (MapEntryPointFlags Flags)
+			{
+			MapSoundTriggerRooms rt;
+			if (!Flags.HasFlag (MapEntryPointFlags.FloorsIsolation))
+				{
+				if (Flags.HasFlag (MapEntryPointFlags.IsUnderSky))
+					{
+					rt = MapSoundTriggerRooms.None;
+					}
+				else
+					{
+					if (Flags.HasFlag (MapEntryPointFlags.WallsAreRare))
+						rt = TwoFloors ? MapSoundTriggerRooms.Large : MapSoundTriggerRooms.Medium;
+					else
+						rt = TwoFloors ? MapSoundTriggerRooms.Medium : MapSoundTriggerRooms.Small;
+					}
+				}
+			else
+				{
+				/*if (Flags.HasFlag (MapEntryPointFlags.WallsAreRare))
+					rt = MapSoundTriggerRooms.Medium;*/
+				if (Flags.HasFlag (MapEntryPointFlags.IsUnderSky))
+					rt = MapSoundTriggerRooms.None;
+				else
+					rt = MapSoundTriggerRooms.Small;
+				}
+
+			return rt;
 			}
 
 		// Метод записывает блок по указанным коориданатм
@@ -1025,11 +1216,11 @@ namespace RD_AAOW
 		/// Метод записывает звуковой триггер на карту
 		/// </summary>
 		/// <param name="RelativePosition">Относительная позиция точки входа</param>
-		/// <param name="ForWindow">Флаг двунаправленного триггера для окон</param>
+		/// <param name="TriggerType">Тип триггера</param>
 		/// <param name="RoomTypeLeft">Тип окружения слева (для всех)</param>
 		/// <param name="RoomTypeRight">Тип окружения справа (для оконных)</param>
-		public static void WriteMapSoundTrigger (Point RelativePosition, bool ForWindow,
-			byte RoomTypeLeft, byte RoomTypeRight)
+		public static void WriteMapSoundTrigger (Point RelativePosition, MapSoundTriggerTypes TriggerType,
+			MapSoundTriggerRooms RoomTypeLeft, MapSoundTriggerRooms RoomTypeRight)
 			{
 			// Расчёт параметров
 			Point p = EvaluateAbsolutePosition (RelativePosition);
@@ -1038,39 +1229,61 @@ namespace RD_AAOW
 			// Запись
 			Write ("{\n");
 			AddEntity (MapClasses.SoundEffect);
-			Write ("\"roomtype\" \"" + RoomTypeLeft.ToString () + "\"\n");
-			Write ("\"roomtype2\" \"" + RoomTypeRight.ToString () + "\"\n");
-			Write ("\"spawnflags\" \"" + (ForWindow ? "1" : "0") + "\"\n");
+			
+			byte rtl = (byte)RoomTypeLeft;
+			byte rtr = (byte)RoomTypeRight;
+			Write ("\"roomtype\" \"" + rtl.ToString () + "\"\n");
+			Write ("\"roomtype2\" \"" + rtr.ToString () + "\"\n");
+			Write ("\"spawnflags\" \"" + ((TriggerType > MapSoundTriggerTypes.MapStart) ? "1" : "0") + "\"\n");
 
 			// Вертикальная
-			if (ForWindow)
+			/*if (ForWindow)*/
+			switch (TriggerType)
 				{
-				z1 = "16";
-				z2 = (WallHeight - 16).ToString ();
+				case MapSoundTriggerTypes.Window:
+				case MapSoundTriggerTypes.WindowOnSecondFloor:
+					z1 = ((TriggerType == MapSoundTriggerTypes.WindowOnSecondFloor) ?
+						DefaultWallHeight - 16 + 16 : 16).ToString ();
+					z2 = (WallHeight - 16).ToString ();
 
-				if (WallsSupport.IsWallVertical (RelativePosition))
-					{
-					x1 = (p.X - 4).ToString ();
-					y1 = (p.Y - 56).ToString ();
-					x2 = (p.X + 4).ToString ();
-					y2 = (p.Y + 56).ToString ();
-					}
+					if (WallsSupport.IsWallVertical (RelativePosition))
+						{
+						x1 = (p.X - 4).ToString ();
+						y1 = (p.Y - 56).ToString ();
+						x2 = (p.X + 4).ToString ();
+						y2 = (p.Y + 56).ToString ();
+						}
+					else
+						{
+						x1 = (p.X - 56).ToString ();
+						y1 = (p.Y - 4).ToString ();
+						x2 = (p.X + 56).ToString ();
+						y2 = (p.Y + 4).ToString ();
+						}
+					break;
+
+				/*}
 				else
-					{
-					x1 = (p.X - 56).ToString ();
-					y1 = (p.Y - 4).ToString ();
-					x2 = (p.X + 56).ToString ();
-					y2 = (p.Y + 4).ToString ();
-					}
-				}
-			else
-				{
-				x1 = (p.X - 32).ToString ();
-				y1 = (p.Y - 32).ToString ();
-				x2 = (p.X + 32).ToString ();
-				y2 = (p.Y + 32).ToString ();
-				z1 = "16";
-				z2 = "20";
+				{*/
+
+				case MapSoundTriggerTypes.MapStart:
+				default:
+					x1 = (p.X - 32).ToString ();
+					y1 = (p.Y - 32).ToString ();
+					x2 = (p.X + 32).ToString ();
+					y2 = (p.Y + 32).ToString ();
+					z1 = "16";
+					z2 = "20";
+					break;
+
+				case MapSoundTriggerTypes.Jumppad:
+					x1 = (p.X - 52).ToString ();
+					y1 = (p.Y - 52).ToString ();
+					x2 = (p.X + 52).ToString ();
+					y2 = (p.Y + 52).ToString ();
+					z1 = (DefaultWallHeight - 16).ToString ();
+					z2 = (DefaultWallHeight - 12).ToString ();
+					break;
 				}
 
 			// Запись
@@ -1085,8 +1298,9 @@ namespace RD_AAOW
 		/// <param name="NearbyWalls">Список окружающих стен</param>
 		/// <param name="RelativePosition">Относительная позиция точки выхода</param>
 		/// <param name="SecondButton">Флаг, указывающий на формирование второй (дополнительной) кнопки</param>
+		/// <param name="FloorsIsolation">Флаг изоляции этажей</param>
 		public static void WriteMapButton (Point RelativePosition, List<CPResults> NearbyWalls,
-			bool SecondButton)
+			bool SecondButton, bool FloorsIsolation)
 			{
 			// Расчёт параметров
 			Point p = EvaluateAbsolutePosition (RelativePosition);
@@ -1111,17 +1325,18 @@ namespace RD_AAOW
 
 			Write ("\"wait\" \"-1\"\n");
 
-			WriteMapFurniture (RelativePosition,
+			bool secondFloor = WriteMapFurniture (RelativePosition,
 				SecondButton ? FurnitureTypes.ExitTeleportButton : FurnitureTypes.ExitGateButton,
-				NearbyWalls, GreenMetalTexture);
+				NearbyWalls, GreenMetalTexture, FloorsIsolation);
 
 			Write ("}\n{\n");
 			AddEntity (MapClasses.Autosave);
 
-			/*string[] trigger = [Trigger Texture, Trigger Texture, Trigger Texture, Trigger Texture,
-				Trigger Texture, Trigger Texture];*/
-			WriteBlock ((p.X - 32).ToString (), (p.Y - 32).ToString (), "12",
-				(p.X + 32).ToString (), (p.Y + 32).ToString (), "16",
+			int y = 12;
+			if (secondFloor)
+				y += (DefaultWallHeight - 16);
+			WriteBlock ((p.X - 32).ToString (), (p.Y - 32).ToString (), y.ToString (),
+				(p.X + 32).ToString (), (p.Y + 32).ToString (), (y + 4).ToString (),
 				triggerBox, BlockTypes.Default);
 
 			Write ("}\n");
@@ -1169,16 +1384,17 @@ namespace RD_AAOW
 		/// <param name="CratesBalance">Баланс ящиков между предметами и взрывчаткой</param>
 		/// <param name="ItemPermissions">Строка разрешений для объектов в ящиках</param>
 		/// <param name="EnemiesPermissions">Строка разрешений для врагов в ящиках (крабы, снарки)</param>
+		/// <param name="FloorsIsolation">Флаг изоляции этажей</param>
 		public static void WriteMapCrate (Point RelativePosition,
-			int CratesBalance, byte[] ItemPermissions, byte[] EnemiesPermissions)
+			int CratesBalance, byte[] ItemPermissions, byte[] EnemiesPermissions, bool FloorsIsolation)
 			{
 			// Расчёт параметров
 			Point p = EvaluateAbsolutePosition (RelativePosition);
 
-			string x1 = (p.X - 16).ToString ();
+			/*string x1 = (p.X - 16).ToString ();
 			string y1 = (p.Y - 16).ToString ();
 			string x2 = (p.X + 16).ToString ();
-			string y2 = (p.Y + 16).ToString ();
+			string y2 = (p.Y + 16).ToString ();*/
 
 			bool explosive = CratesBalance >
 				RDGenerics.RND.Next (-ESRMSettings.CratesBalanceRange, ESRMSettings.CratesBalanceRange);
@@ -1203,7 +1419,6 @@ namespace RD_AAOW
 				{
 				bool factor1 = EnemiesSupport.IsHeadcrabAllowed (EnemiesPermissions);
 				int r = RDGenerics.RND.Next (factor1 ? 5 : 4);
-				/*int idx;*/
 
 				// Враги (при запрете хедкрабов увеличивается число ящиков со взрывчаткой)
 				if (factor1 && (r < 3) || !factor1 && (r < 2))
@@ -1244,7 +1459,23 @@ namespace RD_AAOW
 					}
 				}
 
-			WriteBlock (x1, y1, "0", x2, y2, "64", [tex, tex, tex, tex, tex, tex], BlockTypes.Crate);
+			int z = 0;
+			if (FloorsIsolation)
+				z += RDGenerics.RND.Next (2) * DefaultWallHeight;
+
+			WriteBlock ((p.X - 16).ToString (), (p.Y - 16).ToString (), (z + 32).ToString (),
+				(p.X + 16).ToString (), (p.Y + 16).ToString (), (z + 64).ToString (),
+				[tex, tex, tex, tex, tex, tex], BlockTypes.Crate);
+
+			string wood = woodTextures[RDGenerics.RND.Next (woodTextures.Length)];
+			string[] woodBox = [wood, wood, wood, wood, wood, wood];
+
+			WriteBlock ((p.X - 4).ToString (), (p.Y - 4).ToString (), (z + 4).ToString (),
+				(p.X + 4).ToString (), (p.Y + 4).ToString (), (z + 32).ToString (),
+				woodBox, BlockTypes.Crate);
+			WriteBlock ((p.X - 16).ToString (), (p.Y - 16).ToString (), z.ToString (),
+				(p.X + 16).ToString (), (p.Y + 16).ToString (), (z + 4).ToString (),
+				woodBox, BlockTypes.Crate);
 
 			Write ("}\n");
 			}
@@ -1255,8 +1486,7 @@ namespace RD_AAOW
 		/// <param name="RelativePosition">Относительная позиция точки создания</param>
 		/// <param name="Ambient">Тип эмбиента</param>
 		/// <param name="Sound">Звук</param>
-		public static void WriteMapSound (Point RelativePosition, string Sound,
-			AmbientTypes Ambient)
+		public static void WriteMapSound (Point RelativePosition, string Sound, AmbientTypes Ambient)
 			{
 			// Расчёт параметров
 			Point p = EvaluateAbsolutePosition (RelativePosition);
@@ -1336,7 +1566,8 @@ namespace RD_AAOW
 		/// </summary>
 		/// <param name="RelativePosition">Относительная позиция точки создания</param>
 		/// <param name="StartOrFinish">Флаг указывает на начальную или конечную точку пути</param>
-		public static void WriteMapPathStone (Point RelativePosition, bool StartOrFinish)
+		/// <param name="SecondFloorNeeded">Флаг необходимости дублирования на втором этаже</param>
+		public static void WriteMapPathStone (Point RelativePosition, bool StartOrFinish, bool SecondFloor)
 			{
 			// Расчёт параметров
 			Point p = EvaluateAbsolutePosition (RelativePosition);
@@ -1347,8 +1578,12 @@ namespace RD_AAOW
 			else
 				tex = "~Path01";
 
-			WriteBlock ((p.X - 8).ToString (), (p.Y - 8).ToString (), "-8",
-				(p.X + 8).ToString (), (p.Y + 8).ToString (), "0",
+			int z = 0;
+			if (SecondFloor)
+				z += (DefaultWallHeight - 16);
+
+			WriteBlock ((p.X - 8).ToString (), (p.Y - 8).ToString (), (z - 8).ToString (),
+				(p.X + 8).ToString (), (p.Y + 8).ToString (), z.ToString (),
 				[tex, tex, tex, tex, tex, tex], BlockTypes.Default);
 			}
 
@@ -1382,15 +1617,13 @@ namespace RD_AAOW
 		/// <summary>
 		/// Метод записывает пол и потолок на карту
 		/// </summary>
-		/// <param name="Section">Секция карты</param>
 		/// <param name="FloorTexture">Текстура пола</param>
 		/// <param name="RoofTexture">Текстура потолка</param>
-		/// <param name="RelativeMapHeight">Относительная ширина карты</param>
-		/// <param name="RelativeMapWidth">Относительная длина карты</param>
-		public static void WriteMapCeilingAndFloor (byte Section, int RelativeMapWidth,
-			int RelativeMapHeight, string RoofTexture, string FloorTexture)
+		/// <param name="RelativePosition">Относительная позиция точки создания</param>
+		public static void WriteMapCeilingAndFloorField (Point RelativePosition, string RoofTexture,
+			string FloorTexture)
 			{
-			// Расчёт параметров
+			/*// Расчёт параметров
 			bool negX = ((Section & NegativeX) != 0);
 			bool negY = ((Section & NegativeY) != 0);
 			int realMapWidth = RelativeMapWidth * WallLength;
@@ -1402,9 +1635,18 @@ namespace RD_AAOW
 			string y2 = (negY ? 0 : (realMapHeight / 2)).ToString ();
 
 			string h2 = (wallHeight + 32).ToString ();
-			string h1 = (IsSkyTexture (RoofTexture) ? (wallHeight + 16) : wallHeight).ToString ();
+			string h1 = (IsSkyTexture (RoofTexture) ? (wallHeight + 16) : wallHeight).ToString ();*/
 
 			// Запись
+			Point p = EvaluateAbsolutePosition (RelativePosition);
+			string x1 = (p.X - 64).ToString ();
+			string x2 = (p.X + 64).ToString ();
+			string y1 = (p.Y - 64).ToString ();
+			string y2 = (p.Y + 64).ToString ();
+
+			string h2 = (wallHeight + 32).ToString ();
+			string h1 = (IsSkyTexture (RoofTexture) ? (wallHeight + 16) : wallHeight).ToString ();
+
 			WriteBlock (x1, y1, "-16", x2, y2, "0",
 				[FloorTexture, FloorTexture, FloorTexture, FloorTexture, FloorTexture, FloorTexture],
 				BlockTypes.Default);
@@ -1491,14 +1733,16 @@ namespace RD_AAOW
 		/// </summary>
 		/// <param name="RelativePosition">Относительная позиция точки создания</param>
 		/// <param name="RoofTexture">Текстура потолка</param>
-		/// <param name="AddingTheBulb">Флаг указывает, что добавляется лампочка, а не источник света</param>
-		/// <param name="SubFloor">Флаг указывает, что свет добавляется к внутренней площадке</param>
+		/// <param name="Flags">Параметры добавления</param>
 		/// <returns>Возвращает true, если добавлен действующий источник света</returns>
-		public static bool WriteMapLight (Point RelativePosition, string RoofTexture,
-			bool AddingTheBulb, bool SubFloor)
+		public static bool WriteMapLight (Point RelativePosition, string RoofTexture, MapLightFlags Flags)
 			{
+			bool bulb = Flags.HasFlag (MapLightFlags.Bulb);
+			bool balcony = Flags.HasFlag (MapLightFlags.Balcony);
+			bool isolated = Flags.HasFlag (MapLightFlags.FloorsIsolation);
+
 			// Защита
-			if (IsSkyTexture (RoofTexture) && !SubFloor && environmentAdded)
+			if (IsSkyTexture (RoofTexture) && !balcony && environmentAdded)
 				return false;
 
 			// Расчёт параметров
@@ -1506,7 +1750,7 @@ namespace RD_AAOW
 
 			// Добавление атмосферного освещения
 			// (флаг лампочки требуется контролировать, т.к. они добавляются раньше)
-			if (!AddingTheBulb && IsSkyTexture (RoofTexture))
+			if (!bulb && IsSkyTexture (RoofTexture))
 				{
 				Write ("{\n");
 				AddEntity (MapClasses.Sun);
@@ -1525,16 +1769,16 @@ namespace RD_AAOW
 
 			// Добавление источника света
 			int z;
-			if (SubFloor)
+			if (balcony)
 				z = DefaultWallHeight - 32;
 			else
 				z = wallHeight;
 
-			if (!AddingTheBulb)
+			if (!bulb)
 				{
 				Write ("{\n");
 				AddEntity (MapClasses.LightSource);
-				Write (SubFloor ? subLightColor : lightColor);
+				Write ((balcony && !isolated) ? subLightColor : lightColor);
 				Write ("\"_fade\" \"1.0\"\n");
 				Write ("\"origin\" \"" + p.X.ToString () + " " + p.Y.ToString () + " " +
 					(z - 8).ToString () + "\"\n");
@@ -1544,11 +1788,12 @@ namespace RD_AAOW
 			// Добавление лампы
 			else if (!IsSkyTexture (RoofTexture))
 				{
-				int d = SubFloor ? 8 : 16;
+				int d = (balcony && !isolated) ? 8 : 16;
 
 				WriteBlock ((p.X - d).ToString (), (p.Y - d).ToString (), (z - 0).ToString (),
 					(p.X + d).ToString (), (p.Y + d).ToString (), (z + 4).ToString (),
-					[RoofTexture, RoofTexture, RoofTexture, RoofTexture, RoofTexture, SubFloor ? "~PATH01" : "~LAMP07"],
+					[RoofTexture, RoofTexture, RoofTexture, RoofTexture, RoofTexture,
+					(balcony && !isolated) ? "~PATH01" : "~LAMP07"],
 					BlockTypes.Default);
 
 				return false;
@@ -1577,15 +1822,18 @@ namespace RD_AAOW
 		/// <param name="NearbyWalls">Доступные (с указанной позиции) стены</param>
 		/// <param name="WallTexture">Текстура окружающей стены</param>
 		/// <param name="FurnitureType">Индекс мебели</param>
-		public static void WriteMapFurniture (Point RelativePosition, FurnitureTypes FurnitureType,
-			List<CPResults> NearbyWalls, string WallTexture)
+		/// <param name="FloorsIsolation">Флаг изоляции этажей</param>
+		/// <returns>Возвращает true, если записанная мебель доступна также и на втором этаже</returns>
+		public static bool WriteMapFurniture (Point RelativePosition, FurnitureTypes FurnitureType,
+			List<CPResults> NearbyWalls, string WallTexture, bool FloorsIsolation)
 			{
 			// Расчёт параметров
 			Point p = EvaluateAbsolutePosition (RelativePosition);
 			CPResults placement = NearbyWalls[RDGenerics.RND.Next (NearbyWalls.Count)];
+			bool secondFloor = false;
 
 			// Расчёт координат
-			Furniture f = Furniture.GetFurniture (FurnitureType, placement);
+			Furniture f = Furniture.GetFurniture (FurnitureType, placement, FloorsIsolation);
 			for (uint b = 0; b < f.BlocksCount; b++)
 				{
 				int[] coords = f.GetCoordinates (b);
@@ -1595,6 +1843,9 @@ namespace RD_AAOW
 				coords[3] += p.X;
 				coords[1] += p.Y;
 				coords[4] += p.Y;
+
+				if ((coords[2] > DefaultWallHeight) || (coords[5] > DefaultWallHeight))
+					secondFloor = true;
 
 				// Сборка линии текстур
 				string[] tex = f.GetTextures (b);
@@ -1608,6 +1859,8 @@ namespace RD_AAOW
 				WriteBlock (coords[0].ToString (), coords[1].ToString (), coords[2].ToString (),
 					coords[3].ToString (), coords[4].ToString (), coords[5].ToString (), tex, BlockTypes.Door);
 				}
+
+			return secondFloor;
 			}
 
 		/// <summary>
@@ -1615,32 +1868,32 @@ namespace RD_AAOW
 		/// </summary>
 		/// <param name="RelativePosition">Относительная позиция точки создания</param>
 		/// <param name="SubFloorTexture">Текстура внутренней площадки</param>
-		public static void WriteMapSubFloor (Point RelativePosition, string SubFloorTexture)
+		/// <param name="FloorTexture">Текстура пола в текущей секции</param>
+		/// <param name="Isolated">Флаг изоляции этажей</param>
+		public static void WriteMapSubFloor (Point RelativePosition, string FloorTexture,
+			string SubFloorTexture, bool Isolated)
 			{
-			WriteSubFloor (RelativePosition, SubFloorTexture, null);
+			WriteSubFloor (RelativePosition, FloorTexture, SubFloorTexture, null, Isolated);
 			}
 
 		/// <summary>
 		/// Метод записывает зацеп к внутренней площадке на карту
 		/// </summary>
 		/// <param name="RelativePosition">Относительная позиция точки создания</param>
-		public static void WriteMapSubFloor (Point RelativePosition,
-			List<CPResults> SurroundingWalls)
+		/// <param name="SurroundingWalls">Перечень стен, окружающих площадку</param>
+		public static void WriteMapSubFloor (Point RelativePosition, List<CPResults> SurroundingWalls)
 			{
-			WriteSubFloor (RelativePosition, null, SurroundingWalls);
+			WriteSubFloor (RelativePosition, null, null, SurroundingWalls, false);
 			}
 
 		// Универсальный метод записи внутренней площадки
-		private static void WriteSubFloor (Point RelativePosition, string SubFloorTexture,
-			List<CPResults> SurroundingWalls)
+		private static void WriteSubFloor (Point RelativePosition, string FloorTexture, string SubFloorTexture,
+			List<CPResults> SurroundingWalls, bool Isolated)
 			{
 			// Расчёт параметров
 			Point p = EvaluateAbsolutePosition (RelativePosition);
 
 			// Сборка линии текстур
-			/*string[] tex = new string[6];
-			for (int i = 0; i < tex.Length; i++)
-				tex[i] = (SurroundingWalls != null) ? Trigger Texture : SubFloorTexture;*/
 			string[] tex;
 			if (SurroundingWalls != null)
 				{
@@ -1648,14 +1901,13 @@ namespace RD_AAOW
 				}
 			else
 				{
-				tex = [SubFloorTexture, SubFloorTexture, SubFloorTexture, SubFloorTexture,
+				tex = [FloorTexture, SubFloorTexture, SubFloorTexture, SubFloorTexture,
 					SubFloorTexture, SubFloorTexture];
+				int offset = Isolated ? 64 : 56;
 
 				// Запись площадки
-				/*if (SurroundingWalls == null)
-				{*/
-				WriteBlock ((p.X - 56).ToString (), (p.Y - 56).ToString (), (DefaultWallHeight - 32).ToString (),
-					(p.X + 56).ToString (), (p.Y + 56).ToString (), (DefaultWallHeight - 16).ToString (),
+				WriteBlock ((p.X - offset).ToString (), (p.Y - offset).ToString (), (DefaultWallHeight - 32).ToString (),
+					(p.X + offset).ToString (), (p.Y + offset).ToString (), (DefaultWallHeight - 16).ToString (),
 					tex, BlockTypes.Door);
 				return;
 				}
@@ -1750,7 +2002,7 @@ namespace RD_AAOW
 			return true;
 			}
 
-		/// <summary>
+		/*/// <summary>
 		/// Метод записывает межстенный заполнитель (для удаления недоступных пространств из компилируемой зоны)
 		/// </summary>
 		/// <param name="RelativePosition">Относительная позиция точки выхода</param>
@@ -1761,7 +2013,7 @@ namespace RD_AAOW
 			WriteBlock ((p.X - WallLength / 2).ToString (), (p.Y - WallLength / 2).ToString (), "0",
 				(p.X + WallLength / 2).ToString (), (p.Y + WallLength / 2).ToString (), (WallHeight + 32).ToString (),
 				["BLACK", "BLACK", "BLACK", "BLACK", "BLACK", "BLACK"], BlockTypes.Default);
-			}
+			}*/
 
 		/// <summary>
 		/// Метод записывает точку навигационной сетки на карту
@@ -1800,10 +2052,11 @@ namespace RD_AAOW
 		/// <summary>
 		/// Метод создаёт (инициализирует) новый файл карты и создаёт дескриптор записи
 		/// </summary>
-		/// <param name="AppSettings">Инициализированный экземпляр настроек программы</param>
 		/// <param name="MapPath">Путь для сохранения карты</param>
+		/// <param name="OutsideLightingCoefficient">Коэффициент освещённости вне помещений</param>
+		/// <param name="TwoFloors">Флаг наличия второго этажа</param>
 		/// <returns>Возвращает true, если создание файла завершилось успехом</returns>
-		public static bool OpenMapFile (string MapPath, ESRMSettings AppSettings)
+		public static bool OpenMapFile (string MapPath, uint OutsideLightingCoefficient, bool TwoFloors)
 			{
 			try
 				{
@@ -1825,7 +2078,7 @@ namespace RD_AAOW
 			// Инициализация неба
 			skyIndex = RDGenerics.RND.Next (skyTypes.Length / 2);
 
-			float inc = (AppSettings.OutsideLightingCoefficient - 1.0f) /
+			float inc = (/*AppSettings.*/OutsideLightingCoefficient - 1.0f) /
 				(ESRMSettings.MaximumOutsideLightingCoefficient - 1.0f);
 			if (inc < 0.0f)
 				inc = 0.0f;
@@ -1861,14 +2114,14 @@ namespace RD_AAOW
 				{
 				lightColor = "\"_light\" \"" + (224 + RDGenerics.RND.Next (32)).ToString () + " " +
 					(224 + RDGenerics.RND.Next (32)).ToString () + " " +
-					(112 + RDGenerics.RND.Next (32)).ToString () + " " + (AppSettings.TwoFloors ? "200" : "150") + "\"\n";
+					(112 + RDGenerics.RND.Next (32)).ToString () + " " + (/*AppSettings.*/TwoFloors ? "200" : "150") + "\"\n";
 				subLightColor = "\"_light\" \"" + (224 + RDGenerics.RND.Next (32)).ToString () + " " +
 					(224 + RDGenerics.RND.Next (32)).ToString () + " " +
 					(112 + RDGenerics.RND.Next (32)).ToString () + " 100\"\n";
 				}
 
 			// Выбор высоты карты
-			if (AppSettings.TwoFloors)
+			if (/*AppSettings.*/TwoFloors)
 				wallHeight = DoubleWallHeight;
 			else
 				wallHeight = DefaultWallHeight;
