@@ -6,6 +6,7 @@ ToDo:
 - Get rid of DWS-16
 - Controller stucks in the floor in 4th mode
 - Lighting coefficient should be applied to the first floor
+- Update the user guide
 
 Version 7.0:
 • Implemented the complete floors separation. Now you can generate maps with two almost
