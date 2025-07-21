@@ -1,12 +1,15 @@
 Randomaze: changes log
 
 ToDo:
-- Separate glasses for floors (required to properly detect blasts);
 - Separate walls density from the maze size;
-- Get rid of DWS-16
-- Controller stucks in the floor in 4th mode
-- Lighting coefficient should be applied to the first floor
-- Update the user guide
+
+Version 7.0.4:
+• Fixed the alien_controller placement on the isolated floor;
+• Glasses for the first and the second floor have been splitted in isolation mode;
+• Balconies and the second floor are not placed a bit higher (120pts vs 112pts);
+• Fixed the lighting coefficient for the first floor in the isolation mode;
+• Jumppads control changed from manual to auto;
+• Updated the user guide
 
 Version 7.0:
 • Implemented the complete floors separation. Now you can generate maps with two almost

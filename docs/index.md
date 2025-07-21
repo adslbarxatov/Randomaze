@@ -63,8 +63,7 @@ The tool requires next compilation tools, directories and files for work:
 | Gravity coefficient | Affects the gravity percentage for all objects on the map | 1 – 20 (10 = 100%) | Yes | `GR` | `esrm_gravity` |
 | Button mode | Adds the button(s) that should be found and pressed to open the exit gate | Quantity, 1 / 2 / 3 | No | `BM` | `esrm_button` |
 | Map section types | Sets allowed types of map sections (*all*, *only under sky* or *only inside*) | 1 / 2 / 3 | No | `ST` | `esrm_sections` |
-| Two floors flag | Adds the second floor to the map with some balconies and enemies | 0 / 1 | Yes | `TF` | `esrm_two_floors` |
-| Allow items on the second floor | Permits the generation of items for balconies | 0 / 1 | Yes | `TF` | `esrm_two_floors` |
+| Floors type | Sets the floors type for the map | 1 (single floor), 2 (balconies, no items), 3 (balconies, items), 4 (two separated floors) | Yes | `TF` | `esrm_floors_type` |
 | Allow monster makers flag | Allows replacement of some monsters with monster makers | 0 / 1 | No | `MM` | `esrm_makers` |
 | Map barrier types | Sets allowed types of barriers between map sections (*glass*, *fabric* or *both*) | 1 / 2 / 3 | No | `BT` | `esrm_barriers` |
 | Fog coefficient | Affects the fog density percentage on the map | 0 – 10 (0 = 0%, 10 = 100%) | Yes | `FC` | `esrm_fog` |

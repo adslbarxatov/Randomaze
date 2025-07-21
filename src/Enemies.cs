@@ -96,7 +96,7 @@ namespace RD_AAOW
 			// Добавление
 			int z;
 			if (secondFloor && (RDGenerics.RND.Next (4) != 0) || isolated && (RDGenerics.RND.Next (2) != 0))
-				z = MapSupport.DefaultWallHeight - 16;
+				z = MapSupport.BalconyHeight;
 			else
 				z = 0;
 			int r = RDGenerics.RND.Next (360);
@@ -201,7 +201,7 @@ namespace RD_AAOW
 							}
 						else if (!turret && secondFloor && chance)
 							{
-							z = MapSupport.DefaultWallHeight - 16;
+							z = MapSupport.BalconyHeight;
 							}
 						else
 							{
@@ -217,8 +217,10 @@ namespace RD_AAOW
 
 				// Контроллеры
 				case m_con:
-					// Если этажи не изолированы, то ближе к потолку
-					if (!isolated)
+					// Всегда ближе к потолку
+					if (isolated)
+						z = MapSupport.WallHeight - 88;
+					else
 						z = MapSupport.WallHeight - 96;
 
 					InitMonster (mMaker, enemies[m_con]);
@@ -252,7 +254,7 @@ namespace RD_AAOW
 					
 					z = 16 + RDGenerics.RND.Next (2) * 48;
 					if (isolated && (RDGenerics.RND.Next (2) != 0))
-						z += MapSupport.DefaultWallHeight - 16;
+						z += MapSupport.BalconyHeight;
 
 					int off = MapSupport.WallLength / 2 - 16;
 

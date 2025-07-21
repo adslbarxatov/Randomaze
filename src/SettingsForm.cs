@@ -185,7 +185,7 @@ namespace RD_AAOW
 			TwoFloorsFlag_CheckedChanged (null, null);
 
 			CratesDensityTrack.Maximum = (int)ESRMSettings.MaximumCratesDensityCoefficient2;
-			CratesDensityTrack.Value = (int)settings.CratesDensityCoefficient2+1;
+			CratesDensityTrack.Value = (int)settings.CratesDensityCoefficient2 + 1;
 			CratesDensityFlag.Checked = settings.RandomCratesDensityCoefficient2;
 
 			CratesBalanceTrack.Minimum = -ESRMSettings.CratesBalanceRange;

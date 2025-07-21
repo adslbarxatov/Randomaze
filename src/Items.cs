@@ -114,10 +114,10 @@ namespace RD_AAOW
 					break;
 				}
 
-		finishItem:
+			finishItem:
 			int z = Flags.HasFlag (MapItemFlags.ForceFloorPlacement) ? 0 : 40;
 			if (Flags.HasFlag (MapItemFlags.AllowSecondFloor))
-				z += (RDGenerics.RND.Next (2) * (MapSupport.DefaultWallHeight - 16));
+				z += (RDGenerics.RND.Next (2) * MapSupport.BalconyHeight);
 
 			MapSupport.Write ("\"angles\" \"0 " + RDGenerics.RND.Next (360) + " 0\"\n");
 			MapSupport.Write ("\"origin\" \"" + p.X.ToString () + " " + p.Y.ToString () + " " +

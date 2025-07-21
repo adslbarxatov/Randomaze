@@ -3,6 +3,37 @@
 namespace RD_AAOW
 	{
 	/// <summary>
+	/// Возможные типы соседних препятствий
+	/// </summary>
+	public enum WallsNeighborsTypes
+		{
+		/// <summary>
+		/// Обычная стена
+		/// </summary>
+		Wall,
+
+		/// <summary>
+		/// Шлюз
+		/// </summary>
+		Gate,
+
+		/// <summary>
+		/// Окно
+		/// </summary>
+		Window,
+
+		/// <summary>
+		/// Окно под углом к стене
+		/// </summary>
+		WindowCorner,
+
+		/// <summary>
+		/// Свободный проход
+		/// </summary>
+		Passage,
+		}
+
+	/// <summary>
 	/// Класс предоставляет обработчики для стен и шлюзов
 	/// </summary>
 	public static class WallsSupport
@@ -76,7 +107,9 @@ namespace RD_AAOW
 		/// </summary>
 		/// <param name="RelativePosition">Относительная позиция точки создания</param>
 		/// <param name="MapBarrier">Тип материала разрушаемой части</param>
-		public static void WriteMapWindow (Point RelativePosition, MapBarriersTypes MapBarrier)
+		/// <param name="FloorsIsolation">Флаг изоляции этажей</param>
+		public static void WriteMapWindow (Point RelativePosition, MapBarriersTypes MapBarrier,
+			bool FloorsIsolation)
 			{
 			// Запись преграды
 			bool glass;
@@ -96,27 +129,40 @@ namespace RD_AAOW
 					break;
 				}
 
-			MapSupport.Write ("{\n");
-			MapSupport.AddEntity (MapClasses.Breakable);
+			// Запись
+			int fragments = FloorsIsolation ? 2 : 1;
 
-			if (glass)
+			for (int i = 0; i < fragments; i++)
 				{
-				MapSupport.Write ("\"rendermode\" \"2\"\n");
-				MapSupport.Write ("\"renderamt\" \"80\"\n");
-				MapSupport.Write ("\"material\" \"0\"\n");
-				}
-			else
-				{
-				MapSupport.Write ("\"rendermode\" \"0\"\n");
-				MapSupport.Write ("\"renderamt\" \"0\"\n");
-				MapSupport.Write ("\"material\" \"9\"\n");
-				}
-			MapSupport.Write ("\"health\" \"20\"\n");
+				MapSupport.Write ("{\n");
+				MapSupport.AddEntity (MapClasses.Breakable);
 
-			WriteMapBarrier (RelativePosition, glass ? BarrierTypes.GlassWindow :
-				BarrierTypes.FabricWindow, null, null);
+				if (glass)
+					{
+					MapSupport.Write ("\"rendermode\" \"2\"\n");
+					MapSupport.Write ("\"renderamt\" \"80\"\n");
+					MapSupport.Write ("\"material\" \"0\"\n");
+					}
+				else
+					{
+					MapSupport.Write ("\"rendermode\" \"0\"\n");
+					MapSupport.Write ("\"renderamt\" \"0\"\n");
+					MapSupport.Write ("\"material\" \"9\"\n");
+					}
+				MapSupport.Write ("\"health\" \"20\"\n");
 
-			MapSupport.Write ("}\n");
+				if (!FloorsIsolation)
+					WriteMapBarrier (RelativePosition, glass ? BarrierTypes.GlassWindowFull :
+						BarrierTypes.FabricWindowFull, null, null);
+				else if (i == 0)
+					WriteMapBarrier (RelativePosition, glass ? BarrierTypes.GlassWindowFirstFloor :
+						BarrierTypes.FabricWindowFirstFloor, null, null);
+				else
+					WriteMapBarrier (RelativePosition, glass ? BarrierTypes.GlassWindowSecondFloor :
+						BarrierTypes.FabricWindowSecondFloor, null, null);
+
+				MapSupport.Write ("}\n");
+				}
 			}
 
 		/// <summary>
@@ -236,11 +282,17 @@ namespace RD_AAOW
 			WindowFrameMiddle,
 
 			// Преграды
-			GlassWindow,
-			FabricWindow,
+			GlassWindowFull,
+			FabricWindowFull,
+
+			GlassWindowFirstFloor,
+			FabricWindowFirstFloor,
+
+			GlassWindowSecondFloor,
+			FabricWindowSecondFloor,
 
 			// Верхняя рама шлюза
-			GateFrameTop
+			GateFrameTop,
 			}
 
 		// Общий метод для стен и препятствий
@@ -310,18 +362,52 @@ namespace RD_AAOW
 					textures = [MapSupport.BlueMetalTexture, fTex, fTex, fTex, fTex, fTex, fTex, fTex];
 					break;
 
-				case BarrierTypes.GlassWindow:
-				case BarrierTypes.FabricWindow:
+				case BarrierTypes.GlassWindowFull:
+				case BarrierTypes.FabricWindowFull:
+				case BarrierTypes.GlassWindowFirstFloor:
+				case BarrierTypes.FabricWindowFirstFloor:
+				case BarrierTypes.GlassWindowSecondFloor:
+				case BarrierTypes.FabricWindowSecondFloor:
 					string tex;
 					uint texIdx = (uint)RDGenerics.RND.Next (2) + 1;
 
-					if (Type == BarrierTypes.GlassWindow)
-						tex = MapSupport.GetGlassTexture (texIdx);
-					else
-						tex = MapSupport.GetFabricTexture (texIdx + 2);
+					switch (Type)
+						{
+						case BarrierTypes.GlassWindowFull:
+						case BarrierTypes.GlassWindowFirstFloor:
+						case BarrierTypes.GlassWindowSecondFloor:
+							tex = MapSupport.GetGlassTexture (texIdx);
+							break;
 
-					z1 = "8";
-					z2 = (MapSupport.WallHeight - 8).ToString ();
+						default:
+							tex = MapSupport.GetFabricTexture (texIdx + 2);
+							break;
+						}
+
+					switch (Type)
+						{
+						case BarrierTypes.GlassWindowFull:
+						case BarrierTypes.FabricWindowFull:
+						default:
+							z1 = "8";
+							z2 = (MapSupport.WallHeight - 8).ToString ();
+							break;
+
+						case BarrierTypes.GlassWindowFirstFloor:
+						case BarrierTypes.FabricWindowFirstFloor:
+							z1 = "8";
+							z2 = (MapSupport.BalconyHeight - 18).ToString ();
+							break;
+
+						case BarrierTypes.GlassWindowSecondFloor:
+						case BarrierTypes.FabricWindowSecondFloor:
+							z1 = (MapSupport.BalconyHeight + 8).ToString ();
+							z2 = (MapSupport.WallHeight - 8).ToString ();
+							break;
+						}
+
+					/*z1 = "8";
+					z2 = (MapSupport.WallHeight - 8).ToString ();*/
 					textures = [tex, tex, tex, tex, tex, tex, tex, tex];
 					rDelta = lDelta = 0;
 					mDelta = 4;
@@ -349,8 +435,8 @@ namespace RD_AAOW
 					break;
 
 				case BarrierTypes.WindowFrameMiddle:
-					z1 = (MapSupport.DefaultWallHeight - 34).ToString ();
-					z2 = (MapSupport.DefaultWallHeight - 8).ToString ();
+					z1 = (MapSupport.BalconyHeight - 18).ToString ();
+					z2 = (MapSupport.BalconyHeight + 8).ToString ();
 					textures = [MapSupport.BlueMetalTexture, MapSupport.BlueMetalTexture,
 						fTex, bTex, fTex, bTex, fTex, bTex];
 					rDelta = lDelta = 0;
@@ -514,36 +600,5 @@ namespace RD_AAOW
 
 			MapSupport.Write ("}\n");
 			}
-		}
-
-	/// <summary>
-	/// Возможные типы соседних препятствий
-	/// </summary>
-	public enum WallsNeighborsTypes
-		{
-		/// <summary>
-		/// Обычная стена
-		/// </summary>
-		Wall,
-
-		/// <summary>
-		/// Шлюз
-		/// </summary>
-		Gate,
-
-		/// <summary>
-		/// Окно
-		/// </summary>
-		Window,
-
-		/// <summary>
-		/// Окно под углом к стене
-		/// </summary>
-		WindowCorner,
-
-		/// <summary>
-		/// Свободный проход
-		/// </summary>
-		Passage
 		}
 	}

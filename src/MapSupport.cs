@@ -516,7 +516,17 @@ namespace RD_AAOW
 		/// <summary>
 		/// Возвращает стандартную высоту стен лабиринта
 		/// </summary>
-		public const int DefaultWallHeight = 128;
+		public const int DefaultWallHeight2 = 128;
+
+		/// <summary>
+		/// Возвращает стандартную высоту второго этажа
+		/// </summary>
+		public const int BalconyHeight = 120;
+
+		/// <summary>
+		/// Возвращает стандартную толщину перекрытий
+		/// </summary>
+		public const int FloorHeight = 16;
 
 		/// <summary>
 		/// Возвращает двойную высоту стен лабиринта
@@ -530,7 +540,7 @@ namespace RD_AAOW
 			{
 			get
 				{
-				return (wallHeight > DefaultWallHeight);
+				return (wallHeight > DefaultWallHeight2);
 				}
 			}
 
@@ -894,14 +904,16 @@ namespace RD_AAOW
 			Write ("\"speed\" \"70\"\n");
 			Write ("\"movesnd\" \"7\"\n");
 			Write ("\"stopsnd\" \"7\"\n");
-			Write ("\"wait\" \"-1\"\n");
 			Write ("\"lip\" \"4\"\n");
-			Write ("\"spawnflags\" \"33\"\n");
+			/*Write ("\"wait\" \"-1\"\n");
+			Write ("\"spawnflags\" \"33\"\n");*/
+			Write ("\"wait\" \"3\"\n");
+			Write ("\"spawnflags\" \"1\"\n");
 
 			string[] tex6 = [GreenMetalTexture, "BorderRub01", "BorderRub01",
 				"BorderRub01", "BorderRub01", "BorderRub01"];
 			WriteBlock ((p.X - 16).ToString (), (p.Y - 16).ToString (), "0",
-				(p.X + 16).ToString (), (p.Y + 16).ToString (), (DefaultWallHeight - 16).ToString (),
+				(p.X + 16).ToString (), (p.Y + 16).ToString (), BalconyHeight.ToString (),
 				tex6, BlockTypes.Default);
 
 			Write ("}\n");
@@ -948,7 +960,7 @@ namespace RD_AAOW
 			Write ("\"scale\" \"1\"\n");
 
 			Write ("\"origin\" \"" + p.X.ToString () + " " + p.Y.ToString () + " " +
-				(DefaultWallHeight / 2).ToString () + "\"\n");
+				(DefaultWallHeight2 / 2).ToString () + "\"\n");
 			Write ("}\n");
 			}
 
@@ -1237,13 +1249,12 @@ namespace RD_AAOW
 			Write ("\"spawnflags\" \"" + ((TriggerType > MapSoundTriggerTypes.MapStart) ? "1" : "0") + "\"\n");
 
 			// Вертикальная
-			/*if (ForWindow)*/
 			switch (TriggerType)
 				{
 				case MapSoundTriggerTypes.Window:
 				case MapSoundTriggerTypes.WindowOnSecondFloor:
 					z1 = ((TriggerType == MapSoundTriggerTypes.WindowOnSecondFloor) ?
-						DefaultWallHeight - 16 + 16 : 16).ToString ();
+						BalconyHeight + 16 : 16).ToString ();
 					z2 = (WallHeight - 16).ToString ();
 
 					if (WallsSupport.IsWallVertical (RelativePosition))
@@ -1262,10 +1273,6 @@ namespace RD_AAOW
 						}
 					break;
 
-				/*}
-				else
-				{*/
-
 				case MapSoundTriggerTypes.MapStart:
 				default:
 					x1 = (p.X - 32).ToString ();
@@ -1281,8 +1288,8 @@ namespace RD_AAOW
 					y1 = (p.Y - 52).ToString ();
 					x2 = (p.X + 52).ToString ();
 					y2 = (p.Y + 52).ToString ();
-					z1 = (DefaultWallHeight - 16).ToString ();
-					z2 = (DefaultWallHeight - 12).ToString ();
+					z1 = BalconyHeight.ToString ();
+					z2 = (BalconyHeight + 4).ToString ();
 					break;
 				}
 
@@ -1332,11 +1339,11 @@ namespace RD_AAOW
 			Write ("}\n{\n");
 			AddEntity (MapClasses.Autosave);
 
-			int y = 12;
+			int z = 12;
 			if (secondFloor)
-				y += (DefaultWallHeight - 16);
-			WriteBlock ((p.X - 32).ToString (), (p.Y - 32).ToString (), y.ToString (),
-				(p.X + 32).ToString (), (p.Y + 32).ToString (), (y + 4).ToString (),
+				z += BalconyHeight;
+			WriteBlock ((p.X - 32).ToString (), (p.Y - 32).ToString (), z.ToString (),
+				(p.X + 32).ToString (), (p.Y + 32).ToString (), (z + 4).ToString (),
 				triggerBox, BlockTypes.Default);
 
 			Write ("}\n");
@@ -1390,11 +1397,6 @@ namespace RD_AAOW
 			{
 			// Расчёт параметров
 			Point p = EvaluateAbsolutePosition (RelativePosition);
-
-			/*string x1 = (p.X - 16).ToString ();
-			string y1 = (p.Y - 16).ToString ();
-			string x2 = (p.X + 16).ToString ();
-			string y2 = (p.Y + 16).ToString ();*/
 
 			bool explosive = CratesBalance >
 				RDGenerics.RND.Next (-ESRMSettings.CratesBalanceRange, ESRMSettings.CratesBalanceRange);
@@ -1461,7 +1463,7 @@ namespace RD_AAOW
 
 			int z = 0;
 			if (FloorsIsolation)
-				z += RDGenerics.RND.Next (2) * DefaultWallHeight;
+				z += RDGenerics.RND.Next (2) * DefaultWallHeight2;	// Чтобы сохранить выравнивание текстуры
 
 			WriteBlock ((p.X - 16).ToString (), (p.Y - 16).ToString (), (z + 32).ToString (),
 				(p.X + 16).ToString (), (p.Y + 16).ToString (), (z + 64).ToString (),
@@ -1580,7 +1582,7 @@ namespace RD_AAOW
 
 			int z = 0;
 			if (SecondFloor)
-				z += (DefaultWallHeight - 16);
+				z += BalconyHeight;
 
 			WriteBlock ((p.X - 8).ToString (), (p.Y - 8).ToString (), (z - 8).ToString (),
 				(p.X + 8).ToString (), (p.Y + 8).ToString (), z.ToString (),
@@ -1662,14 +1664,13 @@ namespace RD_AAOW
 		/// <param name="WaterLevel">Уровень воды (в долях от единицы)</param>
 		/// <param name="RelativeMapHeight">Относительная ширина карты</param>
 		/// <param name="RelativeMapWidth">Относительная длина карты</param>
-		public static void WriteMapWater (float WaterLevel, int RelativeMapWidth,
-			int RelativeMapHeight)
+		public static void WriteMapWater (float WaterLevel, int RelativeMapWidth, int RelativeMapHeight)
 			{
 			// Расчёт параметров
 			int realMapWidth = RelativeMapWidth * WallLength;
 			int realMapHeight = RelativeMapHeight * WallLength;
 			string tex = waterTextures[RDGenerics.RND.Next (waterTextures.Length)];
-			string h = ((int)(DefaultWallHeight * WaterLevel)).ToString ();
+			string h = ((int)(DefaultWallHeight2 * WaterLevel)).ToString ();
 			string amt = (60 + RDGenerics.RND.Next (100)).ToString ();
 
 			for (int i = 0; i < 4; i++)
@@ -1770,7 +1771,7 @@ namespace RD_AAOW
 			// Добавление источника света
 			int z;
 			if (balcony)
-				z = DefaultWallHeight - 32;
+				z = BalconyHeight - 16;
 			else
 				z = wallHeight;
 
@@ -1844,7 +1845,7 @@ namespace RD_AAOW
 				coords[1] += p.Y;
 				coords[4] += p.Y;
 
-				if ((coords[2] > DefaultWallHeight) || (coords[5] > DefaultWallHeight))
+				if ((coords[2] > DefaultWallHeight2) || (coords[5] > DefaultWallHeight2))
 					secondFloor = true;
 
 				// Сборка линии текстур
@@ -1906,8 +1907,8 @@ namespace RD_AAOW
 				int offset = Isolated ? 64 : 56;
 
 				// Запись площадки
-				WriteBlock ((p.X - offset).ToString (), (p.Y - offset).ToString (), (DefaultWallHeight - 32).ToString (),
-					(p.X + offset).ToString (), (p.Y + offset).ToString (), (DefaultWallHeight - 16).ToString (),
+				WriteBlock ((p.X - offset).ToString (), (p.Y - offset).ToString (), (BalconyHeight - 16).ToString (),
+					(p.X + offset).ToString (), (p.Y + offset).ToString (), BalconyHeight.ToString (),
 					tex, BlockTypes.Door);
 				return;
 				}
@@ -1953,9 +1954,9 @@ namespace RD_AAOW
 				Write ("{\n");
 				AddEntity (MapClasses.Ladder);
 				WriteBlock ((p.X + offsets[i + 0]).ToString (), (p.Y + offsets[i + 1]).ToString (),
-					(DefaultWallHeight - 32).ToString (),
+					(BalconyHeight - 16).ToString (),
 					(p.X + offsets[i + 2]).ToString (), (p.Y + offsets[i + 3]).ToString (),
-					(DefaultWallHeight - 16).ToString (),
+					BalconyHeight.ToString (),
 					tex, BlockTypes.Door);
 				Write ("}\n");
 				}
@@ -2001,19 +2002,6 @@ namespace RD_AAOW
 			FSsc.Close ();
 			return true;
 			}
-
-		/*/// <summary>
-		/// Метод записывает межстенный заполнитель (для удаления недоступных пространств из компилируемой зоны)
-		/// </summary>
-		/// <param name="RelativePosition">Относительная позиция точки выхода</param>
-		public static void WriteMapFiller (Point RelativePosition)
-			{
-			// Расчёт параметров
-			Point p = EvaluateAbsolutePosition (RelativePosition);
-			WriteBlock ((p.X - WallLength / 2).ToString (), (p.Y - WallLength / 2).ToString (), "0",
-				(p.X + WallLength / 2).ToString (), (p.Y + WallLength / 2).ToString (), (WallHeight + 32).ToString (),
-				["BLACK", "BLACK", "BLACK", "BLACK", "BLACK", "BLACK"], BlockTypes.Default);
-			}*/
 
 		/// <summary>
 		/// Метод записывает точку навигационной сетки на карту
@@ -2114,17 +2102,17 @@ namespace RD_AAOW
 				{
 				lightColor = "\"_light\" \"" + (224 + RDGenerics.RND.Next (32)).ToString () + " " +
 					(224 + RDGenerics.RND.Next (32)).ToString () + " " +
-					(112 + RDGenerics.RND.Next (32)).ToString () + " " + (/*AppSettings.*/TwoFloors ? "200" : "150") + "\"\n";
+					(112 + RDGenerics.RND.Next (32)).ToString () + " " + (TwoFloors ? "200" : "150") + "\"\n";
 				subLightColor = "\"_light\" \"" + (224 + RDGenerics.RND.Next (32)).ToString () + " " +
 					(224 + RDGenerics.RND.Next (32)).ToString () + " " +
 					(112 + RDGenerics.RND.Next (32)).ToString () + " 100\"\n";
 				}
 
 			// Выбор высоты карты
-			if (/*AppSettings.*/TwoFloors)
+			if (TwoFloors)
 				wallHeight = DoubleWallHeight;
 			else
-				wallHeight = DefaultWallHeight;
+				wallHeight = DefaultWallHeight2;
 
 			// Завершено
 			return mapOpened;
