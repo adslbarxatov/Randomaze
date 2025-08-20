@@ -2,6 +2,8 @@ Randomaze: changes log
 
 ToDo:
 - Separate walls density from the maze size;
+- Fix vertical textures offset;
+- Fix absence of the jumppads sound
 
 Version 7.0.4:
 • Fixed the alien_controller placement on the isolated floor;
