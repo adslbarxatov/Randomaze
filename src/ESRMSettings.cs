@@ -55,8 +55,6 @@ namespace RD_AAOW
 			_ = InsideLightingCoefficient;
 			_ = OutsideLightingCoefficient;
 			_ = SectionType;
-			/*_ = TwoFloors;
-			_ = AllowItemsForSecondFloor;*/
 			_ = FloorsType;
 			_ = ItemsPermissionLine;
 			_ = GravityCoefficient;
@@ -67,6 +65,7 @@ namespace RD_AAOW
 			_ = WaterLevel;
 			_ = CratesBalance;
 			_ = UseNeonLights;
+			_ = UseCeilingHoles;
 
 			// Защита
 			/*if (!TwoFloors && !RandomizeFloorsQuantity)*/
@@ -649,26 +648,6 @@ namespace RD_AAOW
 
 
 
-		/*/// <summary>
-		/// Возвращает или задаёт флаг разрешения для собираемых объектов на внутренних площадках
-		/// </summary>
-		public bool AllowItemsForSecondFloor
-			{
-			get
-				{
-				return TwoFloors && (GetSettingsValue (allowItemsForSecondFloorPar, 2, 2,
-					ref allowItemsForSecondFloor) > 1);
-				}
-			set
-				{
-				SetSettingsValue (allowItemsForSecondFloorPar, ref allowItemsForSecondFloor, (uint)(value ? 2 : 1));
-				}
-			}
-		private int allowItemsForSecondFloor = int.MaxValue;
-		private const string allowItemsForSecondFloorPar = "SF";*/
-
-
-
 		/// <summary>
 		/// Возвращает или задаёт коэффициент гравитации (в десятках процентов)
 		/// </summary>
@@ -954,6 +933,25 @@ namespace RD_AAOW
 			}
 		private int useNeonLights = int.MaxValue;
 		private const string useNeonLightsPar = "NL";
+
+
+
+		/// <summary>
+		/// Возвращает или задаёт флаг добавления отверстий в потолках на карты
+		/// </summary>
+		public bool UseCeilingHoles
+			{
+			get
+				{
+				return GetSettingsValue (useCeilingHolesPar, 2, 1, ref useCeilingHoles) > 1;
+				}
+			set
+				{
+				SetSettingsValue (useCeilingHolesPar, ref useCeilingHoles, (uint)(value ? 2 : 1));
+				}
+			}
+		private int useCeilingHoles = int.MaxValue;
+		private const string useCeilingHolesPar = "CH";
 		}
 
 	/// <summary>

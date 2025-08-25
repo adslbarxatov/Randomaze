@@ -56,7 +56,7 @@ namespace RD_AAOW
 
 			MazeSizeFlag.Text = EnemiesDensityFlag.Text = ItemsDensityFlag.Text =
 				CratesDensityFlag.Text = WallsDensityFlag.Text = InsideLightingFlag.Text =
-				GravityFlag.Text = /*RandomizeFloorsFlag.Text =*/ FogFlag.Text = WaterFlag.Text =
+				GravityFlag.Text = FogFlag.Text = WaterFlag.Text =
 				OutsideLightingFlag.Text = RDLocale.GetText ("SettingsForm_Random");
 
 			this.TopMost = true;
@@ -98,6 +98,7 @@ namespace RD_AAOW
 			OutsideLightingFlag_CheckedChanged (null, null);
 
 			NeonFlag.Checked = settings.UseNeonLights;
+			CeilingHolesFlag.Checked = settings.UseCeilingHoles;
 
 			GravityTrack.Maximum = (int)ESRMSettings.MaximumGravityCoefficient;
 			GravityTrack.Value = (int)settings.GravityCoefficient;
@@ -179,9 +180,6 @@ namespace RD_AAOW
 			else
 				FloorTypesCombo.SelectedIndex = (int)settings.FloorsType - 1;
 
-			/*AllowItemsForSecondFloor.Checked = settings.AllowItemsForSecondFloor;
-			TwoFloorsFlag.Checked = settings.TwoFloors;
-			RandomizeFloorsFlag.Checked = settings.RandomizeFloorsQuantity;*/
 			TwoFloorsFlag_CheckedChanged (null, null);
 
 			CratesDensityTrack.Maximum = (int)ESRMSettings.MaximumCratesDensityCoefficient2;
@@ -240,6 +238,7 @@ namespace RD_AAOW
 			settings.RandomOutsideLightingCoefficient = OutsideLightingFlag.Checked;
 
 			settings.UseNeonLights = NeonFlag.Checked;
+			settings.UseCeilingHoles = CeilingHolesFlag.Checked;
 
 			settings.GravityCoefficient = (uint)GravityTrack.Value;
 			settings.RandomGravityCoefficient = GravityFlag.Checked;

@@ -49,23 +49,25 @@ namespace RD_AAOW
 			}
 
 		/// <summary>
-		/// Метод записывает шлюз, ограничивающий точку входа, на карту
+		/// Метод записывает шлюз, ограничивающий точку выхода, на карту
 		/// </summary>
 		/// <param name="RelativePosition">Относительная позиция точки создания</param>
 		/// <param name="Frame">Флаг указывает, что записывается рама шлюза вместо него самого</param>
-		public static void WriteMapFinishGate (Point RelativePosition, bool Frame)
+		/// <param name="FloorsIsolation">Флаг изоляции этажей</param>
+		public static void WriteMapFinishGate (Point RelativePosition, bool Frame, bool FloorsIsolation)
 			{
-			WriteGate (RelativePosition, Frame, true);
+			WriteGate (RelativePosition, Frame, FloorsIsolation, true);
 			}
 
 		/// <summary>
-		/// Метод записывает шлюз, закрывающий точку выхода, на карту
+		/// Метод записывает шлюз, закрывающий точку входа, на карту
 		/// </summary>
 		/// <param name="RelativePosition">Относительная позиция точки создания</param>
 		/// <param name="Frame">Флаг указывает, что записывается рама шлюза вместо него самого</param>
-		public static void WriteMapGate (Point RelativePosition, bool Frame)
+		/// <param name="FloorsIsolation">Флаг изоляции этажей</param>
+		public static void WriteMapGate (Point RelativePosition, bool Frame, bool FloorsIsolation)
 			{
-			WriteGate (RelativePosition, Frame, false);
+			WriteGate (RelativePosition, Frame, FloorsIsolation, false);
 			}
 
 		/// <summary>
@@ -234,7 +236,7 @@ namespace RD_AAOW
 			}
 
 		// Универсальный метод формирования шлюза
-		private static void WriteGate (Point RelativePosition, bool Frame, bool Finish)
+		private static void WriteGate (Point RelativePosition, bool Frame, bool FloorsIsolation, bool Finish)
 			{
 			// Расчёт параметров
 			string tex = Finish ? "MetalGate07" : "MetalGate06";
@@ -242,7 +244,8 @@ namespace RD_AAOW
 			// Запись рамы
 			if (Frame)
 				{
-				WriteMapBarrier (RelativePosition, BarrierTypes.GateFrameTop, tex, tex);
+				WriteMapBarrier (RelativePosition, FloorsIsolation ? BarrierTypes.GateFrameTopIsolated : BarrierTypes.GateFrameTop,
+					tex, tex);
 				return;
 				}
 
@@ -293,12 +296,12 @@ namespace RD_AAOW
 
 			// Верхняя рама шлюза
 			GateFrameTop,
+			GateFrameTopIsolated,
 			}
 
 		// Общий метод для стен и препятствий
 		private static WallsNeighborsTypes neighborLeft, neighborRight;
-		private static void WriteMapBarrier (Point RelativePosition, BarrierTypes Type, string FrontTexture,
-			string BackTexture)
+		private static void WriteMapBarrier (Point RelativePosition, BarrierTypes Type, string FrontTexture, string BackTexture)
 			{
 			// Расчёт параметров
 			int x1, y1, x2, y2;
@@ -406,8 +409,6 @@ namespace RD_AAOW
 							break;
 						}
 
-					/*z1 = "8";
-					z2 = (MapSupport.WallHeight - 8).ToString ();*/
 					textures = [tex, tex, tex, tex, tex, tex, tex, tex];
 					rDelta = lDelta = 0;
 					mDelta = 4;
@@ -415,13 +416,18 @@ namespace RD_AAOW
 
 				case BarrierTypes.WindowFrameTop:
 				case BarrierTypes.GateFrameTop:
+				case BarrierTypes.GateFrameTopIsolated:
 					if (Type == BarrierTypes.WindowFrameTop)
 						z1 = (MapSupport.WallHeight - 8).ToString ();
 					else
 						z1 = "120";
-					z2 = (MapSupport.WallHeight + 16).ToString ();
 
-					textures = [MapSupport.SkyTexture, MapSupport.BlueMetalTexture, fTex, bTex, fTex, bTex, fTex, bTex];
+					if (Type == BarrierTypes.GateFrameTopIsolated)
+						z2 = "144";
+					else
+						z2 = (MapSupport.WallHeight + 16).ToString ();
+
+					textures = [MapSupport.BlueMetalTexture, MapSupport.BlueMetalTexture, fTex, bTex, fTex, bTex, fTex, bTex];
 
 					if (Type == BarrierTypes.WindowFrameTop)
 						rDelta = lDelta = 0;

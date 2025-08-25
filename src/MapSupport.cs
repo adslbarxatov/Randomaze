@@ -800,7 +800,8 @@ namespace RD_AAOW
 			AddEntity (MapClasses.OnceTarget);
 			Write ("\"target\" \"DevM\"\n");
 
-			WriteBlock (x1, y1, z1, x2, y2, z2, triggerBox, BlockTypes.Default);
+			/*WriteBlock (x1, y1, z1, x2, y2, z2, triggerBox, BlockTypes.Default);*/
+			WriteBlock ([x1, y1, z1, x2, y2, z2], triggerBox, zeroTexAngleOffset, zeroTexAngleOffset, zeroTexAngleOffset, noTexScale);
 
 			Write ("}\n");
 
@@ -808,6 +809,8 @@ namespace RD_AAOW
 			}
 		private static readonly string[] triggerBox = [TriggerTexture, TriggerTexture, TriggerTexture, TriggerTexture,
 			TriggerTexture, TriggerTexture];
+		private static readonly string[] zeroTexAngleOffset = ["0", "0", "0", "0", "0", "0"];
+		private static readonly string[] noTexScale = ["1 1", "1 1", "1 1", "1 1", "1 1", "1 1"];
 
 		/// <summary>
 		/// Метод записывает точку выхода с карты
@@ -838,16 +841,22 @@ namespace RD_AAOW
 			Write ("\"map\" \"" + mapName + "\"\n");
 			Write ("\"landmark\" \"" + mapName + "m\"\n");
 
-			WriteBlock ((p.X - 8).ToString (), (p.Y - 8).ToString (), "16",
+			/*WriteBlock ((p.X - 8).ToString (), (p.Y - 8).ToString (), "16",
 				(p.X + 8).ToString (), (p.Y + 8).ToString (), (wallHeight - 16).ToString (),
-				triggerBox, BlockTypes.Default);
+				triggerBox, BlockTypes.Default);*/
+			WriteBlock ([(p.X - 8).ToString (), (p.Y - 8).ToString (), "16",
+				(p.X + 8).ToString (), (p.Y + 8).ToString (), "96" /*(wallHeight - 16).ToString ()*/],
+				triggerBox, zeroTexAngleOffset, zeroTexAngleOffset, zeroTexAngleOffset, noTexScale);
 
 			Write ("}\n{\n");
 			AddEntity (MapClasses.Autosave);
 
-			WriteBlock ((p.X - 32).ToString (), (p.Y - 32).ToString (), "12",
+			/*WriteBlock ((p.X - 32).ToString (), (p.Y - 32).ToString (), "12",
 				(p.X + 32).ToString (), (p.Y + 32).ToString (), "16",
-				triggerBox, BlockTypes.Default);
+				triggerBox, BlockTypes.Default);*/
+			WriteBlock ([(p.X - 32).ToString (), (p.Y - 32).ToString (), "12",
+				(p.X + 32).ToString (), (p.Y + 32).ToString (), "16"],
+				triggerBox, zeroTexAngleOffset, zeroTexAngleOffset, zeroTexAngleOffset, noTexScale);
 
 			Write ("}\n");
 
@@ -872,7 +881,7 @@ namespace RD_AAOW
 
 			string[] tex6 = [GreenMetalTexture, GreenMetalTexture, GreenMetalTexture,
 				GreenMetalTexture, GreenMetalTexture, GreenMetalTexture];
-			WriteBlock ((p.X - 12).ToString (), (p.Y - 12).ToString (), "0",
+			/*WriteBlock ((p.X - 12).ToString (), (p.Y - 12).ToString (), "0",
 				(p.X - 8).ToString (), (p.Y - 8).ToString (), WallHeight.ToString (),
 				tex6, BlockTypes.Default);
 			WriteBlock ((p.X + 8).ToString (), (p.Y - 12).ToString (), "0",
@@ -883,7 +892,19 @@ namespace RD_AAOW
 				tex6, BlockTypes.Default);
 			WriteBlock ((p.X + 8).ToString (), (p.Y + 8).ToString (), "0",
 				(p.X + 12).ToString (), (p.Y + 12).ToString (), WallHeight.ToString (),
-				tex6, BlockTypes.Default);
+				tex6, BlockTypes.Default);*/
+			WriteBlock ([(p.X - 12).ToString (), (p.Y - 12).ToString (), "0",
+				(p.X - 8).ToString (), (p.Y - 8).ToString (), WallHeight.ToString ()],
+				tex6, zeroTexAngleOffset, zeroTexAngleOffset, zeroTexAngleOffset, noTexScale);
+			WriteBlock ([(p.X + 8).ToString (), (p.Y - 12).ToString (), "0",
+				(p.X + 12).ToString (), (p.Y - 8).ToString (), WallHeight.ToString ()],
+				tex6, zeroTexAngleOffset, zeroTexAngleOffset, zeroTexAngleOffset, noTexScale);
+			WriteBlock ([(p.X - 12).ToString (), (p.Y + 8).ToString (), "0",
+				(p.X - 8).ToString (), (p.Y + 12).ToString (), WallHeight.ToString ()],
+				tex6, zeroTexAngleOffset, zeroTexAngleOffset, zeroTexAngleOffset, noTexScale);
+			WriteBlock ([(p.X + 8).ToString (), (p.Y + 8).ToString (), "0",
+				(p.X + 12).ToString (), (p.Y + 12).ToString (), WallHeight.ToString ()],
+				tex6, zeroTexAngleOffset, zeroTexAngleOffset, zeroTexAngleOffset, noTexScale);
 
 			Write ("}\n");
 			}
@@ -905,16 +926,17 @@ namespace RD_AAOW
 			Write ("\"movesnd\" \"7\"\n");
 			Write ("\"stopsnd\" \"7\"\n");
 			Write ("\"lip\" \"4\"\n");
-			/*Write ("\"wait\" \"-1\"\n");
-			Write ("\"spawnflags\" \"33\"\n");*/
 			Write ("\"wait\" \"3\"\n");
 			Write ("\"spawnflags\" \"1\"\n");
 
 			string[] tex6 = [GreenMetalTexture, "BorderRub01", "BorderRub01",
 				"BorderRub01", "BorderRub01", "BorderRub01"];
-			WriteBlock ((p.X - 16).ToString (), (p.Y - 16).ToString (), "0",
+			/*WriteBlock ((p.X - 16).ToString (), (p.Y - 16).ToString (), "0",
 				(p.X + 16).ToString (), (p.Y + 16).ToString (), BalconyHeight.ToString (),
-				tex6, BlockTypes.Default);
+				tex6, BlockTypes.Default);*/
+			WriteBlock ([(p.X - 16).ToString (), (p.Y - 16).ToString (), "0",
+				(p.X + 16).ToString (), (p.Y + 16).ToString (), BalconyHeight.ToString ()],
+				tex6, zeroTexAngleOffset, zeroTexAngleOffset, zeroTexAngleOffset, noTexScale);
 
 			Write ("}\n");
 			}
@@ -1023,11 +1045,6 @@ namespace RD_AAOW
 			{
 			// Расчёт параметров
 			Point p = EvaluateAbsolutePosition (RelativePosition);
-
-			/*bool underSky = Flags.HasFlag (MapEntryPointFlags.IsUnderSky);
-			bool rareWalls = Flags.HasFlag (MapEntryPointFlags.WallsAreRare);
-			bool isolated = Flags.HasFlag (MapEntryPointFlags.FloorsIsolation);*/
-
 			string xs = p.X.ToString ();
 			string ys = p.Y.ToString ();
 
@@ -1050,9 +1067,12 @@ namespace RD_AAOW
 				Write ("\"map\" \"" + BuildMapName (-1) + "\"\n");
 				Write ("\"landmark\" \"" + BuildMapName () + "m\"\n");
 
-				WriteBlock ((p.X - 8).ToString (), (p.Y - 8).ToString (), "-2",
+				/*WriteBlock ((p.X - 8).ToString (), (p.Y - 8).ToString (), "-2",
 					(p.X + 8).ToString (), (p.Y + 8).ToString (), "-1",
-					triggerBox, BlockTypes.Default);
+					triggerBox, BlockTypes.Default);*/
+				WriteBlock ([(p.X - 8).ToString (), (p.Y - 8).ToString (), "-2",
+					(p.X + 8).ToString (), (p.Y + 8).ToString (), "-1"],
+					triggerBox, zeroTexAngleOffset, zeroTexAngleOffset, zeroTexAngleOffset, noTexScale);
 
 				Write ("}\n");
 				}
@@ -1062,9 +1082,12 @@ namespace RD_AAOW
 			AddEntity (MapClasses.Gravity);
 			Write ("\"gravity\" \"" + (GravityLevel * 80).ToString () + "\"\n");
 
-			WriteBlock ((p.X - 32).ToString (), (p.Y - 32).ToString (), "24",
+			/*WriteBlock ((p.X - 32).ToString (), (p.Y - 32).ToString (), "24",
 				(p.X + 32).ToString (), (p.Y + 32).ToString (), "28",
-				triggerBox, BlockTypes.Default);
+				triggerBox, BlockTypes.Default);*/
+			WriteBlock ([(p.X - 32).ToString (), (p.Y - 32).ToString (), "24",
+				(p.X + 32).ToString (), (p.Y + 32).ToString (), "28"],
+				triggerBox, zeroTexAngleOffset, zeroTexAngleOffset, zeroTexAngleOffset, noTexScale);
 
 			Write ("}\n");
 
@@ -1077,47 +1100,21 @@ namespace RD_AAOW
 				(224 + RDGenerics.RND.Next (32)).ToString () + "\"\n");
 			Write ("\"enablingMove\" \"0\"\n");
 
-			WriteBlock ((p.X - 32).ToString (), (p.Y - 32).ToString (), "32",
+			/*WriteBlock ((p.X - 32).ToString (), (p.Y - 32).ToString (), "32",
 				(p.X + 32).ToString (), (p.Y + 32).ToString (), "36",
-				triggerBox, BlockTypes.Default);
+				triggerBox, BlockTypes.Default);*/
+			WriteBlock ([(p.X - 32).ToString (), (p.Y - 32).ToString (), "32",
+				(p.X + 32).ToString (), (p.Y + 32).ToString (), "36"],
+				triggerBox, zeroTexAngleOffset, zeroTexAngleOffset, zeroTexAngleOffset, noTexScale);
 
 			Write ("}\n");
 
 			// Звуковой триггер
-			/*byte rt;
-			byte offset = (byte)(TwoFloors ? 1 : 0);
-			if (IsUnderSky)
-				rt = 0;
-			else if (WallsAreRare)
-				rt = (byte)(18 + offset);
-			else
-				rt = (byte)(17 + offset);*/
 			MapSoundTriggerRooms rt;
 			if (Flags.HasFlag (MapEntryPointFlags.FloorsIsolation))
 				rt = MapSoundTriggerRooms.Small;
 			else
 				rt = GetRoomType (Flags);
-			/*if (!isolated)
-				{
-				if (underSky)
-					{
-					rt = MapSoundTriggerRooms.None;
-					}
-				else
-					{
-					if (rareWalls)
-						rt = TwoFloors ? MapSoundTriggerRooms.Large : MapSoundTriggerRooms.Medium;
-					else
-						rt = TwoFloors ? MapSoundTriggerRooms.Medium : MapSoundTriggerRooms.Small;
-					}
-				}
-			else
-				{
-				if (rareWalls)
-					rt = MapSoundTriggerRooms.Medium;
-				else
-					rt = MapSoundTriggerRooms.Small;
-				}*/
 
 			WriteMapSoundTrigger (RelativePosition, MapSoundTriggerTypes.MapStart, rt,
 				MapSoundTriggerRooms.None);
@@ -1161,12 +1158,24 @@ namespace RD_AAOW
 			return rt;
 			}
 
-		// Метод записывает блок по указанным коориданатм
+		/*// Метод записывает блок по указанным коориданатм
 		private static void WriteBlock (string X1, string Y1, string Z1,
-			string X2, string Y2, string Z2, string[] Textures, BlockTypes BlockType)
+			string X2, string Y2, string Z2, string[] Textures, BlockTypes BlockType)*/
+
+		/// <summary>
+		/// Метод записывает блок с шестью гранями по указанным параметрам
+		/// </summary>
+		/// <param name="Coordinates">Массив из шести координат блока в порядке [X- Y- Z- X+ Y+ Z+]</param>
+		/// <param name="Textures">Массив из шести текстур в порядке [Z+ Y+ Y- X- X+ Z-]</param>
+		/// <param name="TexAngles">Массив из шести углов поворота текстур в порядке [Z+ Y+ Y- X- X+ Z-]</param>
+		/// <param name="TexScales">Массив из шести строк формата [ScaleX ScaleY]</param>
+		/// <param name="TexOffsetsX">Массив из шести смещений текстур по оси Ox</param>
+		/// <param name="TexOffsetsY">Массив из шести смещений текстур по оси Oy</param>
+		private static void WriteBlock (string[] Coordinates, string[] Textures, string[] TexOffsetsX,
+			string[] TexOffsetsY, string[] TexAngles, string[] TexScales)
 			{
 			// Расчёт параметров
-			string texOffsetX, texOffsetY, texScale;
+			/*string texOffsetX, texOffsetY, texScale;
 			switch (BlockType)
 				{
 				case BlockTypes.Default:
@@ -1185,44 +1194,88 @@ namespace RD_AAOW
 					texOffsetY = "0";
 					texScale = "1 1";
 					break;
-				}
+				}*/
 
 			// Запись
 			Write ("{\n");
-			Write ("( " + X2 + " " + Y1 + " " + Z2 + " ) " +
-				"( " + X1 + " " + Y1 + " " + Z2 + " ) " +
-				"( " + X1 + " " + Y2 + " " + Z2 + " ) " +
-				Textures[0] + " [ 1 0 0 " + texOffsetX + " ] [ 0 -1 0 " + texOffsetY + " ] 0 " + texScale + " \n");
-			Write ("( " + X2 + " " + Y2 + " " + Z1 + " ) " +
-				"( " + X2 + " " + Y2 + " " + Z2 + " ) " +
-				"( " + X1 + " " + Y2 + " " + Z2 + " ) " +
-				Textures[1] + " [ 1 0 0 " + texOffsetX + " ] [ 0 0 -1 0 ] 0 -" + texScale + " \n");
-			Write ("( " + X1 + " " + Y1 + " " + Z1 + " ) " +
-				"( " + X1 + " " + Y1 + " " + Z2 + " ) " +
-				"( " + X2 + " " + Y1 + " " + Z2 + " ) " +
-				Textures[2] + " [ 1 0 0 " + texOffsetX + " ] [ 0 0 -1 0 ] 0 " + texScale + " \n");
-			Write ("( " + X1 + " " + Y2 + " " + Z1 + " ) " +
-				"( " + X1 + " " + Y2 + " " + Z2 + " ) " +
-				"( " + X1 + " " + Y1 + " " + Z2 + " ) " +
-				Textures[3] + " [ 0 1 0 " + texOffsetX + " ] [ 0 0 -1 0 ] 0 -" + texScale + " \n");
-			Write ("( " + X2 + " " + Y1 + " " + Z1 + " ) " +
-				"( " + X2 + " " + Y1 + " " + Z2 + " ) " +
-				"( " + X2 + " " + Y2 + " " + Z2 + " ) " +
-				Textures[4] + " [ 0 1 0 " + texOffsetX + " ] [ 0 0 -1 0 ] 0 " + texScale + " \n");
-			Write ("( " + X2 + " " + Y2 + " " + Z1 + " ) " +
-				"( " + X1 + " " + Y2 + " " + Z1 + " ) " +
-				"( " + X1 + " " + Y1 + " " + Z1 + " ) " +
-				Textures[5] + " [ 1 0 0 " + texOffsetX + " ] [ 0 -1 0 " + texOffsetY + " ] 0 " + texScale + " \n");
+
+			// Верх
+			string xQuat, yQuat;
+			if (TexAngles[0] == "45")
+				{
+				xQuat = "0.707107 -0.707107 0";
+				yQuat = "-0.707107 -0.707107 0";
+				}
+			else
+				{
+				xQuat = "1 0 0";
+				yQuat = "0 -1 0";
+				}
+
+			Write ("( " + Coordinates[3] + " " + Coordinates[1] + " " + Coordinates[5] + " ) " +
+				"( " + Coordinates[0] + " " + Coordinates[1] + " " + Coordinates[5] + " ) " +
+				"( " + Coordinates[0] + " " + Coordinates[4] + " " + Coordinates[5] + " ) " +
+				Textures[0] + " [ " + xQuat + " " + TexOffsetsX[0] + " ] [ " + yQuat + " " + TexOffsetsY[0] + " ] " +
+				TexAngles[0] + " " + TexScales[0] + " \n");
+
+			// TexAngles[1] - TexAngles[4] не используются
+
+			// Север
+			Write ("( " + Coordinates[3] + " " + Coordinates[4] + " " + Coordinates[2] + " ) " +
+				"( " + Coordinates[3] + " " + Coordinates[4] + " " + Coordinates[5] + " ) " +
+				"( " + Coordinates[0] + " " + Coordinates[4] + " " + Coordinates[5] + " ) " +
+				Textures[1] + " [ 1 0 0 " + TexOffsetsX[1] + " ] [ 0 0 -1 " + TexOffsetsY[1] + " ] " +
+				TexAngles[1] + " -" + TexScales[1] + " \n");
+
+			// Юг
+			Write ("( " + Coordinates[0] + " " + Coordinates[1] + " " + Coordinates[2] + " ) " +
+				"( " + Coordinates[0] + " " + Coordinates[1] + " " + Coordinates[5] + " ) " +
+				"( " + Coordinates[3] + " " + Coordinates[1] + " " + Coordinates[5] + " ) " +
+				Textures[2] + " [ 1 0 0 " + TexOffsetsX[2] + " ] [ 0 0 -1 " + TexOffsetsY[2] + " ] " +
+				TexAngles[2] + " " + TexScales[2] + " \n");
+
+			// Запад
+			Write ("( " + Coordinates[0] + " " + Coordinates[4] + " " + Coordinates[2] + " ) " +
+				"( " + Coordinates[0] + " " + Coordinates[4] + " " + Coordinates[5] + " ) " +
+				"( " + Coordinates[0] + " " + Coordinates[1] + " " + Coordinates[5] + " ) " +
+				Textures[3] + " [ 0 1 0 " + TexOffsetsX[3] + " ] [ 0 0 -1 " + TexOffsetsY[3] + " ] " +
+				TexAngles[3] + " -" + TexScales[3] + " \n");
+
+			// Восток
+			Write ("( " + Coordinates[3] + " " + Coordinates[1] + " " + Coordinates[2] + " ) " +
+				"( " + Coordinates[3] + " " + Coordinates[1] + " " + Coordinates[5] + " ) " +
+				"( " + Coordinates[3] + " " + Coordinates[4] + " " + Coordinates[5] + " ) " +
+				Textures[4] + " [ 0 1 0 " + TexOffsetsX[4] + " ] [ 0 0 -1 " + TexOffsetsY[4] + " ] " +
+				TexAngles[4] + " " + TexScales[4] + " \n");
+
+			// Низ
+			if (TexAngles[5] == "45")
+				{
+				xQuat = "0.707107 -0.707107 0";
+				yQuat = "-0.707107 -0.707107 0";
+				}
+			else
+				{
+				xQuat = "1 0 0";
+				yQuat = "0 -1 0";
+				}
+
+			Write ("( " + Coordinates[3] + " " + Coordinates[4] + " " + Coordinates[2] + " ) " +
+				"( " + Coordinates[0] + " " + Coordinates[4] + " " + Coordinates[2] + " ) " +
+				"( " + Coordinates[0] + " " + Coordinates[1] + " " + Coordinates[2] + " ) " +
+				Textures[5] + " [ " + xQuat + " " + TexOffsetsX[5] + " ] [ " + yQuat + " " + TexOffsetsY[5] + " ] " +
+				TexAngles[5] + " " + TexScales[5] + " \n");
+
 			Write ("}\n");
 			}
 
-		// Возможные типы блоков
+		/*// Возможные типы блоков
 		private enum BlockTypes
 			{
 			Default = 0,
 			Crate = 1,
 			Door = 2,
-			}
+			}*/
 
 		/// <summary>
 		/// Метод записывает звуковой триггер на карту
@@ -1241,7 +1294,7 @@ namespace RD_AAOW
 			// Запись
 			Write ("{\n");
 			AddEntity (MapClasses.SoundEffect);
-			
+
 			byte rtl = (byte)RoomTypeLeft;
 			byte rtr = (byte)RoomTypeRight;
 			Write ("\"roomtype\" \"" + rtl.ToString () + "\"\n");
@@ -1294,7 +1347,9 @@ namespace RD_AAOW
 				}
 
 			// Запись
-			WriteBlock (x1, y1, z1, x2, y2, z2, triggerBox, BlockTypes.Default);
+			/*WriteBlock (x1, y1, z1, x2, y2, z2, triggerBox, BlockTypes.Default);*/
+			WriteBlock ([x1, y1, z1, x2, y2, z2], triggerBox,
+				zeroTexAngleOffset, zeroTexAngleOffset, zeroTexAngleOffset, noTexScale);
 
 			Write ("}\n");
 			}
@@ -1342,9 +1397,12 @@ namespace RD_AAOW
 			int z = 12;
 			if (secondFloor)
 				z += BalconyHeight;
-			WriteBlock ((p.X - 32).ToString (), (p.Y - 32).ToString (), z.ToString (),
+			/*WriteBlock ((p.X - 32).ToString (), (p.Y - 32).ToString (), z.ToString (),
 				(p.X + 32).ToString (), (p.Y + 32).ToString (), (z + 4).ToString (),
-				triggerBox, BlockTypes.Default);
+				triggerBox, BlockTypes.Default);*/
+			WriteBlock ([(p.X - 32).ToString (), (p.Y - 32).ToString (), z.ToString (),
+				(p.X + 32).ToString (), (p.Y + 32).ToString (), (z + 4).ToString ()],
+				triggerBox, zeroTexAngleOffset, zeroTexAngleOffset, zeroTexAngleOffset, noTexScale);
 
 			Write ("}\n");
 
@@ -1352,7 +1410,7 @@ namespace RD_AAOW
 			}
 
 		/// <summary>
-		/// Метод записывает дверь на карту
+		/// Метод записывает бутафорскую дверь на карту
 		/// </summary>
 		/// <param name="RelativePosition">Относительная позиция точки создания</param>
 		/// <param name="Texture">Текстура двери</param>
@@ -1379,9 +1437,12 @@ namespace RD_AAOW
 				}
 
 			// Запись
-			WriteBlock (x1, y1, "0", x2, y2, "96",
+			/*WriteBlock (x1, y1, "0", x2, y2, "96",
 				[Texture, Texture, Texture, Texture, Texture, Texture],
-				BlockTypes.Door);
+				BlockTypes.Door);*/
+			WriteBlock ([x1, y1, "0", x2, y2, "96"],
+				[Texture, Texture, Texture, Texture, Texture, Texture],
+				["32", "32", "32", "32", "32", "32"], zeroTexAngleOffset, zeroTexAngleOffset, noTexScale);
 			}
 
 		/// <summary>
@@ -1463,21 +1524,34 @@ namespace RD_AAOW
 
 			int z = 0;
 			if (FloorsIsolation)
-				z += RDGenerics.RND.Next (2) * DefaultWallHeight2;	// Чтобы сохранить выравнивание текстуры
+				z += RDGenerics.RND.Next (2) * DefaultWallHeight2;  // Чтобы сохранить выравнивание текстуры
 
-			WriteBlock ((p.X - 16).ToString (), (p.Y - 16).ToString (), (z + 32).ToString (),
+			/*string[] offsets = ["32", "32", "32", "32", "32", "32"];*/
+			string[] scales = ["0.5 0.5", "0.5 0.5", "0.5 0.5", "0.5 0.5", "0.5 0.5", "0.5 0.5"];
+
+			/*WriteBlock ((p.X - 16).ToString (), (p.Y - 16).ToString (), (z + 32).ToString (),
 				(p.X + 16).ToString (), (p.Y + 16).ToString (), (z + 64).ToString (),
-				[tex, tex, tex, tex, tex, tex], BlockTypes.Crate);
+				[tex, tex, tex, tex, tex, tex], BlockTypes.Crate);*/
+			WriteBlock ([(p.X - 16).ToString (), (p.Y - 16).ToString (), (z + 32).ToString (),
+				(p.X + 16).ToString (), (p.Y + 16).ToString (), (z + 64).ToString ()],
+				[tex, tex, tex, tex, tex, tex], ["32", "32", "32", "32", "32", "32"], ["32", "0", "0", "0", "0", "32"],
+				zeroTexAngleOffset, scales);
 
 			string wood = woodTextures[RDGenerics.RND.Next (woodTextures.Length)];
 			string[] woodBox = [wood, wood, wood, wood, wood, wood];
 
-			WriteBlock ((p.X - 4).ToString (), (p.Y - 4).ToString (), (z + 4).ToString (),
+			/*WriteBlock ((p.X - 4).ToString (), (p.Y - 4).ToString (), (z + 4).ToString (),
 				(p.X + 4).ToString (), (p.Y + 4).ToString (), (z + 32).ToString (),
 				woodBox, BlockTypes.Crate);
 			WriteBlock ((p.X - 16).ToString (), (p.Y - 16).ToString (), z.ToString (),
 				(p.X + 16).ToString (), (p.Y + 16).ToString (), (z + 4).ToString (),
-				woodBox, BlockTypes.Crate);
+				woodBox, BlockTypes.Crate);*/
+			WriteBlock ([(p.X - 4).ToString (), (p.Y - 4).ToString (), (z + 4).ToString (),
+				(p.X + 4).ToString (), (p.Y + 4).ToString (), (z + 32).ToString ()],
+				woodBox, zeroTexAngleOffset, zeroTexAngleOffset, zeroTexAngleOffset, scales);
+			WriteBlock ([(p.X - 16).ToString (), (p.Y - 16).ToString (), z.ToString (),
+				(p.X + 16).ToString (), (p.Y + 16).ToString (), (z + 4).ToString ()],
+				woodBox, zeroTexAngleOffset, zeroTexAngleOffset, zeroTexAngleOffset, scales);
 
 			Write ("}\n");
 			}
@@ -1576,17 +1650,21 @@ namespace RD_AAOW
 
 			string tex;
 			if (StartOrFinish)
-				tex = "~Path02";
+				tex = "~Lamp03";
 			else
-				tex = "~Path01";
+				tex = "~Lamp02";
 
 			int z = 0;
 			if (SecondFloor)
 				z += BalconyHeight;
 
-			WriteBlock ((p.X - 8).ToString (), (p.Y - 8).ToString (), (z - 8).ToString (),
+			/*WriteBlock ((p.X - 8).ToString (), (p.Y - 8).ToString (), (z - 8).ToString (),
 				(p.X + 8).ToString (), (p.Y + 8).ToString (), z.ToString (),
-				[tex, tex, tex, tex, tex, tex], BlockTypes.Default);
+				[tex, tex, tex, tex, tex, tex], BlockTypes.Default);*/
+			WriteBlock ([(p.X - 8).ToString (), (p.Y - 8).ToString (), (z - 8).ToString (),
+				(p.X + 8).ToString (), (p.Y + 8).ToString (), z.ToString ()],
+				[tex, tex, tex, tex, tex, tex], ["8", "8", "8", "8", "8", "8"], ["8", "8", "8", "8", "8", "8"],
+				zeroTexAngleOffset, noTexScale);
 			}
 
 		// Параметры неба
@@ -1620,25 +1698,14 @@ namespace RD_AAOW
 		/// Метод записывает пол и потолок на карту
 		/// </summary>
 		/// <param name="FloorTexture">Текстура пола</param>
-		/// <param name="RoofTexture">Текстура потолка</param>
+		/// <param name="CeilingTexture">Текстура потолка</param>
 		/// <param name="RelativePosition">Относительная позиция точки создания</param>
-		public static void WriteMapCeilingAndFloorField (Point RelativePosition, string RoofTexture,
-			string FloorTexture)
+		/// <param name="RotateFloorTexture">Флаг разрешения поворота текстуры пола на 45 градусов</param>
+		/// <param name="RotateCeilingTexture">Флаг разрешения поворота текстуры потолка на 45 градусов</param>
+		/// <param name="AllowCeilingHoles">Флаг разрешения сквозных отверстий в потолке</param>
+		public static void WriteMapCeilingAndFloorField (Point RelativePosition, string CeilingTexture,
+			bool RotateCeilingTexture, string FloorTexture, bool RotateFloorTexture, bool AllowCeilingHoles)
 			{
-			/*// Расчёт параметров
-			bool negX = ((Section & NegativeX) != 0);
-			bool negY = ((Section & NegativeY) != 0);
-			int realMapWidth = RelativeMapWidth * WallLength;
-			int realMapHeight = RelativeMapHeight * WallLength;
-
-			string x1 = (negX ? (-realMapWidth / 2) : 0).ToString ();
-			string x2 = (negX ? 0 : (realMapWidth / 2)).ToString ();
-			string y1 = (negY ? (-realMapHeight / 2) : 0).ToString ();
-			string y2 = (negY ? 0 : (realMapHeight / 2)).ToString ();
-
-			string h2 = (wallHeight + 32).ToString ();
-			string h1 = (IsSkyTexture (RoofTexture) ? (wallHeight + 16) : wallHeight).ToString ();*/
-
 			// Запись
 			Point p = EvaluateAbsolutePosition (RelativePosition);
 			string x1 = (p.X - 64).ToString ();
@@ -1646,16 +1713,66 @@ namespace RD_AAOW
 			string y1 = (p.Y - 64).ToString ();
 			string y2 = (p.Y + 64).ToString ();
 
+			bool underSky = IsSkyTexture (CeilingTexture);
 			string h2 = (wallHeight + 32).ToString ();
-			string h1 = (IsSkyTexture (RoofTexture) ? (wallHeight + 16) : wallHeight).ToString ();
+			string h1 = (underSky ? (wallHeight + 16) : wallHeight).ToString ();
 
-			WriteBlock (x1, y1, "-16", x2, y2, "0",
+			/*string rAng, fAng;
+			if (RotateFloorTexture)
+				fAng = RDGenerics.RND.Next (2) == 0 ? "0" : "45";
+			else
+				fAng = "0";
+			if (RotateCeilingTexture)
+				rAng = RDGenerics.RND.Next (2) == 0 ? "0" : "45";
+			else
+				rAng = "0";*/
+			string cAng = RotateCeilingTexture ? "45" : "0";
+			string fAng = RotateFloorTexture ? "45" : "0";
+
+			/*WriteBlock (x1, y1, "-16", x2, y2, "0",
 				[FloorTexture, FloorTexture, FloorTexture, FloorTexture, FloorTexture, FloorTexture],
 				BlockTypes.Default);
 
 			WriteBlock (x1, y1, h1, x2, y2, h2,
 				[RoofTexture, RoofTexture, RoofTexture, RoofTexture, RoofTexture, RoofTexture],
-				BlockTypes.Default);
+				BlockTypes.Default);*/
+			WriteBlock ([x1, y1, "-16", x2, y2, "0"],
+				[FloorTexture, FloorTexture, FloorTexture, FloorTexture, FloorTexture, FloorTexture],
+				zeroTexAngleOffset, zeroTexAngleOffset,
+				[fAng, "0", "0", "0", "0", fAng], noTexScale);
+
+			// Обычный потолок
+			if (underSky || !AllowCeilingHoles || AllowCeilingHoles && (RDGenerics.RND.Next (40) != 0))
+				{
+				WriteBlock ([x1, y1, h1, x2, y2, h2],
+					[CeilingTexture, CeilingTexture, CeilingTexture, CeilingTexture, CeilingTexture, CeilingTexture],
+					zeroTexAngleOffset, zeroTexAngleOffset,
+					[cAng, "0", "0", "0", "0", cAng], noTexScale);
+				return;
+				}
+
+			// Потолок с отверстием
+			string xil = (p.X + 20).ToString ();
+			string[] tex6 = [CeilingTexture, BlueMetalTexture, BlueMetalTexture, BlueMetalTexture, BlueMetalTexture, CeilingTexture];
+			string[] ang6 = [cAng, "0", "0", "0", "0", cAng];
+			WriteBlock ([x1, y1, h1, xil, y2, h2],
+				tex6, zeroTexAngleOffset, zeroTexAngleOffset, ang6, noTexScale);
+
+			string xir = (p.X + 44).ToString ();
+			WriteBlock ([xir, y1, h1, x2, y2, h2],
+				tex6, zeroTexAngleOffset, zeroTexAngleOffset, ang6, noTexScale);
+
+			string yil = (p.Y - 32).ToString ();
+			WriteBlock ([xil, y1, h1, xir, yil, h2],
+				tex6, zeroTexAngleOffset, zeroTexAngleOffset, ang6, noTexScale);
+
+			string yir = (p.Y + 32).ToString ();
+			WriteBlock ([xil, yir, h1, xir, y2, h2],
+				tex6, zeroTexAngleOffset, zeroTexAngleOffset, ang6, noTexScale);
+
+			WriteBlock ([xil, yil, h2, xir, yir, (wallHeight + 36).ToString ()],
+				[SkyTexture, SkyTexture, SkyTexture, SkyTexture, SkyTexture, SkyTexture],
+				zeroTexAngleOffset, zeroTexAngleOffset, zeroTexAngleOffset, noTexScale);
 			}
 
 		/// <summary>
@@ -1695,7 +1812,11 @@ namespace RD_AAOW
 				Write ("\"skin\" \"-3\"\n");
 				Write ("\"WaveHeight\" \"0.1\"\n");
 
-				WriteBlock (x1, y1, "0", x2, y2, h, [tex, tex, tex, tex, tex, tex], BlockTypes.Default);
+				/*WriteBlock (x1, y1, "0", x2, y2, h, [tex, tex, tex, tex, tex, tex], BlockTypes.Default);*/
+				string ang = RDGenerics.RND.Next (360).ToString ();
+				WriteBlock ([x1, y1, "0", x2, y2, h], [tex, tex, tex, tex, tex, tex],
+					zeroTexAngleOffset, zeroTexAngleOffset,
+					[ang, "0", "0", "0", "0", "0"], noTexScale);
 
 				Write ("}\n");
 				}
@@ -1791,11 +1912,27 @@ namespace RD_AAOW
 				{
 				int d = (balcony && !isolated) ? 8 : 16;
 
-				WriteBlock ((p.X - d).ToString (), (p.Y - d).ToString (), (z - 0).ToString (),
+				/*WriteBlock ((p.X - d).ToString (), (p.Y - d).ToString (), (z - 0).ToString (),
 					(p.X + d).ToString (), (p.Y + d).ToString (), (z + 4).ToString (),
 					[RoofTexture, RoofTexture, RoofTexture, RoofTexture, RoofTexture,
 					(balcony && !isolated) ? "~PATH01" : "~LAMP07"],
-					BlockTypes.Default);
+					BlockTypes.Default);*/
+				string[] tex6;
+				string[] offsets;
+				if (balcony && !isolated)
+					{
+					tex6 = [RoofTexture, RoofTexture, RoofTexture, RoofTexture, RoofTexture, "~Lamp02"];
+					offsets = ["8", "8", "8", "8", "8", "8"];
+					}
+				else
+					{
+					tex6 = [RoofTexture, RoofTexture, RoofTexture, RoofTexture, RoofTexture, "~Lamp07"];
+					offsets = ["0", "0", "0", "0", "0", "0"];
+					}
+
+				WriteBlock ([(p.X - d).ToString (), (p.Y - d).ToString (), (z - 0).ToString (),
+					(p.X + d).ToString (), (p.Y + d).ToString (), (z + 4).ToString ()],
+					tex6, offsets, offsets, zeroTexAngleOffset, noTexScale);
 
 				return false;
 				}
@@ -1850,6 +1987,7 @@ namespace RD_AAOW
 
 				// Сборка линии текстур
 				string[] tex = f.GetTextures (b);
+				string[] yOffsets = f.GetYOffset (b);
 				for (int i = 0; i < tex.Length; i++)
 					{
 					if (string.IsNullOrWhiteSpace (tex[i]))
@@ -1857,8 +1995,11 @@ namespace RD_AAOW
 					}
 
 				// Запись
-				WriteBlock (coords[0].ToString (), coords[1].ToString (), coords[2].ToString (),
-					coords[3].ToString (), coords[4].ToString (), coords[5].ToString (), tex, BlockTypes.Door);
+				/*WriteBlock (coords[0].ToString (), coords[1].ToString (), coords[2].ToString (),
+					coords[3].ToString (), coords[4].ToString (), coords[5].ToString (), tex, BlockTypes.Door);*/
+				WriteBlock ([coords[0].ToString (), coords[1].ToString (), coords[2].ToString (),
+					coords[3].ToString (), coords[4].ToString (), coords[5].ToString ()],
+					tex, ["32", "32", "32", "32", "32", "32"], yOffsets, zeroTexAngleOffset, noTexScale);
 				}
 
 			return secondFloor;
@@ -1895,21 +2036,26 @@ namespace RD_AAOW
 			Point p = EvaluateAbsolutePosition (RelativePosition);
 
 			// Сборка линии текстур
-			string[] tex;
+			/*string[] tex;
 			if (SurroundingWalls != null)
 				{
 				tex = triggerBox;
 				}
-			else
+			else*/
+			if (SurroundingWalls == null)
 				{
-				tex = [FloorTexture, SubFloorTexture, SubFloorTexture, SubFloorTexture,
-					SubFloorTexture, SubFloorTexture];
+				/*tex = [FloorTexture, SubFloorTexture, SubFloorTexture, SubFloorTexture,
+					SubFloorTexture, SubFloorTexture];*/
 				int offset = Isolated ? 64 : 56;
 
 				// Запись площадки
-				WriteBlock ((p.X - offset).ToString (), (p.Y - offset).ToString (), (BalconyHeight - 16).ToString (),
+				/*WriteBlock ((p.X - offset).ToString (), (p.Y - offset).ToString (), (BalconyHeight - 16).ToString (),
 					(p.X + offset).ToString (), (p.Y + offset).ToString (), BalconyHeight.ToString (),
-					tex, BlockTypes.Door);
+					tex, BlockTypes.Door);*/
+				WriteBlock ([(p.X - offset).ToString (), (p.Y - offset).ToString (), (BalconyHeight - 16).ToString (),
+					(p.X + offset).ToString (), (p.Y + offset).ToString (), BalconyHeight.ToString ()],
+					[FloorTexture, SubFloorTexture, SubFloorTexture, SubFloorTexture, SubFloorTexture, SubFloorTexture],
+					zeroTexAngleOffset, zeroTexAngleOffset, zeroTexAngleOffset, noTexScale);
 				return;
 				}
 
@@ -1953,11 +2099,14 @@ namespace RD_AAOW
 				{
 				Write ("{\n");
 				AddEntity (MapClasses.Ladder);
-				WriteBlock ((p.X + offsets[i + 0]).ToString (), (p.Y + offsets[i + 1]).ToString (),
+				/*WriteBlock ((p.X + offsets[i + 0]).ToString (), (p.Y + offsets[i + 1]).ToString (),
 					(BalconyHeight - 16).ToString (),
 					(p.X + offsets[i + 2]).ToString (), (p.Y + offsets[i + 3]).ToString (),
 					BalconyHeight.ToString (),
-					tex, BlockTypes.Door);
+					tex, BlockTypes.Door);*/
+				WriteBlock ([(p.X + offsets[i + 0]).ToString (), (p.Y + offsets[i + 1]).ToString (), (BalconyHeight - 16).ToString (),
+					(p.X + offsets[i + 2]).ToString (), (p.Y + offsets[i + 3]).ToString (), BalconyHeight.ToString ()],
+					triggerBox, zeroTexAngleOffset, zeroTexAngleOffset, zeroTexAngleOffset, noTexScale);
 				Write ("}\n");
 				}
 			}
@@ -2016,6 +2165,31 @@ namespace RD_AAOW
 			AddEntity (MapClasses.Node);
 			Write ("\"origin\" \"" + p.X.ToString () + " " + p.Y.ToString () + " 16\"\n");
 			Write ("}\n");
+			}
+
+		/// <summary>
+		/// Метод записывает изолирующую решётку между этажами в точке выхода на карту
+		/// </summary>
+		/// <param name="RelativePosition">Относительная позиция точки выхода</param>
+		public static void WriteFinishFloorIsolator (Point RelativePosition)
+			{
+			Point p = EvaluateAbsolutePosition (RelativePosition);
+			
+			string x1 = (p.X - 64).ToString ();
+			string x2 = (p.X + 64).ToString ();
+			string z1 = (BalconyHeight + 4).ToString ();
+			string z2 = (BalconyHeight + 8).ToString ();
+			string[] tex6 = [GreenMetalTexture, GreenMetalTexture, GreenMetalTexture, GreenMetalTexture,
+				GreenMetalTexture, GreenMetalTexture];
+
+			WriteBlock ([x1, (p.Y - 44).ToString (), z1, x2, (p.Y - 40).ToString (), z2], tex6,
+				zeroTexAngleOffset, zeroTexAngleOffset, zeroTexAngleOffset, noTexScale);
+			WriteBlock ([x1, (p.Y - 18).ToString (), z1, x2, (p.Y - 14).ToString (), z2], tex6,
+				zeroTexAngleOffset, zeroTexAngleOffset, zeroTexAngleOffset, noTexScale);
+			WriteBlock ([x1, (p.Y + 14).ToString (), z1, x2, (p.Y + 18).ToString (), z2], tex6,
+				zeroTexAngleOffset, zeroTexAngleOffset, zeroTexAngleOffset, noTexScale);
+			WriteBlock ([x1, (p.Y + 40).ToString (), z1, x2, (p.Y + 44).ToString (), z2], tex6,
+				zeroTexAngleOffset, zeroTexAngleOffset, zeroTexAngleOffset, noTexScale);
 			}
 
 		/// <summary>

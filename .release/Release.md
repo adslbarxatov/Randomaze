@@ -1,11 +1,11 @@
-_Changes for v 7.0.4_:
+_Changes for v 7.1_:
+- Implemented the ability to control angles and offsets for textures from the algorithm of furniture generation;
+- Implemented the ability to add holes in the ceiling to allow some sun for indoor sections;
+- Adjusted the probability for neon lights;
+- Adjusted the size of the entrance / exit gates for two separated floors (to avoid button-based soft-lock);
+- Fixed missing SFX;
 - Fixed the alien_controller placement on the isolated floor;
 - Glasses for the first and the second floor have been splitted in isolation mode;
 - Balconies and the second floor are not placed a bit higher (`120pts` vs `112pts`);
 - Fixed the lighting coefficient for the first floor in the isolation mode;
-- Jumppads control changed from manual to auto;
-- Updated the user guide;
-- Implemented the ***complete floors separation***. Now you can generate maps with two almost isolated floors (both are accessible from each other);
-- Maps writing algorithm has been rebuilt: it is possible now to add furniture elements that will replace floor or ceiling blocks (like windows or holes);
-- Some dark textures have been replaced;
-- Removed extraneous sequence from hgrunt model (to prevent it from staying under player's attack)
+- Jumppads control changed from manual to auto
