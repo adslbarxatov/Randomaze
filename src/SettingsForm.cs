@@ -257,9 +257,6 @@ namespace RD_AAOW
 			settings.BarriersType = (MapBarriersTypes)(BarrierCombo.SelectedIndex + 1);
 			settings.ButtonMode = (MapButtonsTypes)ButtonCombo.SelectedIndex;
 
-			/*settings.TwoFloors = TwoFloorsFlag.Checked;
-			settings.AllowItemsForSecondFloor = AllowItemsForSecondFloor.Checked;
-			settings.RandomizeFloorsQuantity = RandomizeFloorsFlag.Checked;*/
 			settings.FloorsType = (MapFloorsTypes)(FloorTypesCombo.SelectedIndex + 1);
 
 			settings.CratesDensityCoefficient2 = (uint)CratesDensityTrack.Value - 1;
@@ -357,25 +354,19 @@ namespace RD_AAOW
 		private void TwoFloorsFlag_CheckedChanged (object sender, EventArgs e)
 			{
 			// barnacle зависит от высоты карты
-			/*if (TwoFloorsFlag.Checked || RandomizeFloorsFlag.Checked)*/
 			switch (FloorTypesCombo.SelectedIndex)
 				{
 				case 4:
 				case 1:
 				case 2:
-					enemiesLocks[8] = /*AllowItemsForSecondFloor.Enabled =*/ true;
+					enemiesLocks[8] = true;
 					break;
-				/*}
-				else
-				{*/
 
 				default:
-					enemiesLocks[8] = /*AllowItemsForSecondFloor.Enabled = AllowItemsForSecondFloor.Checked =*/ false;
+					enemiesLocks[8] = false;
 					enemies[8] = 0;
 					break;
 				}
-
-			/*TwoFloorsFlag.Enabled = !RandomizeFloorsFlag.Checked;*/
 
 			// Подгрузка новых значений
 			EnemyScroll_Scroll (null, null);

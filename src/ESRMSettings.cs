@@ -26,8 +26,6 @@ namespace RD_AAOW
 				switch (settingFromEngineToken)
 					{
 					// Флаги
-					/*case twoFloorsPar:
-					case allowItemsForSecondFloorPar:*/
 					case allowMonsterMakersPar:
 
 					// Значения, начинающиеся с нуля
@@ -68,7 +66,6 @@ namespace RD_AAOW
 			_ = UseCeilingHoles;
 
 			// Защита
-			/*if (!TwoFloors && !RandomizeFloorsQuantity)*/
 			if ((FloorsType == MapFloorsTypes.SingleFloor) || (FloorsType == MapFloorsTypes.TwoSeparatedFloors))
 				EnemiesSupport.RemoveBarnacle (ref enemiesPermissionLine);
 			if ((WaterLevel < 1) && !RandomWaterLevel)
@@ -339,7 +336,6 @@ namespace RD_AAOW
 					return enemiesPermissionLine.ToArray ();
 
 				// Присвоение с перезаписью
-				/*string line = "";*/
 				string line;
 				if (settingFromEngineToken == enemiesPermissionLinePar)
 					{
@@ -431,7 +427,6 @@ namespace RD_AAOW
 					return itemsPermissionLine.ToArray ();
 
 				// Присвоение с перезаписью
-				/*string line = "";*/
 				string line;
 				if (settingFromEngineToken == itemsPermissionLinePar)
 					{

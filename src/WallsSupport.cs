@@ -198,21 +198,6 @@ namespace RD_AAOW
 				return;
 
 			// Запись звукового триггера
-			/*byte leftRT, rightRT;
-			byte offset = (byte)((MapSupport.TwoFloors && !FloorsIsolation) ? 1 : 0);
-			if (leftSideIsUnderSky)
-				leftRT = 0;
-			else if (WallsAreRare)
-				leftRT = (byte)(18 + offset);
-			else
-				leftRT = (byte)(17 + offset);
-
-			if (rightSideIsUnderSky)
-				rightRT = 0;
-			else if (WallsAreRare)
-				rightRT = (byte)(18 + offset);
-			else
-				rightRT = (byte)(17 + offset);*/
 			MapEntryPointFlags f = MapEntryPointFlags.None;
 			if (leftSideIsUnderSky)
 				f |= MapEntryPointFlags.IsUnderSky;
