@@ -2,10 +2,10 @@ Randomaze: changes log
 
 ToDo:
 - Separate walls density from the maze size
-- Update user guide
 
-Version 7.1.1:
-• Updated the internal assemblies
+Version 7.1.2:
+• Updated the internal assemblies;
+• Updated the user guide
 
 Version 7.1:
 • Implemented the ability to control angles and offsets for textures from the algorithm

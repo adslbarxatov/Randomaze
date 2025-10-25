@@ -182,9 +182,9 @@ namespace RD_AAOW
 
 			TwoFloorsFlag_CheckedChanged (null, null);
 
-			CratesDensityTrack.Maximum = (int)ESRMSettings.MaximumCratesDensityCoefficient2;
-			CratesDensityTrack.Value = (int)settings.CratesDensityCoefficient2 + 1;
-			CratesDensityFlag.Checked = settings.RandomCratesDensityCoefficient2;
+			CratesDensityTrack.Maximum = (int)ESRMSettings.MaximumCratesDensityCoefficient;
+			CratesDensityTrack.Value = (int)settings.CratesDensityCoefficient + 1;
+			CratesDensityFlag.Checked = settings.RandomCratesDensityCoefficient;
 
 			CratesBalanceTrack.Minimum = -ESRMSettings.CratesBalanceRange;
 			CratesBalanceTrack.Maximum = ESRMSettings.CratesBalanceRange;
@@ -259,8 +259,8 @@ namespace RD_AAOW
 
 			settings.FloorsType = (MapFloorsTypes)(FloorTypesCombo.SelectedIndex + 1);
 
-			settings.CratesDensityCoefficient2 = (uint)CratesDensityTrack.Value - 1;
-			settings.RandomCratesDensityCoefficient2 = CratesDensityFlag.Checked;
+			settings.CratesDensityCoefficient = (uint)CratesDensityTrack.Value - 1;
+			settings.RandomCratesDensityCoefficient = CratesDensityFlag.Checked;
 			settings.CratesBalance = CratesBalanceTrack.Value;
 
 			settings.UseMapNodes = NodesFlag.Checked;

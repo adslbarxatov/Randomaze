@@ -26,11 +26,8 @@ This tool will be started by the game engine automatically, every time it will n
 
 ## Environment
 
-The tool requires next compilation tools, directories and files for work:
-- `.\hlcsg.exe`;
-- `.\hlbsp.exe`;
-- `.\hlvis.exe`;
-- `.\rlrad.exe`;
+The tool requires next components, directories and files for work:
+- `.\randomazezhlt.dll`;
 - `.\maps` (directory);
 - `..\valve\eshq.wad`.
 
@@ -59,6 +56,7 @@ The tool requires next compilation tools, directories and files for work:
 | Lamps lighting coefficient | Affects quantity of enabled lamp lights | 1 – 10 | Yes | `LI` | `esrm_inlight` |
 | Sun lighting coefficient | Affects outdoor brightness and the type of sky | 1 – 6 | Yes | `LO` | `esrm_outlight` |
 | Use neon lighting flag | Allows addition of neon lamps on too dark sections | 0 / 1 | No | `NL` | `esrm_neon` |
+| Use ceiling holes flag | Allows addition of ceiling holes on too dark sections | 0 / 1 | No | `CH` | `esrm_ceiling_holes` |
 | Crates density coefficient | Describes, how much enemies will be replaced with crates with bugs or explosives | 0 – 5 | Yes | `CD` | `esrm_crates` |
 | Gravity coefficient | Affects the gravity percentage for all objects on the map | 1 – 20 (10 = 100%) | Yes | `GR` | `esrm_gravity` |
 | Button mode | Adds the button(s) that should be found and pressed to open the exit gate | Quantity, 1 / 2 / 3 | No | `BM` | `esrm_button` |

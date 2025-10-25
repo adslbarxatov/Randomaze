@@ -27,6 +27,8 @@ namespace RD_AAOW
 					{
 					// Флаги
 					case allowMonsterMakersPar:
+					case useNeonLightsPar:
+					case useCeilingHolesPar:
 
 					// Значения, начинающиеся с нуля
 					case fogCoefficientPar:
@@ -48,7 +50,7 @@ namespace RD_AAOW
 			_ = ItemsDensityCoefficient;
 			_ = WallsDensityCoefficient;
 			_ = ButtonMode;
-			_ = CratesDensityCoefficient2;
+			_ = CratesDensityCoefficient;
 			_ = EnemiesPermissionLine;
 			_ = InsideLightingCoefficient;
 			_ = OutsideLightingCoefficient;
@@ -875,12 +877,12 @@ namespace RD_AAOW
 		/// Возвращает или задаёт коэффициент преобразования врагов в ящики
 		/// [0; 5]
 		/// </summary>
-		public uint CratesDensityCoefficient2
+		public uint CratesDensityCoefficient
 			{
 			get
 				{
 				return GetSettingsValue (cratesDensityCoefficientPar,
-					MaximumCratesDensityCoefficient2, 3, ref cratesDensityCoefficient) - 1;
+					MaximumCratesDensityCoefficient, 3, ref cratesDensityCoefficient) - 1;
 				}
 			set
 				{
@@ -893,7 +895,7 @@ namespace RD_AAOW
 		/// <summary>
 		/// Возвращает или задаёт флаг случайного коэффициента преобразования врагов в ящики
 		/// </summary>
-		public bool RandomCratesDensityCoefficient2
+		public bool RandomCratesDensityCoefficient
 			{
 			get
 				{
@@ -908,7 +910,7 @@ namespace RD_AAOW
 		/// <summary>
 		/// Возвращает ограничение коэффициента преобразования врагов в ящики
 		/// </summary>
-		public const uint MaximumCratesDensityCoefficient2 = 6;
+		public const uint MaximumCratesDensityCoefficient = 6;
 
 
 
