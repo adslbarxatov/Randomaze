@@ -3,6 +3,10 @@ Randomaze: changes log
 ToDo:
 - Separate walls density from the maze size
 
+Version 7.2:
+• App has been migrated to .NET 10;
+• Internal assemblies have been updated
+
 Version 7.1.2:
 • Updated the internal assemblies;
 • Updated the user guide
