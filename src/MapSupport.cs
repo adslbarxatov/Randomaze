@@ -1613,11 +1613,11 @@ namespace RD_AAOW
 		/// <param name="FloorTexture">Текстура пола</param>
 		/// <param name="CeilingTexture">Текстура потолка</param>
 		/// <param name="RelativePosition">Относительная позиция точки создания</param>
-		/// <param name="RotateFloorTexture">Флаг разрешения поворота текстуры пола на 45 градусов</param>
-		/// <param name="RotateCeilingTexture">Флаг разрешения поворота текстуры потолка на 45 градусов</param>
+		/// <param name="RotateFloorTexture">Коэффициент поворота текстуры пола с шагом в 45 градусов (0 – 3)</param>
+		/// <param name="RotateCeilingTexture">Коэффициент поворота текстуры потолка с шагом в 45 градусов (0 – 3)</param>
 		/// <param name="AllowCeilingHoles">Флаг разрешения сквозных отверстий в потолке</param>
 		public static void WriteMapCeilingAndFloorField (Point RelativePosition, string CeilingTexture,
-			bool RotateCeilingTexture, string FloorTexture, bool RotateFloorTexture, bool AllowCeilingHoles)
+			byte RotateCeilingTexture, string FloorTexture, byte RotateFloorTexture, bool AllowCeilingHoles)
 			{
 			// Запись
 			Point p = EvaluateAbsolutePosition (RelativePosition);
@@ -1630,8 +1630,10 @@ namespace RD_AAOW
 			string h2 = (wallHeight + 32).ToString ();
 			string h1 = (underSky ? (wallHeight + 16) : wallHeight).ToString ();
 
-			string cAng = RotateCeilingTexture ? "45" : "0";
-			string fAng = RotateFloorTexture ? "45" : "0";
+			/*string cAng = RotateCeilingTexture ? "45" : "0";
+			string fAng = RotateFloorTexture ? "45" : "0";*/
+			string cAng = (45 * (RotateCeilingTexture % 4)).ToString ();
+			string fAng = (45 * (RotateFloorTexture % 4)).ToString ();
 
 			WriteBlock ([x1, y1, "-16", x2, y2, "0"],
 				[FloorTexture, FloorTexture, FloorTexture, FloorTexture, FloorTexture, FloorTexture],
@@ -2010,7 +2012,7 @@ namespace RD_AAOW
 
 			SWsc.Write ("startmap \"" + MapName + "\"\n");
 			SWsc.Write ("creditsmap \"" + MapName + "\"\n");
-			SWsc.Write ("edicts \"1500\"\n");
+			SWsc.Write ("edicts \"2000\"\n");
 
 			SWsc.Write ("cldll \"1\"\n");
 			SWsc.Write ("gamedll \"dlls\\hl.dll\"\n");

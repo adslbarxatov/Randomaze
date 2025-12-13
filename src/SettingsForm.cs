@@ -160,7 +160,7 @@ namespace RD_AAOW
 			ItemScroll_Scroll (null, null);
 			WaterTrack_Scroll (null, null);
 
-			for (int i = (int)MapSectionTypes.AllTypes; i <= (int)MapSectionTypes.OnlyInside; i++)
+			for (int i = (int)MapSectionTypes2.Random; i <= (int)MapSectionTypes2.Balanced; i++)
 				SkyCombo.Items.Add (RDLocale.GetText ("GenericTab_SkyCombo" + i.ToString ("D2")));
 			SkyCombo.SelectedIndex = (int)settings.SectionType - 1;
 
@@ -253,7 +253,7 @@ namespace RD_AAOW
 			settings.EnemiesPermissionLine = enemies;
 			settings.ItemsPermissionLine = items;
 
-			settings.SectionType = (MapSectionTypes)(SkyCombo.SelectedIndex + 1);
+			settings.SectionType = (MapSectionTypes2)(SkyCombo.SelectedIndex + 1);
 			settings.BarriersType = (MapBarriersTypes)(BarrierCombo.SelectedIndex + 1);
 			settings.ButtonMode = (MapButtonsTypes)ButtonCombo.SelectedIndex;
 
@@ -331,7 +331,7 @@ namespace RD_AAOW
 			WaterTrack.BackColor = WaterTrack.Enabled ? enabledColor : disabledColor;
 			}
 
-		// Ограничение суммарного коэффициента размерности лабиринта и плотности стен
+		/*// Ограничение суммарного коэффициента размерности лабиринта и плотности стен
 		private int sizeWallsDifferenceLimit = 5;
 		private void MazeSizeTrack_Scroll (object sender, EventArgs e)
 			{
@@ -348,7 +348,7 @@ namespace RD_AAOW
 			else
 				MazeSizeTrack.Value = limit - sizeWallsDifferenceLimit -
 					((int)ESRMSettings.MaximumWallsDensityCoefficient - WallsDensityTrack.Value);
-			}
+			}*/
 
 		// Включение дополнительных монстров
 		private void TwoFloorsFlag_CheckedChanged (object sender, EventArgs e)

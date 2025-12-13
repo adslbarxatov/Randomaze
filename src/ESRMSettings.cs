@@ -587,12 +587,12 @@ namespace RD_AAOW
 		/// <summary>
 		/// Возвращает или задаёт тип фильтрации секций карты
 		/// </summary>
-		public MapSectionTypes SectionType
+		public MapSectionTypes2 SectionType
 			{
 			get
 				{
-				return (MapSectionTypes)GetSettingsValue (sectionTypePar,
-					(uint)MapSectionTypes.OnlyInside, (uint)MapSectionTypes.AllTypes,
+				return (MapSectionTypes2)GetSettingsValue (sectionTypePar,
+					(uint)MapSectionTypes2.Balanced, (uint)MapSectionTypes2.Balanced,
 					ref sectionType);
 				}
 			set
@@ -954,12 +954,12 @@ namespace RD_AAOW
 	/// <summary>
 	/// Возможные варианты фильтрации секций карты
 	/// </summary>
-	public enum MapSectionTypes
+	public enum MapSectionTypes2
 		{
 		/// <summary>
-		/// Все варианты
+		/// Все варианты в любых пропорциях
 		/// </summary>
-		AllTypes = 1,
+		Random = 1,
 
 		/// <summary>
 		/// Только варианты с небом
@@ -970,6 +970,11 @@ namespace RD_AAOW
 		/// Только варианты в помещении
 		/// </summary>
 		OnlyInside = 3,
+
+		/// <summary>
+		/// Присутствует по меньшей мере один вариант каждого типа
+		/// </summary>
+		Balanced = 4,
 		}
 
 	/// <summary>
