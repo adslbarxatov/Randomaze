@@ -1,5 +1,8 @@
 Randomaze: changes log
 
+Version 7.2.3:
+• Offline help has been replaced with the PDF format
+
 Version 7.2.2:
 • Floor and ceiling textures now have 0, 45, 90 and 135 rotation angles;
 • Added support for balanced selection of section types. When enabled, at least one "outdoor"

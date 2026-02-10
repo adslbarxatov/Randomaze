@@ -1630,8 +1630,6 @@ namespace RD_AAOW
 			string h2 = (wallHeight + 32).ToString ();
 			string h1 = (underSky ? (wallHeight + 16) : wallHeight).ToString ();
 
-			/*string cAng = RotateCeilingTexture ? "45" : "0";
-			string fAng = RotateFloorTexture ? "45" : "0";*/
 			string cAng = (45 * (RotateCeilingTexture % 4)).ToString ();
 			string fAng = (45 * (RotateFloorTexture % 4)).ToString ();
 
@@ -2005,7 +2003,7 @@ namespace RD_AAOW
 				}
 			StreamWriter SWsc = new StreamWriter (FSsc, RDGenerics.GetEncoding (RDEncodings.UTF8));
 
-			SWsc.Write ("game \"" + ProgramDescription.AssemblyTitle + "\"\n");
+			SWsc.Write ("game \"" + ProgramDescription.AssemblyNamePrefix + ProgramDescription.AssemblyMainName + "\"\n");
 			SWsc.Write ("type \"singleplayer_only\"\n");
 			SWsc.Write ("version \"" + ProgramDescription.AssemblyVersion + "\"\n");
 			//SWsc.Write ("noskills \"1\"\n");
@@ -2108,7 +2106,8 @@ namespace RD_AAOW
 			// Начало карты
 			Write ("{\n");
 			AddEntity (MapClasses.World);
-			Write ("\"message\" \"ES: Randomaze map " + BuildMapName () + " by FDL\"\n");
+			Write ("\"message\" \"" + ProgramDescription.AssemblyNamePrefix + ProgramDescription.AssemblyMainName +
+				" map " + BuildMapName () + " by FDL\"\n");
 			Write ("\"mapversion\" \"220\"\n");
 
 			// Инициализация неба
@@ -2136,7 +2135,7 @@ namespace RD_AAOW
 			// Параметры первой карты
 			if (MapNumber == 1)
 				{
-				Write ("\"chaptertitle\" \"" + ProgramDescription.AssemblyTitle + "\"\n");
+				Write ("\"chaptertitle\" \"" + ProgramDescription.AssemblyNamePrefix + ProgramDescription.AssemblyMainName + "\"\n");
 				Write ("\"startdark\" \"1\"\n");
 				Write ("\"gametitle\" \"1\"\n");
 				}

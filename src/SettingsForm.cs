@@ -60,7 +60,8 @@ namespace RD_AAOW
 				OutsideLightingFlag.Text = RDLocale.GetText ("SettingsForm_Random");
 
 			this.TopMost = true;
-			this.Text = ProgramDescription.AssemblyTitle + ": " + RDLocale.GetText ("SettingsForm_T");
+			this.Text = ProgramDescription.AssemblyNamePrefix + ProgramDescription.AssemblyMainName +
+				" – " + RDLocale.GetText ("SettingsForm_T");
 			this.CancelButton = AbortButton;
 			this.AcceptButton = ApplyButton;
 
@@ -330,25 +331,6 @@ namespace RD_AAOW
 			WaterTrack.Enabled = !WaterFlag.Checked;
 			WaterTrack.BackColor = WaterTrack.Enabled ? enabledColor : disabledColor;
 			}
-
-		/*// Ограничение суммарного коэффициента размерности лабиринта и плотности стен
-		private int sizeWallsDifferenceLimit = 5;
-		private void MazeSizeTrack_Scroll (object sender, EventArgs e)
-			{
-			int coeff = (int)ESRMSettings.MaximumWallsDensityCoefficient - WallsDensityTrack.Value + MazeSizeTrack.Value;
-			int limit = (int)(ESRMSettings.MaximumMazeSizeCoefficient + ESRMSettings.MaximumWallsDensityCoefficient);
-
-			if (coeff < limit - sizeWallsDifferenceLimit)
-				return;
-
-			TrackBar tb = (TrackBar)sender;
-			if (tb.Name == MazeSizeTrack.Name)
-				WallsDensityTrack.Value = (int)ESRMSettings.MaximumWallsDensityCoefficient -
-					(limit - sizeWallsDifferenceLimit - MazeSizeTrack.Value);
-			else
-				MazeSizeTrack.Value = limit - sizeWallsDifferenceLimit -
-					((int)ESRMSettings.MaximumWallsDensityCoefficient - WallsDensityTrack.Value);
-			}*/
 
 		// Включение дополнительных монстров
 		private void TwoFloorsFlag_CheckedChanged (object sender, EventArgs e)
