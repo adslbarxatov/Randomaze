@@ -38,21 +38,49 @@ namespace RD_AAOW
 			// Инициализация и локализация формы
 			InitializeComponent ();
 
-			RDLocale.SetControlsText (this);
+			/*RDLocale.SetControlsText (this);*/
+			RDLocale.SetControlText (this.Name, EnemiesTab);
+			RDLocale.SetControlText (this.Name, Generic2Tab);
+			RDLocale.SetControlText (this.Name, GenericTab);
+			RDLocale.SetControlText (this.Name, ItemsTab);
+			/*RDLocale.SetControlText (this.Name, Random);*/
 			AbortButton.Text = RDLocale.GetDefaultText (RDLDefaultTexts.Button_Cancel);
 			ApplyButton.Text = RDLocale.GetDefaultText (RDLDefaultTexts.Button_OK);
 
-			GenericTab.Text = RDLocale.GetText (this.Name + "_" + GenericTab.Name);
+			/*GenericTab.Text = RDLocale.GetText (this.Name + "_" + GenericTab.Name);
 			RDLocale.SetControlsText (GenericTab);
+			RDLocale.SetControlText (GenericTab.Name, AllowItemsForSecondFloor);*/
+			RDLocale.SetControlText (GenericTab.Name, BarrierLabel);
+			RDLocale.SetControlText (GenericTab.Name, FloorTypesLabel);
+			RDLocale.SetControlText (GenericTab.Name, Label01);
+			RDLocale.SetControlText (GenericTab.Name, Label04);
+			RDLocale.SetControlText (GenericTab.Name, NodesFlag);
+			RDLocale.SetControlText (GenericTab.Name, SkyLabel);
 
-			Generic2Tab.Text = RDLocale.GetText (this.Name + "_" + Generic2Tab.Name);
-			RDLocale.SetControlsText (Generic2Tab);
+			/*Generic2Tab.Text = RDLocale.GetText (this.Name + "_" + Generic2Tab.Name);
+			RDLocale.SetControlsText (Generic2Tab);*/
+			RDLocale.SetControlText (Generic2Tab.Name, ButtonLabel);
+			RDLocale.SetControlText (Generic2Tab.Name, CeilingHolesFlag);
+			RDLocale.SetControlText (Generic2Tab.Name, FogLabel);
+			RDLocale.SetControlText (Generic2Tab.Name, GravityLabel);
+			RDLocale.SetControlText (Generic2Tab.Name, InsideLightingLabel);
+			RDLocale.SetControlText (Generic2Tab.Name, NeonFlag);
+			RDLocale.SetControlText (Generic2Tab.Name, OutsideLightingLabel);
+			RDLocale.SetControlText (Generic2Tab.Name, WaterLabel);
 
-			EnemiesTab.Text = RDLocale.GetText (this.Name + "_" + EnemiesTab.Name);
-			RDLocale.SetControlsText (EnemiesTab);
+			/*EnemiesTab.Text = RDLocale.GetText (this.Name + "_" + EnemiesTab.Name);
+			RDLocale.SetControlsText (EnemiesTab);*/
+			RDLocale.SetControlText (EnemiesTab.Name, CratesBalanceLabel);
+			RDLocale.SetControlText (EnemiesTab.Name, EnemiesLabel);
+			RDLocale.SetControlText (EnemiesTab.Name, Label02);
+			RDLocale.SetControlText (EnemiesTab.Name, Label05);
+			RDLocale.SetControlText (EnemiesTab.Name, MonsterMakerFlag);
 
-			ItemsTab.Text = RDLocale.GetText (this.Name + "_" + ItemsTab.Name);
-			RDLocale.SetControlsText (ItemsTab);
+			/*ItemsTab.Text = RDLocale.GetText (this.Name + "_" + ItemsTab.Name);
+			RDLocale.SetControlsText (ItemsTab);*/
+			RDLocale.SetControlText (ItemsTab.Name, InfoLabel);
+			RDLocale.SetControlText (ItemsTab.Name, ItemsLabel);
+			RDLocale.SetControlText (ItemsTab.Name, Label03);
 
 			MazeSizeFlag.Text = EnemiesDensityFlag.Text = ItemsDensityFlag.Text =
 				CratesDensityFlag.Text = WallsDensityFlag.Text = InsideLightingFlag.Text =

@@ -37,9 +37,6 @@ namespace RD_AAOW
 				return -4;
 
 			// Запуск
-			/*if (RDLocale.CurrentLanguage != RDLanguages.en_us)
-				RDLocale.CurrentLanguage = RDLanguages.en_us;    // Защита от других языков*/
-
 			Application.Run (new RandomazeForm (args));
 			return 0;
 			}
