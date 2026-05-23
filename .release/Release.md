@@ -1,5 +1,5 @@
 _en_us_
 
-- Internal assemblies have been updated 
+- Internal assemblies have been updated
 
 ⁂
