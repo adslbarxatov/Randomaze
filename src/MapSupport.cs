@@ -1995,7 +1995,7 @@ namespace RD_AAOW
 			FileStream FSsc;
 			try
 				{
-				FSsc = new FileStream (RDGenerics.AppStartupPath + "liblist.gam", FileMode.Create);
+				FSsc = new FileStream (RDGenerics.StartupPath + "liblist.gam", FileMode.Create);
 				}
 			catch
 				{
